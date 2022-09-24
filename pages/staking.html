@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/resources/output-onlineimagetools.png" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/staking.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldPact</title>
+</head>
+
+<body>
+    <section class="--full-page">
+        <aside>
+            <div class="logo">
+                <img src="/resources/output-onlineimagetools.png" alt="">
+                <p class="logo-text">ShieldPact</p>
+            </div>
+            <div class="pages">
+                <p>Menu</p>
+                <ul>
+                    <li onclick="homePage()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                        <a href="#">Home</a>
+                    </li>
+                    <li onclick="swapPage()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        <a href="#">Swap</a>
+                    </li>
+                    <li><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-codesandbox"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline><polyline points="7.5 19.79 7.5 14.6 3 12"></polyline><polyline points="21 12 16.5 14.6 16.5 19.79"></polyline><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        <a href="/nftpage/index.html">NFT</a>
+                    </li>
+                    <li class="active"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                        <a href="#">Staking</a>
+                    </li>
+                    <li onclick="launchPage()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        <a href="#">LaunchPad</a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <main>
+            <header>
+                <nav>
+                    <div class="left">
+                        <img src="/resources/output-onlineimagetools.png" alt="">
+                    </div>
+                    <div class="right">
+                        <p>Login</p>
+                        <button onclick="walletModal()" class="btn">Connect Wallet</button>
+                    </div>
+                </nav>
+            </header>
+            <section>
+                <div class="staking-cont">
+                    <h1 class="head">Staking</h1>
+                    <div class="stake">
+                        <div class="left">
+                            <div class="img">
+                                <img src="/resources/20220921_105230.png" alt="">
+
+                            </div>
+                            <div class="text">
+                                <h4>SHIEDLCOIN - BNB Pool [2x]</h4>
+                                <h1>APR 0%</h1>
+                                <p>0 SHIELD/day <br> Stake SHIELDCOIN/BNB LP and EARN SHIELDCOIN</p>
+                            </div>
+                        </div>
+                        <div class="action">
+                            <div class="buttons">
+                                <div class="depo">
+                                    <p>Available Stake</p>
+                                    <h4>0</h4>
+                                    <button class="btn">Exchange</button><br>
+                                    <button class="btn-border">Deposit</button>
+                                </div>
+                                <div class="widthdraw">
+                                    <p>My Stake</p>
+                                    <h4>0</h4>
+                                    <button class="btn">Liquidity</button><br>
+                                    <button class="btn-border">Withdrawal</button>
+                                </div>
+                            </div>
+                            <div class="earned">
+                                <p>Earned</p>
+                                <h2>0.0 SHIELDCOIN</h2>
+                                <button class="btn" disabled>Claim</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stake">
+                        <div class="left">
+                            <div class="img">
+                                <img src="/resources/20220921_105230.png" alt="">
+
+                            </div>
+                            <div class="text">
+                                <h4>SHIEDLCOIN - BNB Pool [2x]</h4>
+                                <h1>APR 0%</h1>
+                                <p>0 SHIELDCOIN/day <br> Stake SHIELDCOIN/BNB LP and EARN SHIELDCOIN</p>
+                            </div>
+                        </div>
+                        <div class="action">
+                            <div class="buttons">
+                                <div class="depo">
+                                    <p>Available Stake</p>
+                                    <h4>0</h4>
+                                    <button class="btn">Exchange</button><br>
+                                    <button class="btn-border">Deposit</button>
+                                </div>
+                                <div class="widthdraw">
+                                    <p>My Stake</p>
+                                    <h4>0</h4>
+                                    <button class="btn">Liquidity</button><br>
+                                    <button class="btn-border">Withdrawal</button>
+                                </div>
+                            </div>
+                            <div class="earned">
+                                <p>Earned</p>
+                                <h2>0.0 SHIELDCOIN</h2>
+                                <button class="btn" disabled>Claim</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stake">
+                        <div class="left">
+                            <div class="img">
+                                <img src="/resources/20220921_105230.png" alt="">
+
+                            </div>
+                            <div class="text">
+                                <h4>SHIEDLCOIN - BNB Pool [2x]</h4>
+                                <h1>APR 0%</h1>
+                                <p>0 SHIELDCOIN/day <br> Stake SHIELDCOIN/BNB LP and EARN SHIELDCOIN</p>
+                            </div>
+                        </div>
+                        <div class="action">
+                            <div class="buttons">
+                                <div class="depo">
+                                    <p>Available Stake</p>
+                                    <h4>0</h4>
+                                    <button class="btn">Exchange</button><br>
+                                    <button class="btn-border">Deposit</button>
+                                </div>
+                                <div class="widthdraw">
+                                    <p>My Stake</p>
+                                    <h4>0</h4>
+                                    <button class="btn">Liquidity</button><br>
+                                    <button class="btn-border">Withdrawal</button>
+                                </div>
+                            </div>
+                            <div class="earned">
+                                <p>Earned</p>
+                                <h2>0.0 SHIELDCOIN</h2>
+                                <button class="btn" disabled>Claim</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </section>
+    <section class="bottom-nav">
+        <div onclick="swapPage()" class="swap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <p>Swap</p>
+
+        </div>
+        <div class="nft">
+            <a style="color: white;text-decoration:none;" href="/nftpage/index.html">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-codesandbox"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline><polyline points="7.5 19.79 7.5 14.6 3 12"></polyline><polyline points="21 12 16.5 14.6 16.5 19.79"></polyline><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                <p>NFT</p>
+            </a>
+
+        </div>
+        <div onclick="homePage()" class="home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            <p>Home</p>
+        </div>
+        <div class="staking active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+            <p>Staking</p>
+
+        </div>
+        <div onclick="launchPage()" class="launch">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            <p>LaunchPad</p>
+
+        </div>
+
+    </section>
+    <div class="connect-wallet-modal-bg">
+        <div class="connect-wallet-modal">
+            <div class="top">
+                <h3>Connect Wallet</h3>
+                <p onclick="closeWallet()">+</p>
+            </div>
+            <div class="wallets">
+                <div onclick="connectWallet(event)" class="metamask">
+                    <img src="https://cdn.iconscout.com/icon/free/png-512/metamask-2728406-2261817.png" alt="">
+                    <h4>Meta Mask</h4>
+                    <p>Connect with MetaMask Wallet</p>
+                </div>
+                <div class="walletconnect">
+                    <img src="https://cdn.unstoppabledomains.com/bucket/images/logos/wallet-connect-logo.svg" alt="">
+                    <h4>Wallet Connect</h4>
+                    <p>Connect with Wallet Connect</p>
+                </div>
+            </div>
+            <div class="bottom">
+                <p>Haven't got a crypto wallet yet?</p>
+                <button class="btn-border"><a style="text-decoration: none; color:#a943d8;" href="https://pancake.guide/shieldcoin">Learn How to Connect</a></button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    function swapPage() {
+        window.location.assign("/pages/swap")
+    }
+
+    function launchPage() {
+        window.location.assign("/pages/launchpad")
+    }
+
+
+    function homePage() {
+        window.location.assign("/")
+    }
+
+    function walletModal() {
+        document.querySelector(".connect-wallet-modal-bg").style.display = "flex";
+    }
+
+    function closeWallet() {
+        document.querySelector(".connect-wallet-modal-bg").style.display = "none";
+    }
+</script>
+<script src="/js/staking.js"></script>
+
+</html>
