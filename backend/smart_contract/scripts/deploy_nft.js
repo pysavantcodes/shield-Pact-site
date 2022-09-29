@@ -2,7 +2,10 @@
 //yarn hardhat compile
 
 //command to deploy
-//yarn hardhat run --network bsc scripts/deploy.js
+//yarn hardhat run --network localhost ./scripts/deploy_nft.js
+
+const symbol = 'SHC';
+const name = 'SHIELD PACT';
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -11,12 +14,11 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const LancerSquare = await ethers.getContractFactory("LancerSquare");
+  const factory = await ethers.getContractFactory("NFT");
+  
+  const contract = await factory.deploy(name, symbol);
 
-  const LancerSquareContract = await LancerSquare.deploy();
-
-  console.log("LancerSquare Contract address:", LancerSquareContract.address);
-
+  console.log("NFT Contract address:", contract.address);
 }
 
 main()

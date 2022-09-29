@@ -7,10 +7,12 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
-contract NFT is ERC721, ERC721Burnable, Ownable {
+contract NFT is ERC721, ERC721Burnable, Ownable{
 
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
+
+    string private baseURI; 
 
 	struct Item{
 		string itemURI;
@@ -20,6 +22,7 @@ contract NFT is ERC721, ERC721Burnable, Ownable {
 
 	mapping(uint256 => Item) private _items;
 
+    mapping(address => uint256[]) private _ownedItems;
 
     constructor(string memory name, string memory symbol) ERC721(name, symbol){
 
@@ -39,16 +42,17 @@ contract NFT is ERC721, ERC721Burnable, Ownable {
     //gets the URI of a item
     function tokenURI(uint256 itemId)public view virtual override returns (string memory) {
         _requireMinted(itemId);
-        return _items[itemId].itemURI;
+        return string(abi.encodePacked(baseURI,_items[itemId].itemURI));
     }
     
     function totalSupply() external view returns (uint256){
     	return _itemIds.current();
     }
 
-    function setItemURI(uint256 itemId, string memory itemURI) public onlyCreator(itemId) {
-    	_requireMinted(itemId);
-    	_items[itemId].itemURI = itemURI;
+
+    function setURI(string memory newURI) external onlyOwner {
+        require(bytes(newURI).length>0,"Empty string can not be used");
+        baseURI = newURI;
     }
 
     //minting NFT=>Adding New Item
@@ -65,12 +69,57 @@ contract NFT is ERC721, ERC721Burnable, Ownable {
     function burnNFT(uint256 itemId) public {
     	burn(itemId);
     	_itemIds.decrement();
-    	//removing the Items
+    	//removing the Item
     	delete _items[itemId];
+    }
+
+    function addItemToList(address newOwner, uint256 itemId) private{
+        //adding to my item list
+        _ownedItems[newOwner].push(itemId);
+    }
+
+    function removeFromItem(address exOwner, uint256 itemId) private{
+        uint256[] memory remainItems = new uint256[](_ownedItems[exOwner].length - 1);
+        for(uint256 i = 0; i < _ownedItems[exOwner].length - 1; i++){
+            if(_ownedItems[exOwner][i] != itemId){
+                remainItems[i] = _ownedItems[exOwner][i];
+            }
+        }
+        _ownedItems[exOwner] = remainItems;
+    }
+
+    /**
+     * @dev Hook that is called after any transfer of tokens. This includes
+     * minting and burning.
+     *
+     * Calling conditions:
+     *
+     * - when `from` and `to` are both non-zero.
+     * - `from` and `to` are never both zero.
+     */
+    function _afterTokenTransfer( address from, address to, uint256 itemId) internal virtual override {
+        if(from == address(0)){
+            addItemToList(to, itemId);
+        }
+
+        else if(to == address(0)){
+            removeFromItem(from, itemId);
+        }
+
+        else{
+            addItemToList(to, itemId);
+            removeFromItem(from, itemId);
+        }
     }
 
     function infoNFT(uint256 itemId) public view returns (Item memory){
     	_requireMinted(itemId);
     	return _items[itemId];
     }
+
+    function myNFT() public view returns (uint256[] memory){
+        return _ownedItems[msg.sender];
+    }
 }
+
+//0x5FbDB2315678afecb367f032d93F642f64180aa3

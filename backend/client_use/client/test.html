@@ -8,11 +8,13 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.2.0/uuidv4.min.js" integrity="sha512-W6Yf3E7UBUKz5LqkjOHga4hkDX3huRhAvV8I6MFuZ0zX+5ttmVldY8nz9q26SwBItFrb9XSKNMiWEsKg8rDmXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.jsdelivr.net/npm/ipfs-http-client/dist/index.min.js"></script>
 </head>
 <body>
 <button onclick="main()">Connect To Wallet</button>
 <p id="loc"></p>
 <script src="./test.js"></script>
+<script src="./nftScript.js"></script>
 <script type="text/javascript">
 	const main = async()=>{
 		let address = await INIT();

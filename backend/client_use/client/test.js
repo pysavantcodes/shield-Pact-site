@@ -7,6 +7,151 @@
 
 //MUST BE ADDED TO PAGE
 
+/***********/
+const CHAT_ABI = [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "userName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "privKey",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "CreatedUser",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "KeyChanged",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_id",
+          "type": "address"
+        }
+      ],
+      "name": "accountExist",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "name": "changeKey",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "userName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "privKey",
+          "type": "string"
+        }
+      ],
+      "name": "createUser",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getKey",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_id",
+          "type": "address"
+        }
+      ],
+      "name": "getName",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalAccounts",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]; 
+
+const CHAT_ADDRESS = '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707';
+const CHAT_CHAINID = 31337;
+const CHAT_API_URL = 'http://localhost:3000/api/chat';
+/*************/
 
 const AES = CryptoJS.AES;
 
@@ -166,6 +311,7 @@ helperLib.rampNetwork = async(callback=(()=>{}))=>{
 const INFURA_ID = "a6441c54b62c47519b6eaac2a8a59abc";//WOULD BE MADE HIDDEN;
 
 
+
 const providerOptions = {
   binancechainwallet: {
     package: true
@@ -174,9 +320,9 @@ const providerOptions = {
     package: WalletConnectProvider.default, // required
     options: {
       infuraId: INFURA_ID, // required
-      rpc: {
-          97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-        },
+      // rpc: {
+      //     97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+      //   },/*Not Important SInce binance not yet supported on infura*/
     }
   }
 };
@@ -229,160 +375,16 @@ helperLib.init =  async ()=>{
   await helperLib.__getSigner();
   return _signer.getAddress();
 }
-/***********/
-const ABI = [
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "userName",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "privKey",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "CreatedUser",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "KeyChanged",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_id",
-          "type": "address"
-        }
-      ],
-      "name": "accountExist",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "key",
-          "type": "string"
-        }
-      ],
-      "name": "changeKey",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "userName",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "privKey",
-          "type": "string"
-        }
-      ],
-      "name": "createUser",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getKey",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_id",
-          "type": "address"
-        }
-      ],
-      "name": "getName",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "totalAccounts",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ]; 
-
-
-/*************/
 
 
 function _ChatContract(){}
 
 _ChatContract.prototype.config = {
-	abi:ABI,
+	abi:CHAT_ABI,
 	network:{
-		//chainId:address,
-		31337:'0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
+		[CHAT_CHAINID]:CHAT_ADDRESS,
 	},
-	default:31337
+	default:CHAT_CHAINID,
 };
 
 _ChatContract.prototype.init = async function(requiredSignerChainId){
@@ -417,13 +419,13 @@ _ChatContract.prototype.off = async function(event){
 
 
 
+
 window.chatContract = new _ChatContract();
 
 
 const INIT = async ()=>{
 	let address = await helperLib.init();
 	await window.chatContract.init();
-	const CHAT_API_URL = 'http://localhost:3000/api/chat';
 	window.chatApiClient.init(CHAT_API_URL);
   return address;
 }
