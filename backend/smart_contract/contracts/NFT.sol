@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
+import "hardhat/console.sol";
+
 contract NFT is ERC721, ERC721Burnable, Ownable{
 
     using Counters for Counters.Counter;
@@ -15,8 +17,8 @@ contract NFT is ERC721, ERC721Burnable, Ownable{
     string private baseURI; 
 
 	struct Item{
-		string itemURI;
 		string itemName;//special token name
+        string itemURI;
 		uint256 created;
 	}
 
@@ -68,7 +70,7 @@ contract NFT is ERC721, ERC721Burnable, Ownable{
     //burning NFT=>Removing Existing Item
     function burnNFT(uint256 itemId) public {
     	burn(itemId);
-    	_itemIds.decrement();
+    	//_itemIds.decrement();
     	//removing the Item
     	delete _items[itemId];
     }
@@ -80,9 +82,12 @@ contract NFT is ERC721, ERC721Burnable, Ownable{
 
     function removeFromItem(address exOwner, uint256 itemId) private{
         uint256[] memory remainItems = new uint256[](_ownedItems[exOwner].length - 1);
-        for(uint256 i = 0; i < _ownedItems[exOwner].length - 1; i++){
+        uint256 j = 0;
+        for(uint256 i = 0; i < _ownedItems[exOwner].length; i++){
             if(_ownedItems[exOwner][i] != itemId){
-                remainItems[i] = _ownedItems[exOwner][i];
+                remainItems[j] = _ownedItems[exOwner][i];
+                j++;
+                console.log("removing",_ownedItems[exOwner][i]);
             }
         }
         _ownedItems[exOwner] = remainItems;

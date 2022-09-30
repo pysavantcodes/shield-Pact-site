@@ -15,8 +15,10 @@ const createCipher = (userId, userKey, expires)=>{
 }
 
 const verifyCipher = (userId, userKey, _hash, _txt)=>{
+	//console.log(userId, userKey, _hash, _txt)
 	let _obj = decrypt(userKey, _hash);
 	_obj = _obj && JSON.parse(_obj);
+	//console.log(_obj)
 	if(_obj && _obj?.expires && _obj.expires >= Date.now() && 
 		_obj?._txt === _txt && _obj?.userId === userId)
 	      return true;

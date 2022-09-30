@@ -8,6 +8,7 @@ router.post('/create-account', async(req, res)=>{
 	let {userId, userName, userKey} = req.body;
 	let account = await Account.findOne({userId});
 	if(account){
+		
 		res.status(401);
 		return res.json({msg:'Account Already Exist',userId});
 	}
@@ -72,6 +73,7 @@ router.post('/add-friend', authRequired, async(req, res)=>{
 });
 
 router.get('/logout', logOut, (req, res)=>{
+	console.log(req.user);
 	return res.json({logout:true})
 });
 
