@@ -16,6 +16,8 @@ async function main() {
   let secretToken = "19b51e19-7ff1-4998-b618-f523d9355e20";
   
   const chatContract = await Chat.deploy("Admin", secretToken);
+  //await chatContract.wait();
+  console.log(await chatContract.deployed());
   console.log("Admin Address ", deployer.address);
   console.log("Admin Secret Token ", secretToken);
   console.log("Chat Contract address:", chatContract.address);

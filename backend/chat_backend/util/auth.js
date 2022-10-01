@@ -23,16 +23,22 @@ const logOut = (req, res, next)=>
     req.logout((err)=>{
           if (err) 
               return next(err);
+          return next();
           });
 
 const registerAuth = (passport)=>{
     passport.use('AUTH', new CustomStrategy(
         async (req, done)=>{
           let {_id, _hash, _txt} = req.body;
+         // console.log(req.body);
           let user = await Account.findOne({userId:_id});
+         // console.log(user)
+         if(user){
+            let verify = verifyCipher(_id, user.userKey, _hash, _txt);
+            if(verify)
+              return done(null, user);
+         }
           let _errMsg = '';
-          if(user && verifyCipher(_id, user.userKey, _hash, _txt))
-            return done(null, user);
           _errMsg = "Incorrect Account";
           console.log(_errMsg);
           return done(null, false);

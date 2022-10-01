@@ -7,6 +7,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require("helmet");
+const cors = require('cors');
 const passport = require("passport");
 const registerRoute = require('./routes');
 const {connectDB} = require('./model');
@@ -15,6 +16,10 @@ const {registerAuth} = require('./util/auth');
 require('dotenv').config()
 
 const app = express();
+
+app.use(helmet.hidePoweredBy());
+app.use(cors({origin:true}))
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

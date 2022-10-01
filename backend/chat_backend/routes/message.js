@@ -20,6 +20,7 @@ router.get('/all-message',authRequired, async (req, res)=>{
 	beginTime = Date.parse(beginTime)||0;
 	let filter = {$or:[{from:req.user.userId},{to:req.user.userId}]};
 	let docLent = await Message.countDocuments(filter);
+	console.log(docLent, req.user)
 	let dataFunc = (_skip, _limit)=> Message.find({...filter, timestamp:{$gte:beginTime}},{_id:0}).skip(_skip).limit(_limit);;
 	let result = await paginate(args, docLent, dataFunc)
 	return res.json(result);
@@ -43,8 +44,8 @@ router.post('/send-message', authRequired, async(req, res)=>{
 	let msg = Message({from:req.user.userId, to, body});
 	await msg.save();
 
-	req.user.unReadSize += 1;
-	await req.user.save();
+	toUser.unReadSize += 1;
+	await toUser.save();
 	//await Account.updateOne({userId: to},{$inc:{unReadSize:1}});
 	return res.json({msg});
 });
