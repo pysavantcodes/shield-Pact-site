@@ -1,7 +1,4 @@
 
+const Container = ()=><h1>Explore</h1>
 
-const Container = ()=>{
-	return (
-
-	);
-}
+export default Container;

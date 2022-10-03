@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React from 'react';
 import {createBrowserRouter, RouterProvider, Navigate} from "react-router-dom";
 import DefaultLayout from "./components/layout";
 import StackingSection from "./pages/staking";
@@ -78,7 +78,6 @@ const router = createBrowserRouter([
 		])                                                                                                                                                                                                                                                                                                                                                                                ;
 
 const App = ()=>{
-	const [isConnected, setIsConnected] = useState(false);
 	return (
 		<Provider store={store}>
 			<RouterProvider router={router}/>

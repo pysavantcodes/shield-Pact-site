@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState} from "react";
 import {Outlet, NavLink} from "react-router-dom";
 import styled,{css} from 'styled-components';
 import {FaAngleRight} from "react-icons/fa";
@@ -125,8 +125,8 @@ const Title = ()=>{
 
 
 const ConnectSection = ()=>{
-	let address = useSelector(state=>state.walletConnect?.address);
-	const dispatch = useDispatch();
+	let address = null//useSelector(state=>state.walletConnect?.address);
+	const dispatch = ()=>{}//useDispatch();
 
 	const connect = ()=>{
 		//dispatch(connectWallet());
