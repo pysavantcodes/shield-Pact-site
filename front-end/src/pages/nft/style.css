@@ -178,29 +178,6 @@ h6 a,
     color: inherit;
 }
 
-.bg-color-tertiary h1,
-.bg-color-tertiary h2,
-.bg-color-tertiary h3,
-.bg-color-tertiary h4,
-.bg-color-tertiary h5,
-.bg-color-tertiary h6,
-.bg-color-tertiary .h1,
-.bg-color-tertiary .h2,
-.bg-color-tertiary .h3,
-.bg-color-tertiary .h4,
-.bg-color-tertiary .h5,
-.bg-color-tertiary .h6 {
-    color: #fff;
-}
-
-.bg-color-tertiary p {
-    color: #6c7279;
-}
-
-.bg-color-tertiary a {
-    color: #6c7279;
-}
-
 @media only screen and (min-width: 768px) and (max-width: 991px) {
     h1,
     .h1 {
@@ -284,131 +261,6 @@ p {
     }
 }
 
-p.b1 {
-    font-size: var(--font-size-b1);
-    line-height: var(--line-height-b1);
-}
-
-p.b3 {
-    font-size: var(--font-size-b3);
-    line-height: var(--line-height-b3);
-}
-
-p.has-large-font-size {
-    line-height: 1.5;
-    font-size: 36px;
-}
-
-p.has-medium-font-size {
-    font-size: 24px;
-    line-height: 36px;
-}
-
-p.has-small-font-size {
-    font-size: 13px;
-}
-
-p.has-very-light-gray-color {
-    color: var(--color-white);
-}
-
-p.has-background {
-    padding: 20px 30px;
-}
-
-p.b1 {
-    font-size: var(--font-size-b1);
-    line-height: var(--line-height-b1);
-}
-
-p.b2 {
-    font-size: var(--font-size-b2);
-    line-height: var(--line-height-b2);
-}
-
-p.b3 {
-    font-size: var(--font-size-b3);
-    line-height: var(--line-height-b3);
-}
-
-p:last-child {
-    margin-bottom: 0;
-}
-
-.b1 {
-    font-size: var(--font-size-b1);
-    line-height: var(--line-height-b1);
-}
-
-.b2 {
-    font-size: var(--font-size-b2);
-    line-height: var(--line-height-b2);
-}
-
-.b3 {
-    font-size: var(--font-size-b3);
-    line-height: var(--line-height-b3);
-}
-
-.b4 {
-    font-size: var(--font-size-b4);
-    line-height: var(--line-height-b4);
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    margin: 0 0 20px;
-    width: 100%;
-}
-
-table a,
-table a:link,
-table a:visited {
-    text-decoration: none;
-}
-
-cite,
-.wp-block-pullquote cite,
-.wp-block-pullquote.is-style-solid-color blockquote cite,
-.wp-block-quote cite {
-    color: var(--color-heading);
-}
-
-var {
-    font-family: "Poppins", sans-serif;
-}
-
-
-/*---------------------------
-	List Style 
----------------------------*/
-
-ul,
-ol {
-    padding-left: 18px;
-}
-
-ul {
-    list-style: square;
-    margin-bottom: 30px;
-    padding-left: 20px;
-}
-
-ul.liststyle.bullet li {
-    font-size: 18px;
-    line-height: 30px;
-    color: var(--color-body);
-    position: relative;
-    padding-left: 30px;
-}
-
-@media only screen and (max-width: 767px) {
-    ul.liststyle.bullet li {
-        padding-left: 19px;
-    }
-}
-
 .btn-border {
     padding: 14px 20px;
     border: none;
@@ -425,67 +277,6 @@ ul.liststyle.bullet li {
 .btn-border:hover,
 .btn:hover {
     transform: scale(105%);
-}
-
-ul.liststyle.bullet li::before {
-    position: absolute;
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 100%;
-    background: var(--color-body);
-    left: 0;
-    top: 10px;
-}
-
-ul.liststyle.bullet li+li {
-    margin-top: 8px;
-}
-
-ul li {
-    font-size: var(--font-size-b1);
-    line-height: var(--line-height-b1);
-    margin-top: 10px;
-    margin-bottom: 10px;
-    color: var(--color-body);
-}
-
-ul li a {
-    text-decoration: none;
-    color: var(--color-gray);
-}
-
-ul li a:hover {
-    color: var(--color-primary);
-}
-
-ul ul {
-    margin-bottom: 0;
-}
-
-ol {
-    margin-bottom: 30px;
-}
-
-ol li {
-    font-size: var(--font-size-b1);
-    line-height: var(--line-height-b1);
-    color: var(--color-body);
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-ol li a {
-    color: var(--color-heading);
-    text-decoration: none;
-}
-
-ol li a:hover {
-    color: var(--color-primary);
-}
-
-ol ul {
-    padding-left: 30px;
 }
 
 
@@ -572,6 +363,7 @@ ol ul {
     height: 100%;
     position: relative;
     z-index: 1;
+    width: 300px;
 }
 
 .product-style-one::before {
@@ -754,13 +546,19 @@ ol ul {
     padding: 1rem 0;
 }
 
-@media (max-width:930px) {
+@media (max-width:1300px) {
+    .product-grid {
+        grid-template-columns: auto auto auto;
+    }
+}
+
+@media (max-width:950px) {
     .product-grid {
         grid-template-columns: auto auto;
     }
 }
 
-@media (max-width:470px) {
+@media (max-width:640px) {
     .product-grid {
         grid-template-columns: auto;
     }
@@ -904,4 +702,14 @@ option {
 
 .options:hover {
     background: var(--color-primary);
+}
+
+.price__output--wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.price__output--wrap .btn {
+    margin: 0;
 }

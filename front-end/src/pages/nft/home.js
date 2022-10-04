@@ -6,25 +6,23 @@ import Card from "../../components/card";
 const Container = () => {
   return (
     <div className="body">
-      <div className="slider-one rn-section-gapTop">
-        <div className="container">
-          <div>
-            <div className="txt">
-              <h2 className="title">
-                Discover Digital Art, Collect and Sell Your Specific NFTs.
-              </h2>
-              <p className="slide-disc">
-                Partner with one of the world’s largest retailers to showcase
-                your brand and products.
-              </p>
-              <div className="button-group">
-                <button className="btn">Create NFT</button>
-              </div>
+      <div className="container">
+        <div>
+          <div className="txt">
+            <h2 className="title">
+              Discover Digital Art, Collect and Sell Your Specific NFTs.
+            </h2>
+            <p>
+              Partner with one of the world’s largest retailers to showcase your
+              brand and products.
+            </p>
+            <div className="button-group">
+              <button className="btn">Create NFT</button>
             </div>
           </div>
-          <div className="img">
-            <img src={img} alt="Slider Images" />
-          </div>
+        </div>
+        <div className="img">
+          <img src={img} alt="Slider Images" />
         </div>
       </div>
 
@@ -45,27 +43,12 @@ const Container = () => {
       <div className="rn-new-items rn-section-gapTop">
         <div>
           <div className="row mb--50 align-items-center">
-            <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-              <h3
-                className="title mb--0"
-                data-sal-delay="150"
-                data-sal="slide-up"
-                data-sal-duration="800"
-              >
-                Newest Items
-              </h3>
-            </div>
-            <div className="col-lg-6 col-md-6 col-sm-6 col-12 mt_mobile--15">
-              <div
-                className="view-more-btn text-start text-sm-end"
-                data-sal-delay="150"
-                data-sal="slide-up"
-                data-sal-duration="800"
-              >
-                <a className="btn-transparent" href="#">
-                  VIEW ALL<i data-feather="arrow-right"></i>
-                </a>
-              </div>
+            <h3 className="title mb--0">Newest Items</h3>
+
+            <div className="view-more-btn text-start text-sm-end">
+              <a className="btn-transparent" href="#">
+                VIEW ALL
+              </a>
             </div>
           </div>
           <div className="product-grid">
@@ -80,19 +63,7 @@ const Container = () => {
 
       <div className="rn-product-area rn-section-gapTop">
         <div>
-          <div className="row mb--50 align-items-center">
-            <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-              <h3
-                className="title mb--0"
-                data-sal-delay="150"
-                data-sal="slide-up"
-                data-sal-duration="800"
-              >
-                Explore Product
-              </h3>
-            </div>
-            
-          </div>
+          <h3 className="title mb--0">Explore Product</h3>
 
           <div className="default-exp-wrapper default-exp-expand">
             <div className="inner">
@@ -145,8 +116,12 @@ const Container = () => {
                     <div className="slider__range--output">
                       <div className="price__output--wrap">
                         <div className="price--output">
-                          
-                          <input placeholder="20.00" type="text" id="amount" readonly />
+                          <input
+                            placeholder="20.00"
+                            type="text"
+                            id="amount"
+                            readonly
+                          />
                         </div>
                         <div className="price--filter">
                           <button className="btn btn-primary btn-small">
@@ -165,7 +140,7 @@ const Container = () => {
             <Card />
             <Card />
             <Card />
-            
+
             <Card />
           </div>
         </div>
