@@ -4,8 +4,8 @@ import styled,{css} from 'styled-components';
 import {FaAngleRight} from "react-icons/fa";
 import {Button} from '../buttons';
 import logo from './logo.png';
-import {useDispatch, useSelector} from 'react-redux'
-import {connectWallet} from '../../redux';
+
+import { useConnectModal, useDisconnect, useAccount, useNetwork } from '@web3modal/react';
 
 const fgColor = "#acacac";
 const bgColor = "#1d1d1d";
@@ -125,20 +125,15 @@ const Title = ()=>{
 
 
 const ConnectSection = ()=>{
-	let address = null//useSelector(state=>state.walletConnect?.address);
-	const dispatch = ()=>{}//useDispatch();
+	const {open:connect} = useConnectModal();
+	const { address, isConnected } = useAccount();
 
-	const connect = ()=>{
-		//dispatch(connectWallet());
-	}
-
-	const disconnect = async()=>{
-		
-	}
-
+	const disconnect = useDisconnect();
+	const chains = useNetwork();
+	console.log(chains);
 	return(
 		<ConnectWrapper>
-			<Button onClick={address?disconnect:connect}>{address?"Disconnect":"Connect"} Wallet</Button>
+			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
 			<br/><small>{address}</small>
 		</ConnectWrapper>
 	);

@@ -4,16 +4,26 @@ import {FormButton} from '../../components/buttons';
 import upload from './upload.svg';
 import upload_bg from './up_bg.jpg';
 
+import { useSigner } from '@web3modal/react';
+import {register} from '../../context/tasks';
+
 const fgColor = "#acacac";
 
 const Container = styled.div`
 	font-size:1.1rem;
-	display:grid;
-	width:75vw;
-	padding:5rem 0rem;
-	grid-template-columns: min-content 1fr;
-	gap:4rem;
+	display:flex;
+	width:100%;
+	align-items:center;
+	justify-content:center;
+	padding:5rem 7rem;
+	gap:2rem;
 	margin:auto;
+
+	@media (max-width:1000px){
+		flex-direction:column;
+		gap:1rem;
+		padding:5rem 3rem;
+	}
 `
 
 const UploadSectionWrapper = styled.div`
@@ -21,9 +31,16 @@ const UploadSectionWrapper = styled.div`
 	gap:2rem;
 	align-content:flex-start;
 	padding:1rem 0rem;
+	width:50%;
+	
 
 	h3{
 		color:#fff;
+	}
+
+	@media (max-width:1000px){
+		width:100%;
+		
 	}
 `
 
@@ -54,10 +71,15 @@ const UploadWrapper = styled.label`
 	position:relative;
 	margin:auto;
 	cursor:pointer;
+	
+
+	@media (max-width: 1000px){
+		width:100%;
+	}
 
 	img#bg{
-		width:240px;
-		height:280px;
+		width:100%;
+		height:auto;
 	}
 
 	.box_content{
@@ -95,6 +117,11 @@ const FormWrapper = styled.div`
 	padding:3rem 2rem;
 	background-color: #111111;
 	border-radius:10px;
+	width:50%;
+
+	@media (max-width:1000px){
+		width:100%;
+	}
 `
 
 
@@ -123,11 +150,21 @@ const FormButtonWrapper = styled.div`
 	display:grid;
 	grid-template-columns:0.35fr 0.65fr;
 	gap:1rem;
+	@media (max-width:600px){
+		display:flex;
+		flex-direction:column;
+		gap:1rem;
+	}
 `
 
 const GroupField = styled.div`
 	display:flex;
 	gap:1rem;
+	align-items:center;
+	@media (max-width:1000px){
+		flex-direction:column;
+		gap:2rem;
+	}
 `;
 
 const Field = styled.div`
@@ -138,6 +175,10 @@ const Field = styled.div`
 	
 	label{
 		cursor:pointer;
+	}
+
+	input[type="checkbox"]{
+		width:fit-content;
 	}
 
 	input[type="text"], textarea{
@@ -169,7 +210,7 @@ const CheckButton = ({title, name, onClick})=>{
 	return (
 	<Field>
 		<label htmlFor={`form-elt-${name}`}>{title}</label>
-		<input id={`form-elt-${name}`} type="checkbox" name={name} onClick={onClick}/>
+		<input id={`form-elt-${name}`} type="checkbox" name={name} onClick={onClick} placeholder="Agree and Continue"/>
 	</Field>
 	);
 }
@@ -203,9 +244,12 @@ const Main = ()=>{
 		}
 	}
 
+	const _signer_data = useSigner();
+
 	const onSubmit = ()=>{
 		console.log("Function to submit");
 		console.log(db);
+		register(_signer_data);
 	}
 
 	return (

@@ -11,8 +11,8 @@ import CustomerSection from "./pages/dashboard/customer";
 import NFTLayout from "./components/nft/layout";
 import NFTHome from "./pages/nft/home";
 import NFTCreate from "./pages/nft/create";
-import store from './redux';
-import {Provider} from 'react-redux';
+import NFTExplore from './pages/nft/explore';
+import Web3Container from './context/_web3_container';
 
 const router = createBrowserRouter([
 			{	
@@ -72,6 +72,10 @@ const router = createBrowserRouter([
 					{
 						path:'create',
 						element:<NFTCreate/>
+					},
+					{
+						path:'explore',
+						element:<NFTExplore/>
 					}
 				]
 			}
@@ -79,9 +83,9 @@ const router = createBrowserRouter([
 
 const App = ()=>{
 	return (
-		<Provider store={store}>
+		<Web3Container>
 			<RouterProvider router={router}/>
-		</Provider>
+		</Web3Container>
 	);
 }
 
