@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import {FormButton} from '../../components/buttons';
 import upload from './upload.svg';
 import upload_bg from './up_bg.jpg';
-
+import {useContractWrite, useWaitForTransaction} from '@web3modal/react';
+import {NFTConfig, MarketConfig} from '../../context/_web3_container';
 const fgColor = "#acacac";
 
 const Container = styled.div`
@@ -231,19 +232,26 @@ const Main = ()=>{
 	const updateDB = useCallback((e)=>{
 		setDB(state=>({...state,[e.target.name]:e.target.value}));
 	},[setDB]);
+
 	const reader = new FileReader();
+
 	reader.onloadend = (data)=>{
 		setDB(state=>({...state,file:data?.target.result}))
 	};
+
 	const updateFile = (e)=>{
 		if(e.target.files[0]){
 			reader.readAsDataURL(e.target.files[0])
 		}
 	}
 
-	const onSubmit = ()=>{
-		console.log("Function to submit");
-		console.log(db);
+	let { data, error, isLoading, write } = useContractWrite(createNFTConfig);
+
+	const onSubmit = async ()=>{
+		let _data = await IpfsStoreNFT({name:db.name, description:db.decsription, image:db.file, properties:sb.properties})
+    	let awaitawait write({functionName: 'mint', args:[ipfsResult.ipfns]});
+    	const { receipt, isWaiting } = useWaitForTransaction({ hash: data?.hash })
+    	update(reciept.events[1].args.itemId, "Added to blockchain Successfully");;
 	}
 
 	return (

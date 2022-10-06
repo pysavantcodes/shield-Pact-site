@@ -4,8 +4,9 @@ import {FormButton} from '../../components/buttons';
 import upload from './upload.svg';
 import upload_bg from './up_bg.jpg';
 
-import { useSigner } from '@web3modal/react';
-import {register} from '../../context/tasks';
+import {useSigner, useContractWrite} from '@web3modal/react';
+
+import {IpfsStoreNFT, IpfsGetNFT, createNFT, MarketConfig, NFTConfig} from '../../context/_web3_container';
 
 const fgColor = "#acacac";
 
@@ -99,8 +100,8 @@ const UploadWrapper = styled.label`
 const Upload = ({db, updateFile})=>{
 	return (
 	<UploadWrapper htmlFor="upload-file">		
-		<img id="bg" src={db['file'] || upload_bg} alt="file"/>
-		<div className="box_content"style={{visibility:db["file"]?"hidden":"visible"}}>
+		<img id="bg" src={db['imagePath'] || upload_bg} alt="file"/>
+		<div className="box_content"style={{visibility:db["imagePath"]?"hidden":"visible"}}>
 			<img src={upload} alt="upload"/>
 			<h2>Choose a File</h2>
 			<p>PNG, GIF, WEBP, <br/> Max 10MB</p>
@@ -131,11 +132,11 @@ const FormContainer = ({db, updateDB, setShow, onSubmit})=>{
 		<TextInput title="Product Name" name="name" placeholder="e. g. `Digital Awesome Game`"  {...{db, updateDB}}/>
 		<TextAreaInput title="Description" name="description" placeholder="“After purchasing the product you can get item...”"  {...{db, updateDB}}/>
 		<GroupField>
-			<TextInput title="Item Price in $" name="dollerValue" placeholder="e. g. `20$`"  {...{db, updateDB}}/>
+			<TextInput title="Item Price in $" name="price" placeholder="e. g. `20$`"  {...{db, updateDB}}/>
 			<TextInput title="Size" name="size" placeholder="e. g. `Size`"  {...{db, updateDB}}/>
-			<TextInput title="Properties" name="properties" placeholder="e. g. `Properties`"  {...{db, updateDB}}/>
+			<TextInput title="Properties" name="extra" placeholder="e. g. `Properties`"  {...{db, updateDB}}/>
 		</GroupField>
-		<TextInput title="Royalty" name="Royality" placeholder="e. g. `20%`"  {...{db, updateDB}}/>
+		
 		<CheckButton name="putonsale"/>
 		<FormButtonWrapper>
 			<FormButton onClick={setShow}>Preview</FormButton>
@@ -145,6 +146,7 @@ const FormContainer = ({db, updateDB, setShow, onSubmit})=>{
 	);
 }
 
+//`<TextInput title="Royalty" name="Royality" placeholder="e. g. `20%`"  {...{db, updateDB}}/>`
 
 const FormButtonWrapper = styled.div`
 	display:grid;
@@ -229,27 +231,56 @@ const TextAreaInput = ({title, name, placeholder, rows=5, db, updateDB})=>{
 
 
 const Main = ()=>{
-	const [db, setDB] = useState({});
-	const [_show, _setShow] = useState(false)
+	const [db, setDB] = useState({name:'', description:'',price:'', size:'', extra:''});
+	const [_show, _setShow] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [status, setStatus] = useState({})
+
 	const updateDB = useCallback((e)=>{
 		setDB(state=>({...state,[e.target.name]:e.target.value}));
 	},[setDB]);
 	const reader = new FileReader();
 	reader.onloadend = (data)=>{
-		setDB(state=>({...state,file:data?.target.result}))
+		setDB(state=>({...state,imagePath:data?.target.result}))
 	};
 	const updateFile = (e)=>{
 		if(e.target.files[0]){
-			reader.readAsDataURL(e.target.files[0])
+			setDB(state=>({...state,image:e.target.files[0]}));
+			reader.readAsDataURL(e.target.files[0]);
 		}
 	}
 
-	const _signer_data = useSigner();
+	const {data:_signer} = useSigner();
 
-	const onSubmit = ()=>{
-		console.log("Function to submit");
-		console.log(db);
-		register(_signer_data);
+	const {write:nftContract } = useContractWrite({
+	  addressOrName: NFTConfig.address,
+	  contractInterface: NFTConfig.abi,
+	});
+
+	const {write:marketContract } = useContractWrite({
+	  addressOrName: MarketConfig.address,
+	  contractInterface: MarketConfig.abi,
+	});
+
+	const onSubmit = async()=>{
+		try{
+			const cleanDb = {name:db.name, description:db.description, properties:{extra:db.extra, size:db.size}, image:db.image};
+			for(let k of Object.keys(cleanDb)){
+				if(!cleanDb[k]){
+					console.log("Not complete");
+					return false;
+				}
+			}
+			if(loading)
+				return
+			setLoading(true);
+			let result = await createNFT(_signer, nftContract, marketContract, cleanDb, db.price, console.log);
+			window.IpfsStoreNFT = IpfsStoreNFT;
+			window.IpfsGetNFT = IpfsGetNFT;
+		}catch(e){
+			console.log(e);
+		}
+		setLoading(false);
 	}
 
 	return (
@@ -292,11 +323,12 @@ const PreviewWrapper = styled.div`
 `;
 
 const Preview = ({db})=>{
+	console.log(db);
 	return (
 	<PreviewWrapper>
 		<table>
 			<tbody>
-				{Object.entries(db).map(x=><tr><td>{x[0].toUpperCase()}</td><td>{x[1]}</td></tr>)}
+				{Object.entries(db).map(x=>x[0].indexOf('image')!=-1?'':<tr><td>{x[0].toUpperCase()}</td><td>{x[1].toString()}</td></tr>)}
 			</tbody>
 		</table>
 	</PreviewWrapper>

@@ -14,10 +14,7 @@ contract NFT is ERC721, ERC721Burnable, Ownable{
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
 
-    string private baseURI; 
-
 	struct Item{
-		string description;
         string cid;
 		uint256 created;
 	}
@@ -52,7 +49,7 @@ contract NFT is ERC721, ERC721Burnable, Ownable{
      */
     function tokenURI(uint256 itemId)public view virtual override returns (string memory) {
         _requireMinted(itemId);
-        return string(abi.encodePacked(baseURI,_items[itemId].cid));
+        return _items[itemId].cid;
     }
     
 
@@ -64,22 +61,14 @@ contract NFT is ERC721, ERC721Burnable, Ownable{
     }
 
     /**
-     *sets base URI
-     */
-    function setURI(string memory newURI) external onlyOwner {
-        require(bytes(newURI).length>0,"Empty string can not be used");
-        baseURI = newURI;
-    }
-
-    /**
      *minting NFT=>Adding New Item
      */
-    function mint(string memory description, string memory cid) public {
+    function mint(string memory cid) public {
     	_itemIds.increment();
     	uint256 newId = _itemIds.current();
     	_safeMint(msg.sender, newId);
 
-    	Item memory newItem = Item(description, cid, block.timestamp);
+    	Item memory newItem = Item(cid, block.timestamp);
  		_items[newId] = newItem;
 
         emit Minted(msg.sender, newId);

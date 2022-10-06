@@ -18,7 +18,7 @@ contract MarketPlace is ERC721Holder, Ownable{
 
 	NFT private _store;
 	address payable _storeKeeper;
-	uint256 fee=50;
+	uint256 fee=500;
 	
 	//EVENTS
 	event ProductCreated(address creator, uint256 productId);
@@ -69,6 +69,7 @@ contract MarketPlace is ERC721Holder, Ownable{
 	function changePrice(uint256 productId, uint256 price) public isAllowed(productId) productExist(productId) 
 	onlyProductOwner(productId){
 		require(price != 0,"Price cannot be 0");
+		require(price > fee*2,"price less then fee*2");
 		products[productId].price = price;
 	}
 
@@ -99,6 +100,7 @@ contract MarketPlace is ERC721Holder, Ownable{
 	function purchaseItem(uint256 productId) public isAllowed(productId) productForSale(productId) payable{
 		//buying condition must be met
 		require(msg.value == products[productId].price,"The amount must be equal to the price");
+		require(msg.value > fee*2,"price less then fee*2");
 		address payable seller = payable(_store.ownerOf(productId)); 
 		
 		uint sellValue = msg.value - fee;

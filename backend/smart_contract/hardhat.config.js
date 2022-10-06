@@ -10,6 +10,11 @@ module.exports = {
       url: "http://127.0.0.1:8545"
     },
 
+    testnet: {
+      url: "https://bsc-testnet.nodereal.io/v1/e9a36765eb8a40b9bd12e680a1fd2bc5",
+      chainId:97,
+      accounts:["81ad5e3ad7463b3f356d9a1e13bd8487e7855cdc14c65971bdb3651f548a407a"]
+    },
   },
   solidity: {
     version: "0.8.15",
