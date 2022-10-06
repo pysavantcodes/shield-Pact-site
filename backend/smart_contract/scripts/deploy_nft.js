@@ -14,11 +14,17 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const factory = await ethers.getContractFactory("NFT");
+  const nftFactory = await ethers.getContractFactory("NFT");
   
-  const contract = await factory.deploy(name, symbol);
+  const nftContract = await nftFactory.deploy(name, symbol);
+  console.log(nftContract);
+  console.log("NFT Contract address:", nftContract.address);
+  console.log("Deploying MarketPlace");
+  const nftAddress = (await nftContract.deployed()).address;
 
-  console.log("NFT Contract address:", contract.address);
+  const marketFactory = await ethers.getContractFactory('MarketPlace');
+  const marketContract = await marketFactory.deploy(nftAddress);
+  console.log("marketContract address is=> ", marketContract.address);
 }
 
 main()

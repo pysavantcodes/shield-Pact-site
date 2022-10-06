@@ -21,14 +21,14 @@ describe("NFT contract", function () {
 	});
 
 	it("get NFT BY ID", async function () {
-		expect(await contract.infoNFT(1)).to.include("The first NFT");
+		expect(await contract.itemInfo(1)).to.include("The first NFT");
 	});
 
 
 	it("Create NFT", async function () {
 		await contract.mintNFT("The2NFT","The2Address");
 		expect(await contract.totalSupply()).to.equal(2);
-		expect(await contract.infoNFT(2)).to.include("The2NFT");
+		expect(await contract.itemInfo(2)).to.include("The2NFT");
 	});
 
 
