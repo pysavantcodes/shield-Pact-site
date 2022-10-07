@@ -54,6 +54,8 @@ async function IpfsGetNFT(cid){
 
 const convertIpfs = (url)=>url.replace('ipfs://', baseURI);
 
+const viewExplorer = ()=>``
+
 const NFTConfig = {
   address: contractConfig.nft.address,
   abi: contractConfig.nft.abi,
@@ -144,6 +146,8 @@ async function listNFT(_provider){
       yield item;
     }
   }
+  console.log(generate);
+
   return generate;
 }
 

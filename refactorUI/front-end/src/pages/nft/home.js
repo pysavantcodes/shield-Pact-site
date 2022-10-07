@@ -1,4 +1,5 @@
 import React from "react";
+import {useAccount} from '@web3modal/react';
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
@@ -11,6 +12,8 @@ import Fake from "../../context/fake.json";
 
 
 const Container = () => {
+  const { address, isConnected } = useAccount();
+
   return (
   
     <div className="body">
@@ -26,7 +29,7 @@ const Container = () => {
               brand and products.
             </p>
             <div className="button-group">
-              <NavLink style={{color:"white"}} to="/nft/create"><button className="btn">Create NFT</button></NavLink>
+              <NavLink style={{color:"white"}} to={`/nft/${isConnected?"create":"explore"}`}><button className="btn">{(isConnected?"create":"explore")} NFT</button></NavLink>
             </div>
           </div>
         </div>
@@ -39,7 +42,7 @@ const Container = () => {
         <div>
           <h3 className="title">Live Bidding</h3>
           <div className="product-grid">
-            {Fake.map((d,i)=><Card {...d}/>)}
+            {Fake.map((d,i)=><Card {...d} key={i}/>)}
           </div>
         </div>
       </div>

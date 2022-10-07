@@ -141,6 +141,12 @@ const TitleWrapper = styled.div`
 
 `
 const Header = ()=>{
+	const {open:connect} = useConnectModal();
+	const { address, isConnected } = useAccount();
+	const disconnect = useDisconnect();
+	const chains = useNetwork();
+	console.log(chains);
+
 	return(
 	<HeaderWrapper>
 		<div className="title_menu_container">
@@ -151,24 +157,16 @@ const Header = ()=>{
 			<div className="menu">
 				<NavLink to="/nft/home">Home</NavLink>
 				<NavLink to="/nft/explore">Explore</NavLink>
-				<NavLink to="/nft/create">Create NFT</NavLink>
+				{isConnected && <NavLink to="/nft/create">Create NFT</NavLink>}
 			</div>
 		</div>
-		<ConnectSection/>
+		<ConnectSection {...{address, connect, isConnected, disconnect}}/>
 	</HeaderWrapper>
 	);
 }
 
 
-
-
-const ConnectSection = ()=>{
-	const {open:connect} = useConnectModal();
-	const { address, isConnected } = useAccount();
-
-	const disconnect = useDisconnect();
-	const chains = useNetwork();
-	console.log(chains);
+const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 	return(
 		<ConnectWrapper>
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
