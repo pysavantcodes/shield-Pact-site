@@ -54,6 +54,9 @@ const HeaderWrapper = styled.header`
 		border-right:solid 1px #ffffff14;
 		padding-right:1rem;
 		color:#fff;
+
+		font-size:20px;
+
 		img{
 			width:3rem;
 			height:auto;
@@ -62,11 +65,81 @@ const HeaderWrapper = styled.header`
 
 	.menu{
 		gap:1.4rem;
+
+		font-size:17px;
+	}
+
+	@media (max-width:900px){
+		flex-direction:column;
+
+		.title_menu_container{
+			flex-direction:column;
+		}
+
+		.menu{
+			margin-bottom:1rem;
+			font-size:15px;
+		}
+		.title{
+			border-right:none;
+		}
+
 	}
 `;
 
+const TitleWrapper = styled.div`
+
+    display:flex;
+
+	justify-content:space-between;
+	padding:1.5rem 5rem;
+	border:solid 1px #ffffff14;
+	border-left:none;
+	border-right:none;
+
+	font-size:1.15rem;
+
+	font-size:17px;
+	align-items:center;
 
 
+	&,.nav
+	{
+		${flex}
+	}
+
+
+	h1{
+		font-size:17px;
+		margin-bottom:0;
+	}
+
+
+	h1, span:last-child{
+		color:#fff;
+	}
+
+	.nav{
+		gap:1rem;
+
+		span:last-child{
+			font-weight:bold;
+			font-size:1.1rem;
+		}
+	}
+
+		font-size:15px;
+		span:last-child{
+			font-weight:bold;
+			font-size:15px;
+		}
+	}
+
+	@media (max-width:900px){
+		padding:1.5rem 2rem;
+	}
+
+`
 const Header = ()=>{
 	return(
 	<HeaderWrapper>
@@ -94,7 +167,8 @@ const ConnectSection = ()=>{
 	const { address, isConnected } = useAccount();
 
 	const disconnect = useDisconnect();
-	
+	const chains = useNetwork();
+	console.log(chains);
 	return(
 		<ConnectWrapper>
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
