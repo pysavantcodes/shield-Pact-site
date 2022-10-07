@@ -150,10 +150,7 @@ const Header = ()=>{
 			</div>
 			<div className="menu">
 
-				<NavLink>Home</NavLink>
-				<NavLink>Explore</NavLink>
-				<NavLink>Create NFT</NavLink>
-
+				
 				<NavLink to="/nft">Home</NavLink>
 				<NavLink to="explore">Explore</NavLink>
 				<NavLink to="create">Create NFT</NavLink>
