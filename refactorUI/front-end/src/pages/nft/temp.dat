@@ -1,13 +1,13 @@
 import React,{useState, useCallback, useEffect} from 'react';
 import styled from 'styled-components';
-
+import {ethers} from "ethers";
 import {FormButton} from '../../components/buttons';
 import upload from './upload.svg';
 import upload_bg from './up_bg.jpg';
 
-import {useSigner} from '@web3modal/react';
+import {useSigner, useContractWrite, useWaitForTransaction, useNetwork, useContractEvent,  useContract} from '@web3modal/react';
 
-import {createNFT} from '../../context/_web3_container';
+import {IpfsStoreNFT, IpfsGetNFT, MarketConfig, NFTConfig} from '../../context/_web3_container';
 
 const fgColor = "#acacac";
 
@@ -233,7 +233,8 @@ const Main = ()=>{
 	const [db, setDB] = useState({name:'', description:'',price:'', size:'', extra:''});
 	const [_show, _setShow] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [status, setStatus] = useState();
+	const [status, setStatus] = useState(null);
+	const [result, setResult] = useState();
 	
 	const updateDB = useCallback((e)=>{
 		setDB(state=>({...state,[e.target.name]:e.target.value}));
@@ -254,41 +255,111 @@ const Main = ()=>{
 
 	const {data:_signer} = useSigner();
 
+	const chainId = useNetwork()?.[0];
+
+	/*const nftMint = useContractWrite({
+	  addressOrName: NFTConfig.address,
+	  contractInterface: NFTConfig.abi,
+	  functionName:"mint",
+	  chainId
+	});*/
+
+	const nftMintContract = useContract({
+	  addressOrName: NFTConfig.address,
+	  contractInterface: NFTConfig.abi,
+	  signer:_signer
+	});
+
+	const marketSell = useContractWrite({
+	  addressOrName: MarketConfig.address,
+	  contractInterface: MarketConfig.abi,
+	  functionName:"sellItem",
+	  chainId,
+	  args:["the cid"]
+	});
+
+  	useContractEvent({
+		addressOrName: NFTConfig.address,
+		contractInterface: NFTConfig.abi,
+		eventName: 'Minted',
+		listener: (event) => {setResult(event); setStatus("SELL");},
+		chainId
+	});
+
+	useContractEvent({
+		addressOrName: MarketConfig.address,
+		contractInterface: MarketConfig.abi,
+		eventName: 'ProductCreated',
+		listener: (event) => {setResult(event); setStatus(null);},
+		chainId
+	});
+
+	const marketReciept = useWaitForTransaction({hash:marketSell.data?.hash});
+
+	/*useEffect(()=>{
+		if(status === "UPLOAD"){
+			setStatus(null);
+			IpfsStoreNFT(result).then(ipfsResult=>{
+			 	setResult(ipfsResult.ipnft);
+			 	setStatus("MINT");
+			 }).catch(e=>{setStatus(null); setResult(e)});
+		}
+		else if(status === "MINT"){
+			console.log("In MINT");
+			setStatus(null);
+			console.log(result);
+			nftMint.write({args:result});
+		}
+		else if(status === "SELL"){
+			setStatus(null);
+			let price = ethers.utils.parseEther(db.price);
+			console.log("price");
+			marketSell.write({args:[result, price]});
+		}
+		else {
+			if(nftMint.error){
+				console.log(nftMint.error);
+			}
+			
+			if(marketSell.error){
+				console.log(marketSell.error);
+			}
+
+			if(nftMint.loading){
+				console.log("NFTMINT LOADING");
+			}
+			
+			if(marketSell.loading){
+				console.log("MARKETSELL LOADING");
+			}
+
+			if(nftMint.error || marketSell.error){
+				setLoading(false);
+			}
+			//console.log(marketReciept);
+			console.log(nftMint);
+		}
+	},[status])
+*/
+	
+	//console.log(nftMint)
+	console.log('contract', nftMintContract)
 	const onSubmit = async()=>{
-		if(!_signer){
-			alert("Signer not available");
+		if(status != null)
 			return
-		}
-
-		if(loading){
-			alert("Loading");
-			return
-		}
-
 		const cleanDb = {name:db.name, description:db.description, properties:{extra:db.extra, size:db.size}, image:db.image};
 		for(let k of Object.keys(cleanDb)){
 			if(!cleanDb[k]){
 				console.log("Not complete");
 				return false;
 			}
-		}	
-		setLoading(true);
-		console.log("Creating");
-		await createNFT(_signer, cleanDb, db.price, setStatus,setStatus,()=>{setLoading(false)})
+		}
+		//console.log(nftMint.write({functionName:"mint", args:["the cid"]}));
+		console.log(nftMintContract.mint("thecid"))
+		/*setResult(cleanDb);
+		setStatus("UPLOAD");
+		setLoading(true);*/
 	}
-
-	useEffect(()=>{
-		if(status === "SUCCESS"){
-		alert("Transaction Successful");
-		setStatus(null);
-		}
-
-		if(status === "FAILED"){
-			alert("Transaction Failed");
-			setStatus(null);
-		}
-	},[status]);
-	
 
 	return (
 	<>
@@ -297,14 +368,12 @@ const Main = ()=>{
 		<FormContainer {...{db, updateDB, onSubmit, loading, setShow:(()=>_setShow(Object.keys(db).length!==0))}}/>
 	</Container>
 	{_show && <Preview db={db}/>}
-	{loading && <Transaction status={status}/>}
 	</>
 	);
 }
 
 
-
-const ModalWrapper = styled.div`
+const PreviewWrapper = styled.div`
 	padding:2rem;
 	position:fixed;
 	z-index:3;
@@ -316,10 +385,7 @@ const ModalWrapper = styled.div`
 	transform: translate(-50%,-50%);
     top: 50%;
     left: 50%;
-    color:#fff;
-`;
 
-const PreviewWrapper = styled(ModalWrapper)`
 	table{
 		margin:auto;
 		font-size:1.5rem;
@@ -334,23 +400,13 @@ const PreviewWrapper = styled(ModalWrapper)`
 	}
 `;
 
-const TransactionWrapper = styled(ModalWrapper)``;
-
-const Transaction = ({status})=>{
-	return (
-	<TransactionWrapper>
-		{status}
-	</TransactionWrapper>
-	);
-}
-
 const Preview = ({db})=>{
 	console.log(db);
 	return (
 	<PreviewWrapper>
 		<table>
 			<tbody>
-				{Object.entries(db).map(x=>x[0].indexOf('image')!==-1?'':<tr><td>{x[0].toUpperCase()}</td><td>{x[1].toString()}</td></tr>)}
+				{Object.entries(db).map(x=>x[0].indexOf('image')!=-1?'':<tr><td>{x[0].toUpperCase()}</td><td>{x[1].toString()}</td></tr>)}
 			</tbody>
 		</table>
 	</PreviewWrapper>

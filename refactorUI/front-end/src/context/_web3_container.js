@@ -55,7 +55,7 @@ async function IpfsGetNFT(cid){
 const convertIpfs = (url)=>url.replace('ipfs://', baseURI);
 
 const NFTConfig = {
-  address: contractConfig.nft.abi.address,
+  address: contractConfig.nft.address,
   abi: contractConfig.nft.abi,
 };
 
@@ -64,41 +64,56 @@ const MarketConfig = {
   abi: contractConfig.market.abi,
 };
 
-const createNFT = async (_signer, _nftContract, _marketContract, data, price,  update)=>{
-  update("storing in ipfs");
-  console.log(data);
-  let ipfsResult = await IpfsStoreNFT(data);
-  update(ipfsResult);
-  console.log(_nftContract);
-  let nftResult = await _nftContract({args:[ipfsResult.ipnft], functionName:"mint", signer:_signer});
-  console.log(nftResult);
-  let reciept = await nftResult.wait();
-  update({ipfs:ipfsResult, itemId:reciept.events[1].args.itemId});
-  await addToMarket(_signer, _nftContract, _marketContract, reciept.events[1].args.itemId, price, update);
-  return true;
+const nftMintContract = new ethers.Contract(NFTConfig.address,NFTConfig.abi);
+const marketContract = new ethers.Contract(MarketConfig.address,MarketConfig.abi);
+
+async function createNFT(_signer, _data, _price, onUpdate, onError, done){
+  console.log(arguments);
+  try{
+    let price = ethers.utils.parseEther(_price);
+    if(!price)
+        throw Error("Invalid Price");
+    onUpdate(`Price is => ${price}`);
+
+    const nft = await nftMintContract.connect(_signer);
+    const market = await marketContract.connect(_signer);
+    if(!(nft && market))
+      throw Error("Unable to connect to contract")
+    onUpdate("Connected to Contract");
+    
+    const ipfsResult = await IpfsStoreNFT(_data);
+    onUpdate(`Uploaded with CID=> ${ipfsResult.ipnft}`);
+
+    let result = await nft.mint(ipfsResult.ipnft);
+    let reciept = await result.wait();
+    let itemId = reciept.events[1].args.itemId;
+    if(!itemId)
+      throw Error("Could not mint nft");
+    onUpdate(`Minted with ID=> ${itemId}`);
+
+
+    let nftApproveResult = await nft.approve(market.address, itemId);
+    reciept  = await nftApproveResult.wait();
+    if(reciept.events[0].args.approved !== marketContract.address)
+      throw Error("Market Not Approved");
+    onUpdate(`Market approved on ID=> ${itemId}`);
+
+    result = await market.sellItem(itemId, price);
+    reciept = await result.wait();
+    // if(reciept.events[0].args.productId != itemId)
+    //   throw Error(`${reciept.events[0].args.productId} != ${itemId}`);
+    onUpdate(`Added to Market ID=> ${itemId}`);
+    onUpdate("SUCCESS");
+  }catch(e){
+    onError?.(e.reason??e);
+    onUpdate("FAILED");
+  }
+  finally{
+    done?.();
+  }
 }
 
-const addToMarket = async(_signer, _nftContract, _marketContract, itemId, price, update)=>{
-  let nftApproveResult = await _nftContract({args:[MarketConfig.address, itemId], functionName:"approve"});;
-  update("Approving")
-  await nftApproveResult.wait();
-  price = ethers.utils.parseEther(price||'0.15');
-  let result = await _marketContract({args:[itemId, price],functionname:"sellItem", signer:_signer});
-  update("Adding to market at price ", price);
-  let reciept = await result.wait();
-  update("done");
-  return reciept.events[0].args.approved == MarketConfig.address;
-}
-
-
-const getNFT = ()=>{
-
-}
-
-const updateDetailNFT = ()=>{
-
-}
 
 export default Web3Container;
 
-export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, createNFT, addToMarket, NFTConfig, MarketConfig};
+export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, NFTConfig, MarketConfig, createNFT};

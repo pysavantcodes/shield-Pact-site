@@ -129,8 +129,7 @@ const ConnectSection = ()=>{
 	const { address, isConnected } = useAccount();
 
 	const disconnect = useDisconnect();
-	const chains = useNetwork();
-	console.log(chains);
+	
 	return(
 		<ConnectWrapper>
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
