@@ -6,7 +6,7 @@ import Swap from "../../components/swap-modal/swap";
 import SwapSuccess from "../../components/swap-modal/swapSuccess";
 import SwapError from "../../components/swap-modal/swapError";
 import {Outlet, NavLink} from "react-router-dom";
-
+import Fake from "../../context/fake.json";
 
 
 
@@ -39,17 +39,25 @@ const Container = () => {
         <div>
           <h3 className="title">Live Bidding</h3>
           <div className="product-grid">
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {Fake.map((d,i)=><Card {...d}/>)}
           </div>
         </div>
       </div>
 
-      <div className="rn-new-items rn-section-gapTop">
+      <Newest/>
+
+      <Explore/>
+
+    </div>
+
+   
+    
+
+  );
+};
+
+const Newest = ()=>{
+  (<div className="rn-new-items rn-section-gapTop">
         <div>
           <div className="row mb--50 align-items-center">
             <h3 className="title mb--0">Newest Items</h3>
@@ -68,9 +76,11 @@ const Container = () => {
             <Card />
           </div>
         </div>
-      </div>
+      </div>)
+}
 
-      <div className="rn-product-area rn-section-gapTop">
+const Explore = ()=>{
+  (<div className="rn-product-area rn-section-gapTop">
         <div>
           <h3 className="title mb--0">Explore Product</h3>
 
@@ -146,21 +156,13 @@ const Container = () => {
           </div>
 
           <div className="product-grid">
-            <Card />
-            <Card />
-            <Card />
-
-            <Card />
+            <Card {...Fake[0]}/>
+            <Card {...Fake[1]}/>
+            <Card {...Fake[2]}/>
+            <Card {...Fake[3]}/>
           </div>
         </div>
-      </div>
-
-    </div>
-
-   
-    
-
-  );
-};
+      </div>)
+}
 
 export default Container;

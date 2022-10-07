@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBrowserRouter, RouterProvider, Navigate} from "react-router-dom";
+import {createBrowserRouter, RouterProvider, Navigate, Redirect} from "react-router-dom";
 import DefaultLayout from "./components/layout";
 import StackingSection from "./pages/staking";
 import SwapSection from "./pages/swap";
@@ -75,7 +75,7 @@ const router = createBrowserRouter([
 					},
 					{
 						path:'explore',
-						element:<NFTExplore/>
+						element:<NFTHome/>//<NFTExplore/>
 					}
 				]
 			}

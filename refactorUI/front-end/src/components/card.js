@@ -1,12 +1,12 @@
 import React from "react";
 import "../pages/nft/style.css";
 
-const Card = () => {
+const Card = ({name="Preatent", image="https://www.nftinvesting.io/content/images/2021/05/nft-projects.png"}) => {
   return (
     <div className="product-style-one">
       <div className="card-thumbnail">
         
-          <img src="https://www.nftinvesting.io/content/images/2021/05/nft-projects.png" alt="NFT_portfolio" />
+          <img style={{maxHeight:"300px"}} src={image} alt="NFT_portfolio" />
       
       </div>
       <div className="product-share-wrapper">
@@ -27,9 +27,9 @@ const Card = () => {
         </div>
       </div>
       <a href="product-details.html">
-        <span className="product-name">Preatent</span>
+        <span className="product-name">{name}</span>
       </a>
-      <span className="latest-bid">Highest bid 1/20</span>
+      <span className="latest-bid"></span>
       <div className="bid-react-area">
         <div className="last-bid">0.244ShieldPact</div>
         <div className="react-area">
@@ -46,7 +46,7 @@ const Card = () => {
               strokeWidth="2"
             ></path>
           </svg>
-          <span className="number">322</span>
+          <span className="number"></span>
         </div>
       </div>
     </div>

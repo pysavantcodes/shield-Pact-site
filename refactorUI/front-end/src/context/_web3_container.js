@@ -113,7 +113,46 @@ async function createNFT(_signer, _data, _price, onUpdate, onError, done){
   }
 }
 
+/*async function getProduct(_provider, _setData, _reFetch){
+  if(!_reFetch){
+     let _data = localStorage.getItem("_TEMP_NFT");
+     if(_data){
+        let nftData = JSON.parse(_data);
+        if(nftData)
+          _setData(nftData);
+     }
+  }
+ 
+  try{
+    const market = await marketContract.connect(_provider);
+    let productId = await market.allProducts();
+  }catch(e){
+    _setData(null);
+
+  }
+}*/
+
+async function listNFT(_provider){
+  const nft = await nftMintContract.connect(_provider);
+  const market = await marketContract.connect(_provider);
+  const total = await nft.totalSupply();
+  let j = total<20?total:20;
+
+  async function* generate(){
+    for(let i=0; i<j; i++){
+      let item = await itemInfo(nft, market, i);
+      yield item;
+    }
+  }
+  return generate;
+}
+
+async function itemInfo(nft, market, _id){
+   let result = await nft.ItemInfo(_id);
+   let ipfsData = IpfsGetNFT(result.cid);
+   return {...result, ...ipfsData,image:convertIpfs(ipfsData.image)};
+}
 
 export default Web3Container;
 
-export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, NFTConfig, MarketConfig, createNFT};
+export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, NFTConfig, MarketConfig, createNFT, listNFT};

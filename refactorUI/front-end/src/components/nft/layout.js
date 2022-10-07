@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Outlet, NavLink} from "react-router-dom";
 import styled,{css} from 'styled-components';
-import {FaAngleRight} from "react-icons/fa";
+
 import {Button} from '../buttons';
 import logo from './logo.png';
 
@@ -65,31 +65,7 @@ const HeaderWrapper = styled.header`
 	}
 `;
 
-const TitleWrapper = styled.div`
-	justify-content:space-between;
-	padding:1.5rem 5rem;
-	border:solid 1px #ffffff14;
-	border-left:none;
-	border-right:none;
-	font-size:1.15rem;
 
-	&,.nav
-	{
-		${flex}
-	}
-
-	h1, span:last-child{
-		color:#fff;
-	}
-
-	.nav{
-		gap:1rem;
-		span:last-child{
-			font-weight:bold;
-			font-size:1.1rem;
-		}
-	}
-`
 
 const Header = ()=>{
 	return(
@@ -100,9 +76,9 @@ const Header = ()=>{
 				ShieldPact NFT
 			</div>
 			<div className="menu">
-				<NavLink>Home</NavLink>
-				<NavLink>Explore</NavLink>
-				<NavLink>Create NFT</NavLink>
+				<NavLink to="/nft/home">Home</NavLink>
+				<NavLink to="/nft/explore">Explore</NavLink>
+				<NavLink to="/nft/create">Create NFT</NavLink>
 			</div>
 		</div>
 		<ConnectSection/>
@@ -110,18 +86,7 @@ const Header = ()=>{
 	);
 }
 
-const Title = ()=>{
-	return (
-		<TitleWrapper>
-			<h1>CreateNFT</h1>
-			<div className="nav">
-				<span>Home</span>
-				<FaAngleRight/>
-				<span>CreateNFT</span>
-			</div>
-		</TitleWrapper>
-	)
-}
+
 
 
 const ConnectSection = ()=>{
@@ -155,7 +120,6 @@ const Layout = ()=>{
 	return (
 	<LayoutWrapper>
 		<Header/>
-		<Title/>
 		<Outlet/>
 	</LayoutWrapper>
 	);

@@ -1,15 +1,54 @@
 import React,{useState, useCallback, useEffect} from 'react';
 import styled from 'styled-components';
-
+import {useSigner} from '@web3modal/react';
 import {FormButton} from '../../components/buttons';
+import {FaAngleRight} from "react-icons/fa";
 import upload from './upload.svg';
 import upload_bg from './up_bg.jpg';
-
-import {useSigner} from '@web3modal/react';
 
 import {createNFT} from '../../context/_web3_container';
 
 const fgColor = "#acacac";
+
+const TitleWrapper = styled.div`
+	justify-content:space-between;
+	padding:1.5rem 5rem;
+	border:solid 1px #ffffff14;
+	border-left:none;
+	border-right:none;
+	font-size:1.15rem;
+
+	&,.nav
+	{
+		display:flex;
+		align-items:center;
+	}
+
+	h1, span:last-child{
+		color:#fff;
+	}
+
+	.nav{
+		gap:1rem;
+		span:last-child{
+			font-weight:bold;
+			font-size:1.1rem;
+		}
+	}
+`
+
+const Title = ()=>{
+	return (
+		<TitleWrapper>
+			<h1>CreateNFT</h1>
+			<div className="nav">
+				<span>Home</span>
+				<FaAngleRight/>
+				<span>CreateNFT</span>
+			</div>
+		</TitleWrapper>
+	)
+}
 
 const Container = styled.div`
 	font-size:1.1rem;
@@ -292,6 +331,7 @@ const Main = ()=>{
 
 	return (
 	<>
+	<Title/>
 	<Container onClick={e=>{_show&&_setShow(false)}}>
 		<UploadSection {...{db, updateFile, loading}}/>
 		<FormContainer {...{db, updateDB, onSubmit, loading, setShow:(()=>_setShow(Object.keys(db).length!==0))}}/>
@@ -344,16 +384,18 @@ const Transaction = ({status})=>{
 	);
 }
 
+
+
 const Preview = ({db})=>{
 	console.log(db);
 	return (
-	<PreviewWrapper>
-		<table>
-			<tbody>
-				{Object.entries(db).map(x=>x[0].indexOf('image')!==-1?'':<tr><td>{x[0].toUpperCase()}</td><td>{x[1].toString()}</td></tr>)}
-			</tbody>
-		</table>
-	</PreviewWrapper>
+		<PreviewWrapper>
+			<table>
+				<tbody>
+					{Object.entries(db).map(x=>x[0].indexOf('image')!==-1?'':<tr><td>{x[0].toUpperCase()}</td><td>{x[1].toString()}</td></tr>)}
+				</tbody>
+			</table>
+		</PreviewWrapper>
 	)
 }
 
