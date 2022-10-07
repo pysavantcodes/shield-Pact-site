@@ -29,7 +29,9 @@ const Container = () => {
               brand and products.
             </p>
             <div className="button-group">
-              <NavLink style={{color:"white"}} to={`/nft/${isConnected?"create":"explore"}`}><button className="btn">{(isConnected?"Create":"Explore")} NFT</button></NavLink>
+              <button className="btn"><NavLink style={{color:"white"}} to={`/nft/${isConnected?"create":"explore"}`}>{(isConnected?"Create":"Explore")} NFT</NavLink></button>
+
+
             </div>
           </div>
         </div>
