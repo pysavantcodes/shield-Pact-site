@@ -2,22 +2,18 @@ import React from "react";
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
-<<<<<<< HEAD
-
-const Container = () => {
-  return (
-    <div className="body">
-=======
 import Swap from "../../components/swap-modal/swap";
 import SwapSuccess from "../../components/swap-modal/swapSuccess";
 import SwapError from "../../components/swap-modal/swapError";
+
+
+
 
 const Container = () => {
   return (
   
     <div className="body">
-      
->>>>>>> b1c741c (updated)
+
       <div className="container">
         <div>
           <div className="txt">
@@ -157,13 +153,13 @@ const Container = () => {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
+
     </div>
-=======
+
       
     </div>
     
->>>>>>> b1c741c (updated)
+
   );
 };
 
