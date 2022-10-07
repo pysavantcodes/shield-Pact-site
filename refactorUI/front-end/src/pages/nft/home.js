@@ -25,7 +25,7 @@ const Container = () => {
               brand and products.
             </p>
             <div className="button-group">
-              <button className="btn">Create NFT</button>
+              <NavLink to="create"><button className="btn">Create NFT</button></NavLink>
             </div>
           </div>
         </div>
