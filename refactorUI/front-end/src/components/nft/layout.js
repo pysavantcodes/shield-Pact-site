@@ -202,7 +202,11 @@ const ConnectWrapper = styled.div`
 		background:#111;
 		padding:3px;
 		border-radius:5px;
-		margin-top:4px;
+		margin-top:2px;
+	}
+	
+	@media (max-width:900px){
+		flex-direction:column;
 	}
 `
 
