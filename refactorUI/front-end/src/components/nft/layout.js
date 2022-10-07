@@ -184,6 +184,8 @@ const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 const ConnectWrapper = styled.div`
 	position:relative;
 	display:flex;
+	justify-content:center;
+	align-items:center;
 	/*small{
 		color:#fff;
 		text-decoration:underline;
