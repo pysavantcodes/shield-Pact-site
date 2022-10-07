@@ -1,5 +1,5 @@
 {
-<<<<<<< HEAD
+
   "name": "SHIELDFRONTEND",
   "version": "0.1.0",
   "private": true,
@@ -60,7 +60,7 @@
     ]
   }
 }
-=======
+
     "name": "SHIELDFRONTEND",
     "version": "0.1.0",
     "private": true,
@@ -118,4 +118,4 @@
         ]
     }
 }
->>>>>>> b1c741c (updated)
+
