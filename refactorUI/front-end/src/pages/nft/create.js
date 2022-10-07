@@ -12,7 +12,7 @@ const fgColor = "#acacac";
 
 const TitleWrapper = styled.div`
 
-    display:flex;
+        display:flex;
 
 	justify-content:space-between;
 	padding:1.5rem 5rem;
@@ -28,7 +28,7 @@ const TitleWrapper = styled.div`
 
 	&,.nav
 	{
-		${flex}
+		display:flex;
 	}
 
 
