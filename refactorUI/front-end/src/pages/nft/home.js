@@ -2,10 +2,19 @@ import React from "react";
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
+import Swap from "../../components/swap-modal/swap";
+import SwapSuccess from "../../components/swap-modal/swapSuccess";
+import SwapError from "../../components/swap-modal/swapError";
+import {Outlet, NavLink} from "react-router-dom";
+
+
+
 
 const Container = () => {
   return (
+  
     <div className="body">
+
       <div className="container">
         <div>
           <div className="txt">
@@ -17,7 +26,7 @@ const Container = () => {
               brand and products.
             </p>
             <div className="button-group">
-              <button className="btn">Create NFT</button>
+              <NavLink style={{color:"white"}} to="/nft/create"><button className="btn">Create NFT</button></NavLink>
             </div>
           </div>
         </div>
@@ -145,7 +154,12 @@ const Container = () => {
           </div>
         </div>
       </div>
+
     </div>
+
+   
+    
+
   );
 };
 
