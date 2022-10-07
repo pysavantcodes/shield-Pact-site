@@ -172,7 +172,7 @@ const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
 			{/*<br/><small>{address}</small>*/}
 			<div class="walletDrop">
-				<FaWallet style={{color: "white", fontSize: "30px", border: "1px solid white", padding:"8px", border-radius:"50%"}}/>
+				<FaWallet style={{color: "white", fontSize: "30px", border: "1px solid white", padding:"8px", borderRadius:"50%"}}/>
 				<small>{address}</small>
 			</div>
 		</ConnectWrapper>
