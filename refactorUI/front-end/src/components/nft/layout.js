@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Outlet, NavLink} from "react-router-dom";
 import styled,{css} from 'styled-components';
-
+import { FaWallet } from "react-icons/fa";
 import {Button} from '../buttons';
 import logo from './logo.png';
 
@@ -105,7 +105,7 @@ const TitleWrapper = styled.div`
 
 	&,.nav
 	{
-		${flex}
+		display:flex;
 	}
 
 
@@ -170,7 +170,11 @@ const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 	return(
 		<ConnectWrapper>
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
-			<br/><small>{address}</small>
+			{/*<br/><small>{address}</small>*/}
+			<div class="walletDrop">
+				<FaWallet style={{color: "white", fontSize: "30px", border: "1px solid white", padding:"8px", borderRadius:"50%"}}/>
+				<small>{address}</small>
+			</div>
 		</ConnectWrapper>
 	);
 }
@@ -179,12 +183,30 @@ const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 
 const ConnectWrapper = styled.div`
 	position:relative;
-	small{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	/*small{
 		color:#fff;
 		text-decoration:underline;
 		position:absolute;
 		right:0;
 		top:100%;
+	}*/
+	.walletDrop{
+		text-align:center;
+	}
+	small{
+		color:#fff;
+		font-size:10px;
+		background:#111;
+		padding:3px;
+		border-radius:5px;
+		margin-top:2px;
+	}
+	
+	@media (max-width:900px){
+		flex-direction:column;
 	}
 `
 

@@ -12,18 +12,32 @@ import {createNFT} from '../../context/_web3_container';
 const fgColor = "#acacac";
 
 const TitleWrapper = styled.div`
+
+        display:flex;
+
 	justify-content:space-between;
 	padding:1.5rem 5rem;
 	border:solid 1px #ffffff14;
 	border-left:none;
 	border-right:none;
-	font-size:1.15rem;
+
+
+
+	font-size:17px;
+	align-items:center;
+
 
 	&,.nav
 	{
 		display:flex;
-		align-items:center;
 	}
+
+
+	h1{
+		font-size:17px;
+		margin-bottom:0;
+	}
+
 
 	h1, span:last-child{
 		color:#fff;
@@ -31,11 +45,24 @@ const TitleWrapper = styled.div`
 
 	.nav{
 		gap:1rem;
+
 		span:last-child{
 			font-weight:bold;
 			font-size:1.1rem;
 		}
 	}
+
+		font-size:15px;
+		span:last-child{
+			font-weight:bold;
+			font-size:15px;
+		}
+	}
+
+	@media (max-width:900px){
+		padding:1.5rem 2rem;
+	}
+
 `
 
 const Title = ()=>{
