@@ -1,5 +1,5 @@
-import React from "react";
-import {useAccount} from '@web3modal/react';
+import React,{useState, useEffect} from "react";
+import {useAccount, useProvider} from '@web3modal/react';
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
@@ -8,12 +8,14 @@ import SwapSuccess from "../../components/swap-modal/swapSuccess";
 import SwapError from "../../components/swap-modal/swapError";
 import {Outlet, NavLink} from "react-router-dom";
 import Fake from "../../context/fake.json";
+import {listNFT} from '../../context/_web3_container';
 
 
 
 const Container = () => {
   const { address, isConnected } = useAccount();
-
+  const provider = useProvider();
+ 
   return (
   
     <div className="body">
@@ -42,8 +44,10 @@ const Container = () => {
         <div>
           <h3 className="title">Live Bidding</h3>
           <div className="product-grid">
-            {Fake.map((d,i)=><Card {...d} key={i}/>)}
+            {!isConnected && Fake.map((d,i)=><Card {...d} price={Math.round(Math.random()*73+5)} key={i}/>)}
+             {isConnected && <Generate {...{address, provider}}/>}
           </div>
+         
         </div>
       </div>
 
@@ -53,11 +57,46 @@ const Container = () => {
 
     </div>
 
-   
-    
-
   );
 };
+
+const genFunc = async (_signer, _address, status, setStatus, setError, setData)=>{
+  if(!_signer || status === "LOADING" || status === "COMPLETED")
+    return;
+  
+  const _func = await listNFT(_signer, _address);
+  const pack = _func();
+  let db = [];
+  console.log("stack=>>");
+  try{
+    for await(let data of pack){
+      console.log(db);
+      db.push(data);
+      setData(db);
+    }
+  }catch(e){
+    console.log(e);
+    setError(true);
+  }finally{
+    setStatus("COMPLETED");
+  }
+};
+
+const Generate = ({provider, address})=>{
+  const [status, setStatus]= useState();
+  const [error, setError] = useState(false)
+  const [data, setData] = useState([]);
+
+  useEffect(()=>{
+    genFunc(provider, address, status, setStatus, setError, setData);
+  },[provider, address]);
+
+  return (
+  <div className="product-grid">
+    {data.map((d,i)=><Card {...d} key={i}/>)}
+  </div>
+  );
+}
 
 const Newest = ()=>{
   (<div className="rn-new-items rn-section-gapTop">

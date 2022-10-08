@@ -44,7 +44,7 @@ async function IpfsStoreNFT({name, description, image, properties}) {
 
 const baseURI = 'https://nftstorage.link/ipfs/';
 function IpfsgetURI(cid){
-  return baseURI + 'bafyreiabu3jxuomajy3yb7qyhp6d4elwe3goioypai4hdn37ubjfenyzyy' +'/metadata.json';
+  return baseURI + cid +'/metadata.json';
 }
 
 async function IpfsGetNFT(cid){
@@ -107,6 +107,7 @@ async function createNFT(_signer, _data, _price, onUpdate, onError, done){
     onUpdate(`Added to Market ID=> ${itemId}`);
     onUpdate("SUCCESS");
   }catch(e){
+    console.log(e);
     onError?.(e.reason??e);
     onUpdate("FAILED");
   }
@@ -134,28 +135,40 @@ async function createNFT(_signer, _data, _price, onUpdate, onError, done){
   }
 }*/
 
-async function listNFT(_provider){
+async function itemInfo(nft, market, _address, _id){
+  let productInfo;
+  try{
+    productInfo = await market.productInfo(_id);
+    //console.log(productInfo);
+  }catch(e){
+   // console.log(e);
+    console.log("Not avialable in Market");
+  }
+   let result = await nft.itemInfo(_id);
+   let isOwner = await nft.isOwnerOf(_address, _id);
+   let ipfsData = await IpfsGetNFT(result.cid);
+   
+   return {...result, ...ipfsData,image:convertIpfs(ipfsData.image), forSale:productInfo?.forSale, price:productInfo && ethers.utils.formatEther(productInfo.price), isOwner};
+}
+
+async function listNFT(_provider, _address){
   const nft = await nftMintContract.connect(_provider);
   const market = await marketContract.connect(_provider);
   const total = await nft.totalSupply();
-  let j = total<20?total:20;
+ 
+  console.log("Market=> ",await nft.itemInfo(9))
+  
+  let j = total<50?total:50;
 
   async function* generate(){
-    for(let i=0; i<j; i++){
-      let item = await itemInfo(nft, market, i);
+    for(let i=j; i>1; i--){
+      let item = await itemInfo(nft, market, _address, i);
       yield item;
     }
   }
-  console.log(generate);
-
   return generate;
 }
 
-async function itemInfo(nft, market, _id){
-   let result = await nft.ItemInfo(_id);
-   let ipfsData = IpfsGetNFT(result.cid);
-   return {...result, ...ipfsData,image:convertIpfs(ipfsData.image)};
-}
 
 export default Web3Container;
 

@@ -1,6 +1,7 @@
 import React,{useState, useCallback, useEffect} from 'react';
+import {Navigate} from "react-router-dom";
 import styled from 'styled-components';
-import {useSigner} from '@web3modal/react';
+import {useSigner, useAccount} from '@web3modal/react';
 import {FormButton} from '../../components/buttons';
 import {FaAngleRight} from "react-icons/fa";
 import upload from './upload.svg';
@@ -273,11 +274,12 @@ const Main = ()=>{
 	const [_show, _setShow] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [status, setStatus] = useState();
-	
 	const updateDB = useCallback((e)=>{
 		setDB(state=>({...state,[e.target.name]:e.target.value}));
 	},[setDB]);
-	
+
+	const {isConnected} = useAccount();
+
 	const reader = new FileReader();
 	
 	reader.onloadend = (data)=>{
@@ -327,18 +329,21 @@ const Main = ()=>{
 			setStatus(null);
 		}
 	},[status]);
-	
+
 
 	return (
-	<>
-	<Title/>
-	<Container onClick={e=>{_show&&_setShow(false)}}>
-		<UploadSection {...{db, updateFile, loading}}/>
-		<FormContainer {...{db, updateDB, onSubmit, loading, setShow:(()=>_setShow(Object.keys(db).length!==0))}}/>
-	</Container>
-	{_show && <Preview db={db}/>}
-	{loading && <Transaction status={status}/>}
-	</>
+	isConnected ?
+		(<>
+			<Title/>
+			<Container onClick={e=>{_show&&_setShow(false)}}>
+				<UploadSection {...{db, updateFile, loading}}/>
+				<FormContainer {...{db, updateDB, onSubmit, loading, setShow:(()=>_setShow(Object.keys(db).length!==0))}}/>
+			</Container>
+			{_show && <Preview db={db}/>}
+			{loading && <Transaction status={status}/>}
+		</>)
+		:(<Navigate to="/nft/home"/>)
+	
 	);
 }
 

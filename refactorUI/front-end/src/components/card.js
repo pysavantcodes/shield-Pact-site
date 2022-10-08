@@ -1,7 +1,7 @@
 import React from "react";
 import "../pages/nft/style.css";
 
-const Card = ({name="Preatent", image="https://www.nftinvesting.io/content/images/2021/05/nft-projects.png"}) => {
+const Card = ({name, image, forSale, price, isOwner}) => {
   return (
     <div className="product-style-one">
       <div className="card-thumbnail">
@@ -29,9 +29,9 @@ const Card = ({name="Preatent", image="https://www.nftinvesting.io/content/image
       <a href="product-details.html">
         <span className="product-name">{name}</span>
       </a>
-      <span className="latest-bid"></span>
+      <span className="latest-bid">{forSale?"For Sale":'NIL'}</span>
       <div className="bid-react-area">
-        <div className="last-bid">0.244ShieldPact</div>
+        <div className="last-bid">{price||'??.??'}bnb</div>
         <div className="react-area">
           <svg
             viewBox="0 0 17 16"
@@ -46,7 +46,7 @@ const Card = ({name="Preatent", image="https://www.nftinvesting.io/content/image
               strokeWidth="2"
             ></path>
           </svg>
-          <span className="number"></span>
+          <span className="number">{isOwner&&"Owned"}</span>
         </div>
       </div>
     </div>

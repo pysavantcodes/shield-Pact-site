@@ -1,9 +1,11 @@
 import React,{useState, useCallback} from 'react';
+import {useNavigate} from "react-router-dom";
+import {useAccount} from from '@web3modal/react';
 import styled from 'styled-components';
 import {FormButton} from '../../components/buttons';
 import upload from './upload.svg';
 import upload_bg from './up_bg.jpg';
-import {useContractWrite, useWaitForTransaction} from '@web3modal/react';
+import {useContractWrite, useWaitForTransaction, useAccount} from '@web3modal/react';
 import {NFTConfig, MarketConfig} from '../../context/_web3_container';
 const fgColor = "#acacac";
 
@@ -227,11 +229,18 @@ const TextAreaInput = ({title, name, placeholder, rows=5, db, updateDB})=>{
 
 
 const Main = ()=>{
+	const {isConnected} = useAccount();
 	const [db, setDB] = useState({});
 	const [_show, _setShow] = useState(false)
 	const updateDB = useCallback((e)=>{
 		setDB(state=>({...state,[e.target.name]:e.target.value}));
 	},[setDB]);
+	const navigate = useNavigate();
+
+	useEffect(()=>{
+		console.log("Nvigate")
+		navigate('/nft/home');
+	},[isConnected])
 
 	const reader = new FileReader();
 
