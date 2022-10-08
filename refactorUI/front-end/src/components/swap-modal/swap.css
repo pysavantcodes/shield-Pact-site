@@ -104,6 +104,10 @@ h4 {
     background: #a750cf;
 }
 
+.modal button:disabled {
+    opacity: .6;
+}
+
 .modal input {
     color: black;
     border: none;

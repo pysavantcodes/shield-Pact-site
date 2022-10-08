@@ -9,6 +9,9 @@ import SwapError from "../../components/swap-modal/swapError";
 import {Outlet, NavLink} from "react-router-dom";
 import Fake from "../../context/fake.json";
 import Purchase from "../../components/purchase-modal/Purchase";
+import PurchaseSuccess from "../../components/purchase-modal/PurchaseSuccess";
+import PurchaseLoading from "../../components/purchase-modal/PurchaseLoading";
+import PurchaseError from "../../components/purchase-modal/PurchaseError";
 
 
 

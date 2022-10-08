@@ -26,7 +26,7 @@ const Card = ({name="Preatent", image="https://www.nftinvesting.io/content/image
           </div>
         </div>
       </div>
-      <a href="product-details.html">
+      <a href="#0">
         <span className="product-name">{name}</span>
       </a>
       <span className="latest-bid"></span>

@@ -27,7 +27,7 @@ const Purchase = () => {
               <h4>PRICE</h4>
               <h2>500 SHIELD</h2>
             </div>
-            <div className="qty">
+            {/* <div className="qty">
               <h4>QUANTITY</h4>
               <div className="inp">
                 <input id="qty" type="number" min={0} value={0} />
@@ -35,7 +35,7 @@ const Purchase = () => {
                 <button onClick={()=>decrement()}>-</button>
               </div>
               <p>Max Quantity: 7</p>
-            </div>
+            </div> */}
           </div>
           <div className="desc">
             <h4>DESCRIPTION</h4>
