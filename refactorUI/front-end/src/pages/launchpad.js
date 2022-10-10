@@ -17,7 +17,7 @@ const Container = () => {
                   </div>
                   <div class="text">
                     <h4>SHIEDLCOIN GOLD TOKEN (SHIELDGOLD)</h4>
-                    <h2>1 SHIELDGOLD = 0.538 SHIELD COIN</h2>
+                    <h5>1 SHIELDGOLD = 0.538 SHIELD COIN</h5>
                     <p>
                       <span>Offering Starts</span>: Thu, Jul 21, 2022, 4:00 PM
                       UTC
@@ -63,7 +63,7 @@ const Container = () => {
                     </div>
                   </div>
                   <div class="claim">
-                    <button class="btn">Claim & Refund</button>
+                    <button id="btn" class="btn">Claim & Refund</button>
                   </div>
                 </div>
               </div>
@@ -74,7 +74,7 @@ const Container = () => {
                   </div>
                   <div class="text">
                     <h4>SHIEDLCOIN GOLD TOKEN (SHIELDGOLD)</h4>
-                    <h2>1 SHIELDGOLD = 0.538 SHIELD COIN</h2>
+                    <h5>1 SHIELDGOLD = 0.538 SHIELD COIN</h5>
                     <p>
                       <span>Offering Starts</span>: Thu, Jul 21, 2022, 4:00 PM
                       UTC
@@ -120,7 +120,7 @@ const Container = () => {
                     </div>
                   </div>
                   <div class="claim">
-                    <button class="btn">Claim & Refund</button>
+                    <button id="btn" class="btn">Claim & Refund</button>
                   </div>
                 </div>
               </div>
