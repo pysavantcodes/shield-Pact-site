@@ -159,7 +159,7 @@ main header {
     border: 1px solid rgba(255, 255, 255, 0.14)
 }
 
-.text h2 {
+.text h5 {
     color: #bc82d6;
 }
 
@@ -288,6 +288,34 @@ main section {
     }
     main nav p {
         font-size: 14px;
+    }
+    .text h1,
+    .text h2,
+    .text p {
+        font-size: 10px;
+        margin-bottom: 0;
+        line-height: normal;
+    }
+    .text h2 {
+        color: #bc82d6;
+        font-size: 5px;
+    }
+    .action div {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .stake h5 {
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+    .action p {
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+    #btn {
+        margin-top: 1rem;
+        width: 100%;
+        font-size: 12px;
     }
 }
 
