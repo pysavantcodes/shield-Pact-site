@@ -1,7 +1,7 @@
 import {ethers} from "ethers";
-import { Web3Modal, useSigner} from '@web3modal/react';
+import { Web3Modal} from '@web3modal/react';
 import { chains, providers } from '@web3modal/ethereum';
-import { NFTStorage, File } from 'nft.storage';
+import { NFTStorage} from 'nft.storage';
 import axios from "axios";
 import contractConfig from './contract';
 
@@ -69,8 +69,8 @@ const MarketConfig = {
 const nftMintContract = new ethers.Contract(NFTConfig.address,NFTConfig.abi);
 const marketContract = new ethers.Contract(MarketConfig.address,MarketConfig.abi);
 
-async function createNFT(_signer, _data, _price, onUpdate, onError, done){
-  console.log(arguments);
+async function createNFT(_signer, _data, _price, onUpdate, onSuccess, onError){
+  //console.log(arguments);
   try{
     let price = ethers.utils.parseEther(_price);
     if(!price)
@@ -102,17 +102,10 @@ async function createNFT(_signer, _data, _price, onUpdate, onError, done){
 
     result = await market.sellItem(itemId, price);
     reciept = await result.wait();
-    // if(reciept.events[0].args.productId != itemId)
-    //   throw Error(`${reciept.events[0].args.productId} != ${itemId}`);
-    onUpdate(`Added to Market ID=> ${itemId}`);
-    onUpdate("SUCCESS");
+    onSuccess(`Added to Market ID=> ${itemId}`);
   }catch(e){
     console.log(e);
-    onError?.(e.reason??e);
-    onUpdate("FAILED");
-  }
-  finally{
-    done?.();
+    onError(e.reason??e.toString()??"Error occured");
   }
 }
 

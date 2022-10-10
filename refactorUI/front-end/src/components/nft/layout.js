@@ -144,8 +144,8 @@ const Header = ()=>{
 	const {open:connect} = useConnectModal();
 	const { address, isConnected } = useAccount();
 	const disconnect = useDisconnect();
-	const chains = useNetwork();
-	console.log(chains);
+	// const chains = useNetwork();
+	// console.log(chains);
 
 	return(
 	<HeaderWrapper>
@@ -171,7 +171,7 @@ const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 		<ConnectWrapper>
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
 			{/*<br/><small>{address}</small>*/}
-			<div class="walletDrop">
+			<div className="walletDrop">
 				<FaWallet style={{color: "white", fontSize: "30px", border: "1px solid white", padding:"8px", borderRadius:"50%"}}/>
 				<small>{address}</small>
 			</div>

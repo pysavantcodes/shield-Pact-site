@@ -1,0 +1,85 @@
+import React from "react";
+import styled,{keyframes, css} from "styled-components";
+
+const fgColor="#111111";
+
+const subColor="#ac50d7";
+
+const bgColor = "#fefcff";
+
+const __loadingFrames = keyframes`
+	${Array(26).fill(0).map((x,i)=>`${i*4}%{background-image:linear-gradient(90deg,${subColor}, ${subColor} ${i*4}%, ${fgColor} ${i*4}%, ${fgColor});}`).join(' ')}	
+`;
+
+const loading = css`
+			animation-name:${__loadingFrames};
+			animation-duration:2.5s;
+			animation-delay:50ms;
+			animation-iteration-count:infinite;
+			animation-direction:alternate-reverse
+			`;
+
+const Wrapper = styled.div`
+	position:fixed;
+	width:100%;
+	height:100%;
+	display:grid;
+	place-items:center;
+	top:0;
+	left:0;
+	z-index:200;
+
+	#appModal{
+		width:25rem;
+		max-width:90vmin;
+
+		padding:2rem;
+		background-color:${bgColor};
+		color:${fgColor};
+		border-radius:0.5rem;
+		box-shadow:0 0 1px 3px ${subColor}, inset 0 0 4px 4px ${fgColor};
+
+		display:flex;
+		flex-direction:column;
+		gap:0.75rem;
+		text-align:center;
+		font-size:1.1rem;
+
+		header{
+			font-weight:bold;
+			font-size:1.3rem;
+			color:${subColor};
+		}
+
+		footer{
+			font-size:1.1rem;
+			text-decoration:underline;
+		}
+
+		#loader{
+			width:80%;
+			height:0.5rem;
+			margin:auto;
+			margin-top:1rem;
+			border-radius:1rem;
+			${loading}
+		}
+	}
+`;
+
+const Container = ()=>{
+	return (
+		<Wrapper>
+			<section id="appModal">
+				<header>
+					<div>Processing...</div>
+					<div id="loader"></div>
+				</header>
+				<main>COntent will be update soon just wait for for some time</main>
+				<footer>section: In market</footer>
+			</section>
+		</Wrapper>
+	); 
+}
+
+export default Container;
