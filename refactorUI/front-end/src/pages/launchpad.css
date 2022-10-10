@@ -1,0 +1,298 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: Poppins;
+    transition: .5s;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.--full-page {
+    position: relative;
+    width: 100%;
+    display: flex;
+    background-color: #111111;
+    padding-top: 3rem;
+}
+
+progress {
+    --color: #a750cf;
+    /* the progress color */
+    --background: rgb(31, 31, 31);
+    /* the background color */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    width: 200px;
+    margin-right: 1rem;
+    border-radius: 30px;
+    background: var(--background);
+    height: 10px;
+}
+
+progress::-webkit-progress-bar {
+    border-radius: 30px;
+    background: var(--background);
+}
+
+progress::-webkit-progress-value {
+    border-radius: 30px;
+    background: var(--color);
+    box-shadow: 0 0 10px rgba(148, 4, 216, .7), 0 0 30px rgba(148, 4, 216, .5), 0 0 50px rgba(148, 4, 216, .3);
+}
+
+progress::-moz-progress-bar {
+    border-radius: 30px;
+    background: var(--color);
+}
+
+#progress {
+    color: #ae6dcc;
+}
+
+.progress {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+nav .right .btn {
+    margin-top: rem;
+}
+
+main {
+    width: 100%;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    background: linear-gradient(135deg, #bc82d6, #9404d8);
+    border-radius: 15px;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(148, 4, 216, .7), 0 0 30px rgba(148, 4, 216, .5), 0 0 50px rgba(148, 4, 216, .3);
+}
+
+.btn-border {
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    border: 1px solid #a750cf;
+    border-radius: 15px;
+    color: #a750cf;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 1rem;
+    background: transparent;
+}
+
+.btn:hover,
+.btn-border:hover {
+    transform: scale(105%);
+}
+
+main header {
+    position: relative;
+    padding: 3rem;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.row div {
+    margin: 1rem 0;
+    margin-right: 2rem;
+}
+
+.row div span {
+    font-size: 12px;
+    opacity: .3;
+}
+
+.staking-cont {
+    color: white;
+}
+
+.staking-cont h1 {
+    font-size: 27px;
+}
+
+.stake {
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.208);
+    padding: 1rem;
+    border-radius: 20px;
+    margin-top: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.14)
+}
+
+.stake .left {
+    display: flex;
+    align-items: center;
+    width: 40%;
+}
+
+.stake .img {
+    width: 50%;
+}
+
+.stake .text {
+    width: 50%;
+    font-size: small;
+}
+
+.stake .action {
+    width: 60%;
+    background: #0000006c;
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin-left: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.14)
+}
+
+.text h2 {
+    color: #bc82d6;
+}
+
+.text span {
+    font-size: smaller;
+    margin-right: .3rem;
+    opacity: .4;
+}
+
+.row {
+    display: flex;
+}
+
+.stake img {
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.116);
+    padding-right: 2rem;
+}
+
+.buttons .btn {
+    margin-top: 1rem;
+}
+
+.earned {
+    padding-left: 1rem;
+    text-align: center;
+    line-height: 2rem;
+}
+
+.earned .btn {
+    margin: 1rem;
+}
+
+.buttons div {
+    line-height: 2rem;
+}
+
+main section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-top: 1rem;
+    height: 100%;
+    padding-bottom: 3rem;
+}
+
+@media screen and (max-width: 1400px) {
+    aside .logo {
+        flex-direction: column;
+        width: 298.84px;
+    }
+    aside .logo .logo-text {
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .--full-page {
+        flex-direction: column;
+    }
+    aside {
+        display: none;
+    }
+    main nav {
+        justify-content: space-between;
+    }
+    nav .left img {
+        display: block;
+    }
+    .bottom-nav div {
+        font-size: 12px;
+    }
+    .bottom-nav {
+        display: flex;
+    }
+    .stake {
+        flex-direction: column;
+    }
+    .staking-cont {
+        padding: 3rem;
+        padding-top: 1rem;
+        padding-bottom: 5rem;
+    }
+    .stake .left {
+        width: 100%;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+        font-size: 13px;
+    }
+    .stake .action {
+        width: 100%;
+        flex-direction: column;
+        margin: 0;
+        border-right: none;
+    }
+    .buttons {
+        border: none;
+        margin-bottom: 2rem;
+        justify-content: center;
+        font-size: 13px;
+        padding: 1rem 0;
+    }
+    .buttons button {
+        font-size: 13px;
+    }
+    .earned {
+        padding-left: 0;
+        padding-bottom: 2rem;
+    }
+    .row {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .btn {
+        font-size: 12px;
+    }
+    .bottom-nav div {
+        font-size: 10px;
+    }
+    main nav p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .buttons {
+        flex-direction: column;
+    }
+}
