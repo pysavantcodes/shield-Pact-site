@@ -6,6 +6,8 @@ import "./BEP20.sol";
 
 contract Token is BEP20{
 	
-	constructor(uint _totalSupply) BEP20("BratsToken", "BRT", _totalSupply){
+	constructor(uint256 _totalSupply) BEP20("BratsToken", "BRT", _totalSupply){
 	}
+
+
 }

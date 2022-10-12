@@ -218,7 +218,7 @@ const CheckWrap = styled(Field)`
 `;
 
 const CheckButton = ({title, name, onCheck, loading})=>{
-	console.log(onCheck);
+	
 	return (
 	<CheckWrap>
 		<label htmlFor={`form-elt-${name}`}>{title}</label>

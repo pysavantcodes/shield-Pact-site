@@ -1,38 +1,34 @@
 import React from "react";
-import {Success, Failed, Process, Info} from './model';
-
+import {Success, Failed, Process, Info, modalWrapName} from './model';
 
 //STATUS
-const PROCESS = "PROCESS";
+const PROCESS = "Process";
 
-const SUCCESS = "SUCCESS";
+const SUCCESS = "Success";
 
-const FAILED  = "FAILED";
+const FAILED  = "Failed";
 
-const INFO = "INFO";
+const INFO = "Info";
 
-const Controller  = ({status, update})=>{
-	let result;
-	
-	if(status.action === PROCESS)
-		result = <Process {...status.data}/>
-
-	else if(status.action === SUCCESS)
-		result = <Success {...status.data}/>
-
-	else if(status.action === FAILED)
-		result = <Failed {...status.data}/>
-
-	else if(status.action === INFO)
-		result = <Info {...status.data}/>
-
-	return result;
+const createController = (_obj)=>({status, update})=>{
+	let Modal =  _obj[status.action];
+	if(Modal)
+		return <Modal {...status.data} update={update}/>
+	return null;
 }
 
-const customActionCreate = (action)=>(_update, content, handlers)=>_update({action,data:{content, handlers}});
+const defaultSection = {Process, Success, Failed, Info};
+
+const defaultController = createController(defaultSection);
+
+const customActionCreate = (action, hasClickOutSideModalFunc=true)=>(_update, content, handlers, ...extra)=>_update({action,data:{content, handlers, 
+							extra, ClickOutSideModalFunc:(e)=>e.target.classList.contains(modalWrapName) && hasClickOutSideModalFunc&&_update({action:null,data:{}})
+																																}
+																													}
+																												);
 
 const statusCreate = {
-	process:customActionCreate(PROCESS),
+	process:customActionCreate(PROCESS,false),
 	success:customActionCreate(SUCCESS),
 	failed:customActionCreate(FAILED),
 	info:customActionCreate(INFO),
@@ -41,6 +37,6 @@ const statusCreate = {
 
 const statusType = {PROCESS, SUCCESS, FAILED, INFO};
 
-export default Controller
+export default defaultController;
 
-export {statusType, statusCreate, customActionCreate};
+export {statusType, statusCreate, defaultSection, customActionCreate, createController};

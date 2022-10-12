@@ -1,7 +1,7 @@
 import React, {useReducer} from "react";
 
 //MVC
-const useInfoModal = ({Controller})=>{
+const useModal = ({Controller})=>{
 	const [status, update] = useReducer((state, action)=>({...state,...action}), {})
 
 	const View = ()=><Controller {...{status, update}}/>;
@@ -9,4 +9,4 @@ const useInfoModal = ({Controller})=>{
 	return {View, update, status};
 }
 
-export default useInfoModal;
+export default useModal;

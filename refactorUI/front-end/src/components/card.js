@@ -1,12 +1,13 @@
 import React from "react";
+import {FaEllipsisV} from "react-icons/fa";
 import "../pages/nft/style.css";
 
-const Card = ({name, image, forSale, price, isOwner}) => {
+const Card = ({itemId, name, description, image, forSale, price, isOwner, isBNB, onClick}) => {
   return (
     <div className="product-style-one">
       <div className="card-thumbnail">
         
-          <img style={{maxHeight:"300px"}} src={image} alt="NFT_portfolio" />
+          <img style={{height:"280px"}} src={image} alt="NFT_portfolio" />
       
       </div>
       <div className="product-share-wrapper">
@@ -16,22 +17,23 @@ const Card = ({name, image, forSale, price, isOwner}) => {
           <div className="share-btn-setting dropdown-menu dropdown-menu-end">
             <button
               type="button"
-              className="btn-setting-text share-text"
+              style={{padding:'0.25rem'}}
+              className="btn-setting-text"
               data-bs-toggle="modal"
               data-bs-target="#shareModal"
-            >
-              Share
+             onClick={onClick({isOwner,itemId, forSale, price, isBNB, name, description})}>
+              <FaEllipsisV style={{fontSize:'1.5rem'}}/>
             </button>
             
           </div>
         </div>
       </div>
-      <a href="product-details.html">
+      <a href="javascript:viod(0)">
         <span className="product-name">{name}</span>
       </a>
-      <span className="latest-bid">{forSale?"For Sale":'NIL'}</span>
+      <span className="latest-bid">{forSale?"For Sale":'Not For Sale'}</span>
       <div className="bid-react-area">
-        <div className="last-bid">{price||'??.??'}bnb</div>
+        <div className="last-bid">{price||'??.??'}{isBNB?'BNB':'BUSD'}</div>
         <div className="react-area">
           <svg
             viewBox="0 0 17 16"

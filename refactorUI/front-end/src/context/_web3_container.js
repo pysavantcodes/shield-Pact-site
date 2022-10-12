@@ -1,3 +1,4 @@
+import React from 'react';
 import {ethers} from "ethers";
 import { Web3Modal} from '@web3modal/react';
 import { chains, providers } from '@web3modal/ethereum';
@@ -54,7 +55,8 @@ async function IpfsGetNFT(cid){
 
 const convertIpfs = (url)=>url.replace('ipfs://', baseURI);
 
-const viewExplorer = ()=>``
+const explorer = 'https://testnet.bscscan.com/tx/'
+const viewExplorer = (txHash)=>`${explorer}${txHash}`;
 
 const NFTConfig = {
   address: contractConfig.nft.address,
@@ -66,48 +68,124 @@ const MarketConfig = {
   abi: contractConfig.market.abi,
 };
 
+const TokenConfig = {
+  address: contractConfig.token.address,
+  abi: contractConfig.token.abi,
+};
+
+
 const nftMintContract = new ethers.Contract(NFTConfig.address,NFTConfig.abi);
 const marketContract = new ethers.Contract(MarketConfig.address,MarketConfig.abi);
+const tokenContract = new ethers.Contract(TokenConfig.address,TokenConfig.abi);
 
-async function createNFT(_signer, _data, _price, onUpdate, onSuccess, onError){
-  //console.log(arguments);
-  try{
-    let price = ethers.utils.parseEther(_price);
-    if(!price)
-        throw Error("Invalid Price");
-    onUpdate(`Price is => ${price}`);
+function needSigner(_signer){
+  if(!_signer)
+      throw Error("Need a signer");
+}
 
-    const nft = await nftMintContract.connect(_signer);
-    const market = await marketContract.connect(_signer);
-    if(!(nft && market))
-      throw Error("Unable to connect to contract")
-    onUpdate("Connected to Contract");
+async function addToMarket(_signer, itemId, price, isBNB, onUpdate, onSuccess, onError){
     
-    const ipfsResult = await IpfsStoreNFT(_data);
-    onUpdate(`Uploaded with CID=> ${ipfsResult.ipnft}`);
+    try{
+      needSigner(_signer);
+      price = ethers.utils.parseEther(price);
+      if(!price)
+        throw Error("Invalid Price");
+      onUpdate("Loading Market");
+      const nft = await nftMintContract.connect(_signer);
+      const market = await marketContract.connect(_signer);
+      
+      onUpdate(`Checking Market Appoval`);
+      let approved = await nft.getApproved(itemId);
+      
+      if(approved !== market.address){
+        onUpdate(`Market Requesting Approval`);
+        let nftApproveResult = await nft.approve(market.address, itemId);
+        let reciept  = await nftApproveResult.wait();
+        if(reciept.events[0].args.approved !== marketContract.address)
+          throw Error("Market Not Approved");
+      }
 
+      onUpdate(`Adding to Market ID=> ${itemId}`);
+      let result = await market.sellItem(itemId, price, isBNB);
+      
+      let reciept = await result.wait();
+      onSuccess(`Added in Market ID=> ${itemId}`);
+    }catch(e){
+      console.log(e);
+      onError(e.reason??e.message??"Error occured");
+    }
+}
+
+async function createNFT(_signer, _data, _price, _isBNB, onUpdate, toNext, onSuccess, onError){
+  try{
+    needSigner(_signer);
+    onUpdate("Connecting to NFT");
+    const nft = await nftMintContract.connect(_signer);
+    if(!nft)
+      throw Error("Unable to connect to contract");
+    
+    onUpdate(`Uploading to IPFS`);
+    const ipfsResult = await IpfsStoreNFT(_data);
+
+    onUpdate(`Minting NFT with CID=> ${ipfsResult.ipnft}`);
     let result = await nft.mint(ipfsResult.ipnft);
     let reciept = await result.wait();
     let itemId = reciept.events[1].args.itemId;
     if(!itemId)
       throw Error("Could not mint nft");
-    onUpdate(`Minted with ID=> ${itemId}`);
-
-
-    let nftApproveResult = await nft.approve(market.address, itemId);
-    reciept  = await nftApproveResult.wait();
-    if(reciept.events[0].args.approved !== marketContract.address)
-      throw Error("Market Not Approved");
-    onUpdate(`Market approved on ID=> ${itemId}`);
-
-    result = await market.sellItem(itemId, price);
-    reciept = await result.wait();
-    onSuccess(`Added to Market ID=> ${itemId}`);
+    // onUpdate(`Minted with ID=> ${itemId}`);
+    toNext("Do you want to add to market",()=>onSuccess(`Minted with ID=> ${itemId}`),
+            async()=>await addToMarket(_signer, itemId, _price, 
+                        _isBNB, onUpdate, onSuccess, onError));
   }catch(e){
     console.log(e);
-    onError(e.reason??e.toString()??"Error occured");
+    onError(e.reason??e.message??"Error occured");
+  }
+
+  //add to maerket here optional
+}
+
+async function __buy(_signer, buyerAddress, nft, market, itemId, buyProp, onUpdate, onSuccess, onError){
+  try{
+      let reciept;
+      if(buyProp.isBNB){
+        onUpdate(`Purchasing NFT with ${ethers.utils.formatEther(buyProp.price)}BNB`);
+        let result = await market.purchaseItemBNB(itemId,{value:buyProp.price});
+        reciept = await result.wait();
+      }
+      else{
+        onUpdate("connecting to token contract");
+        let buyerToken = await tokenContract.connect(_signer);
+        onUpdate("Approving Market to spend Token");
+        let result = await buyerToken.approve(market.address, buyProp.price);
+        await result.wait();
+        onUpdate(`Purchasing NFT with ${ethers.utils.formatEther(buyProp.price)}BUSD`);
+        result = await market.purchaseItemBUSD(itemId);
+        reciept = await result.wait();
+      }
+      onSuccess("Succssful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
+  }catch(e){
+    onError(e.reason??e.message??"Error occured");
   }
 }
+
+async function buyNFT(_signer, address, _itemId, onUpdate, onSuccess, onError, toNext){
+    try{
+      needSigner(_signer);
+      onUpdate("Connecting to Market");
+      const buyMarket = await marketContract.connect(_signer);
+      const nft = await nftMintContract.connect(_signer);
+      
+      onUpdate("Consulting Market For Info");
+      let buyProp = await buyMarket.productInfo(_itemId);
+      toNext(`Proceed to purchase Item#${_itemId} \nCost: ${ethers.utils.formatEther(buyProp.price)}${buyProp.isBNB?"BNB":"BUSD"}`,
+        ()=>__buy(_signer,address, nft, buyMarket, _itemId, buyProp, onUpdate, onSuccess, onError));
+
+    }catch(e){
+      onError(e.reason??e.message??"Error occured");
+    }
+}
+
 
 /*async function getProduct(_provider, _setData, _reFetch){
   if(!_reFetch){
@@ -128,8 +206,9 @@ async function createNFT(_signer, _data, _price, onUpdate, onSuccess, onError){
   }
 }*/
 
-async function itemInfo(nft, market, _address, _id){
+async function itemInfo(nft, market, _address, _id, isOwner){
   let productInfo;
+
   try{
     productInfo = await market.productInfo(_id);
     //console.log(productInfo);
@@ -137,24 +216,21 @@ async function itemInfo(nft, market, _address, _id){
    // console.log(e);
     console.log("Not avialable in Market");
   }
+  //console.log(_id)
    let result = await nft.itemInfo(_id);
-   let isOwner = await nft.isOwnerOf(_address, _id);
+   isOwner = isOwner ?? await nft.isOwnerOf(_address, _id);
    let ipfsData = await IpfsGetNFT(result.cid);
    
-   return {...result, ...ipfsData,image:convertIpfs(ipfsData.image), forSale:productInfo?.forSale, price:productInfo && ethers.utils.formatEther(productInfo.price), isOwner};
+   return {...result, ...ipfsData,image:convertIpfs(ipfsData.image), forSale:productInfo?.forSale, price:productInfo && ethers.utils.formatEther(productInfo.price), isBNB:productInfo?.isBNB, isOwner, itemId:_id};
 }
 
-async function listNFT(_provider, _address){
+async function listNFT(_provider, _address, _page=0){
   const nft = await nftMintContract.connect(_provider);
   const market = await marketContract.connect(_provider);
   const total = await nft.totalSupply();
- 
-  console.log("Market=> ",await nft.itemInfo(9))
-  
-  let j = total<50?total:50;
-
+  let j = total>20?20:total;
   async function* generate(){
-    for(let i=j; i>1; i--){
+    for(let i=j; i>0; i--){
       let item = await itemInfo(nft, market, _address, i);
       yield item;
     }
@@ -162,7 +238,71 @@ async function listNFT(_provider, _address){
   return generate;
 }
 
+async function toggleForSale(_provider, _id, onUpdate, onSuccess, onError){
+  try{
+    needSigner(_provider);
+    onUpdate("Connecting...");
+    const market = await marketContract.connect(_provider);
+    onUpdate("Toggle Item Sales...");
+    const result = await market.toggleForSale(_id);
+    await result.wait();
+    onSuccess("Done");
+  }
+  catch(e){
+    onError(e.reason??e.message??"Error occured");
+  }
+}
+
+async function myNFT(_provider, _address){
+  const nft = await nftMintContract.connect(_provider);
+  const market = await marketContract.connect(_provider);
+  const total = await nft.totalSupply();
+  const ownedItem = await nft.itemCreated();
+
+  async function* generate(){
+    for(let i of ownedItem){
+      let item = await itemInfo(nft, market, _address, i, true);
+      yield item;
+    }
+  }
+  return generate;
+}
+
+async function ownerOfMarket(_signer, address){
+  const market = await marketContract.connect(_signer);
+  const ownerAddress = await market.owner();
+  return ownerAddress === address;
+}
+
+async function withdrawBNB(_signer, onUpdate, onSuccess, onError){
+  try{
+    needSigner(_signer);
+    const market = marketContract.connect(_signer);
+    let interest = await market.totalInterestBNB();
+    onUpdate(`Request to Withdraw ${ethers.utils.formatEther(interest)}BNB`);
+    let result = await market.withdrawBNB();
+    let reciept = await result.wait();
+    onSuccess("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
+  }catch(e){
+    onError(e.reason??e.message??"Error occured");
+  }
+}
+
+async function withdrawBUSD(_signer, onUpdate, onSuccess, onError){
+  try{
+    needSigner(_signer);
+    const market = marketContract.connect(_signer);
+    let interest = await market.totalInterestBUSD();
+    onUpdate(`Request to Withdraw ${ethers.utils.formatEther(interest)}BUSD`);
+    let result = await market.withdrawBUSD();
+    let reciept = await result.wait();
+    onSuccess("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
+  }catch(e){
+    onError(e.reason??e.message??"Error occured");
+  }
+}
 
 export default Web3Container;
 
-export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, NFTConfig, MarketConfig, createNFT, listNFT};
+export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, NFTConfig, MarketConfig, createNFT, listNFT, myNFT,
+      toggleForSale, addToMarket, buyNFT, ownerOfMarket, withdrawBNB, withdrawBUSD};

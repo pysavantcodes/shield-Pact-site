@@ -41,7 +41,7 @@ const Main = ()=>{
 	const {data:_signer} = useSigner();
 
 	const {View:InfoApp, update:infoUpdate, status:infoStatus} = useInfoModal({Controller:InfoModalController});
-	console.log(_signer);
+	
 	const onSubmit = async ()=>{
 		if(infoStatus.action){
 			console.log("Loading");
@@ -49,23 +49,22 @@ const Main = ()=>{
 		}
 
 		if(!_signer){
-			statusCreate.failed(infoUpdate, "Signer not available",{close:statusCreate.reset(infoUpdate)});
+			statusCreate.failed(infoUpdate, "Signer not available");
 			return;
 		}
 
-		const cleanDb = {name:db.name, description:db.description, /*properties:{extra:db.extra, size:db.size},*/ image:db.image};
+		const cleanDb = {name:db.name, description:db.description, image:db.image};
 		for(let k of Object.keys(cleanDb)){
 			if(!cleanDb[k]){
-				statusCreate.info(infoUpdate,"Not complete",{close:statusCreate.reset(infoUpdate)});
+				statusCreate.info(infoUpdate,"Not complete");
 				return;
 			}
 		}
 
-		statusCreate.process(infoUpdate, "Creating");
-	
-		await createNFT(_signer, cleanDb, db.price, (value)=>statusCreate.process(infoUpdate, value),
-					(value)=>statusCreate.success(infoUpdate, value, {close:statusCreate.reset(infoUpdate)}),
-					(value)=>statusCreate.failed(infoUpdate, value, {close:statusCreate.reset(infoUpdate)})
+		await createNFT(_signer, cleanDb, db.price, db.isBNB, (value)=>statusCreate.process(infoUpdate, value),
+					(value, No, Yes)=>statusCreate.info(infoUpdate, value, {No, Yes}),
+					(value)=>statusCreate.success(infoUpdate, value),
+					(value)=>statusCreate.failed(infoUpdate, value)
 					);
 		
 	}
@@ -77,7 +76,7 @@ const Main = ()=>{
 		}
 
 		if(Object.keys(db).length!==0)
-			statusCreate.info(infoUpdate,<Preview db={db}/>,{close:statusCreate.reset(infoUpdate)});
+			statusCreate.info(infoUpdate,<Preview db={db}/>);
 	}
 
 	return (
@@ -113,7 +112,7 @@ const Preview = ({db})=>{
 		<PreviewWrapper>
 			<table>
 				<tbody>
-					{Object.entries(db).map(x=>x[0].indexOf('image')!==-1?'':<tr><td>{x[0].toUpperCase()}</td><td>{x[1].toString()}</td></tr>)}
+					{Object.entries(db).map(x=>x[0].indexOf('image')!==-1?'':<tr key={x[0]}><td>{x[0].toUpperCase()}</td><td>{x[1].toString()}</td></tr>)}
 				</tbody>
 			</table>
 		</PreviewWrapper>

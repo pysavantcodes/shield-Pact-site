@@ -1,25 +1,50 @@
-import React,{useState, useEffect} from "react";
-import {useAccount, useProvider} from '@web3modal/react';
+import React,{useState, useEffect, useMemo, useCallback} from "react";
+import {useAccount, useSigner} from '@web3modal/react';
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
-import Swap from "../../components/swap-modal/swap";
-import SwapSuccess from "../../components/swap-modal/swapSuccess";
-import SwapError from "../../components/swap-modal/swapError";
-import {Outlet, NavLink} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import Fake from "../../context/fake.json";
-import {listNFT} from '../../context/_web3_container';
+import {listNFT, myNFT, toggleForSale, addToMarket, buyNFT} from '../../context/_web3_container';
+import OptionController,{optionAt} from '../../components/cardOption';
+import useOptionModal from '../../components/customModal/useModal';
 
 
 
 const Container = () => {
   const { address, isConnected } = useAccount();
-  const provider = useProvider();
- 
+  const {data:provider} = useSigner();
+  const {View:OptionView, update:optionUpdate} = useOptionModal({Controller:OptionController});
+
+  const close = useMemo(()=>optionAt.reset(optionUpdate),[optionUpdate])
+
+  const actionUpdateList = useMemo(() => [value=>optionAt.process(optionUpdate, value),
+                                  (value,explorer)=>optionAt.success(optionUpdate, value, {explorer}),
+                                   value=>optionAt.failed(optionUpdate, value),
+                                   (value, Proceed)=>optionAt.info(optionUpdate, value, {Proceed})], [optionUpdate]);
+
+  const _toggleMarketSubmit = useCallback(
+                (id)=>
+                      async ()=>await toggleForSale(provider, id, ...actionUpdateList),
+                      [provider, actionUpdateList]
+                );
+
+  const _addToMarketSubmit = useCallback((itemId, price, isBNB)=>addToMarket(provider,itemId, price, isBNB,...actionUpdateList),[provider, actionUpdateList]);
+
+  const _addToMarket = useCallback(({itemId})=>()=>optionAt.addToMarket(optionUpdate, {itemId}, {submit:_addToMarketSubmit}),[_addToMarketSubmit, optionUpdate]);
+  
+  const _about = useCallback(cardProp=>()=>
+          optionAt.about(optionUpdate,cardProp),[optionUpdate]);
+
+  const _buy = useCallback((itemId)=>()=>buyNFT(provider, address, itemId, ...actionUpdateList),[provider, actionUpdateList, address]);
+  
+  const handler = useCallback(cardProp=>
+                      ()=>optionAt.home(optionUpdate, cardProp, {toggleMarket:_toggleMarketSubmit, addToMarket:_addToMarket, about:_about, buy:_buy}),[optionUpdate, _toggleMarketSubmit, _addToMarket])
+
   return (
   
     <div className="body">
-
+      <OptionView/>
       <div className="container">
         <div>
           <div className="txt">
@@ -44,12 +69,20 @@ const Container = () => {
 
       <div className="rn-live-bidding-area rn-section-gapTop">
         <div>
+         {isConnected?
+            <>
+              <h3 className="title">Created NFT</h3>
+                 <Generate {...{address, provider, funcFactory:myNFT, onClick:handler}}/>
+              </>
+            :''}
+            <br/>
           <h3 className="title">Live Bidding</h3>
-          <div className="product-grid">
-            {!isConnected && Fake.map((d,i)=><Card {...d} price={Math.round(Math.random()*73+5)} key={i}/>)}
-             {isConnected && <Generate {...{address, provider}}/>}
-          </div>
-         
+            {!isConnected && 
+              <div className="product-grid">
+                {Fake.map((d,i)=><Card {...d} price={Math.round(Math.random()*73+5)} key={i} onClick={handler}/>)}
+              </div>
+            }
+             {isConnected && <Generate {...{address, provider, funcFactory:listNFT, onClick:handler}}/>}
         </div>
       </div>
 
@@ -62,41 +95,45 @@ const Container = () => {
   );
 };
 
-const genFunc = async (_signer, _address, status, setStatus, setError, setData)=>{
+
+const genFunc = (_funcFactory)=>async (_signer, _address, status, setStatus, setData)=>{
   if(!_signer || status === "LOADING" || status === "COMPLETED")
     return;
-  
-  const _func = await listNFT(_signer, _address);
-  const pack = _func();
-  let db = [];
-  console.log("stack=>>");
+
   try{
+    setStatus("LOADING");
+    const _func = await _funcFactory(_signer, _address);
+    const pack = _func();
+    let db = [];
+ 
     for await(let data of pack){
-      console.log(db);
       db.push(data);
       setData(db);
     }
-  }catch(e){
-    console.log(e);
-    setError(true);
-  }finally{
     setStatus("COMPLETED");
+  }catch(e){
+    setStatus("ERROR");
   }
 };
 
-const Generate = ({provider, address})=>{
+  const Generate = ({provider, address, funcFactory, onClick})=>{
   const [status, setStatus]= useState();
-  const [error, setError] = useState(false)
   const [data, setData] = useState([]);
 
+
   useEffect(()=>{
-    genFunc(provider, address, status, setStatus, setError, setData);
+    genFunc(funcFactory)(provider, address, status, setStatus, setData);
   },[provider, address]);
 
+
   return (
-  <div className="product-grid">
-    {data.map((d,i)=><Card {...d} key={i}/>)}
-  </div>
+  <>
+    <div className="product-grid">
+      {data.map((d,i)=><Card {...d} key={i} onClick={onClick}/>)}
+    </div>
+    {status==="LOADING" && <h2 style={{textAlign:'center'}}>Loading....</h2>}
+    {status==="ERROR" && <h2 style={{textAlign:'center'}} onClick={()=>window.location.reload()}>Reload</h2>}
+  </>
   );
 }
 

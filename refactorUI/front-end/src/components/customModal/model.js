@@ -1,6 +1,6 @@
 import React from "react";
 import styled,{keyframes, css} from "styled-components";
-import {FaCheckSquare, FaTimesCircle} from "react-icons/fa";
+import {FaCheckSquare, FaInfoCircle, FaTimesCircle, FaSpinner} from "react-icons/fa";
 
 const fgColor="#111111";
 
@@ -19,6 +19,18 @@ const loading = css`
 			animation-iteration-count:infinite;
 			animation-direction:alternate-reverse
 			`;
+
+const _spinFrames = keyframes`
+	from{
+		transfrom:rotate(0deg);
+	}
+
+	to{
+		transform:rotate(360deg);
+	}
+`
+
+
 
 const Wrapper = styled.div`
 	position:fixed;
@@ -66,15 +78,6 @@ const Wrapper = styled.div`
 			text-decoration:underline;
 		}
 
-		#loader{
-			width:80%;
-			height:0.5rem;
-			margin:auto;
-			margin-top:1rem;
-			border-radius:1rem;
-			${loading}
-		}
-
 		button#action{
 			align-self:center;
 			padding:0.5rem 1.75rem;
@@ -89,32 +92,63 @@ const Wrapper = styled.div`
 				background-color:${bgColor};
 				color:${props=>props.baseColor??subColor};
 			}
+
+			&:active{
+				transform:scale(0.95);
+			}
 		}
 
 		#actionGroup{
-			display:flex;
+			display:grid;
+			gap:.5rem;
 			justify-content:space-evenly;
+		}
+
+		main{
+			white-space: break-spaces;
 		}
 	}
 `;
 
 const BASECOLOR = {success:"#50d76b",fail:"#EE3236", info:"#3c4278", default:subColor}
+const modalWrapName = "__MOdalZxedjj12384_back_of_9500bbfjjeiiw3iiwoo3uuenn";
 
-const Base = ({header, content, footer, baseColor, loader, handlers, icon, block=true})=>{
+const ProcessLoader = styled.div`
+	width:80%;
+	height:0.5rem;
+	margin:auto;
+	margin-top:1rem;
+	border-radius:1rem;
+	${loading}
+`
+const SpinLoader = styled(FaSpinner)`
+	font-size:2rem;
+	animation-name:${_spinFrames};
+	animation-duration:0.75s;
+	animation-iteration-count:infinite;
+	animation-timing-function: steps(8);
+
+`
+const getRand = ()=>(~~(Math.random()*777)%2);
+
+const Base = ({header, content, footer, baseColor, loader, handlers, icon, block=true, ClickOutSideModalFunc=console.log})=>{
 	//console.log(handlers);	
 	return (
-		<Wrapper block={block} baseColor={baseColor}>
+		<Wrapper className={modalWrapName} block={block} baseColor={baseColor} onClick={ClickOutSideModalFunc}>
 			<section id="appModal">
 				<header id="process">
-					<div>{icon}</div>
-					<div>{header}</div>
-					{loader && <div id="loader"></div>}
+					{icon && <div>{icon}</div>}
+					{header && <div>{header}</div>}
+					{loader && (content?.length%2==0?<SpinLoader/>:<ProcessLoader/>)}
 				</header>
+				
 				<main>{content}</main>
-				<div id="actionGroup">
-					{handlers && Object.entries(handlers).map(([name, func])=><button key={name} id="action" onClick={func}>{name??"Action"}</button>)}
-				</div>
-				<footer>{footer}</footer>
+
+				{handlers && <div id="actionGroup">
+					 {Object.entries(handlers).map(([name, func])=>func && <button key={name} id="action" onClick={func}>{name??"Action"}</button>)}
+				</div>}
+
+				{footer && <footer>{footer}</footer>}
 			</section>
 		</Wrapper>
 	); 
@@ -126,7 +160,7 @@ const Process = ({content, ...rest})=>{
 
 const Success = ({content, ...rest})=>{
 	return <Base header="Successful" content={content??"Completed"} icon={<FaCheckSquare/>} 
-					baseColor={BASECOLOR.success}{...rest}/>
+					baseColor={BASECOLOR.success} {...rest}/>
 }
 
 const Failed = ({content, ...rest})=>{
@@ -135,8 +169,8 @@ const Failed = ({content, ...rest})=>{
 }
 
 const Info = ({content, ...rest})=>{
-	return <Base header="Information" content={content??"get Informed Now"} icon={<FaTimesCircle/>} 
+	return <Base header="Information" content={content??"get Informed Now"} icon={<FaInfoCircle/>} 
 					baseColor={BASECOLOR.info} {...rest}/>
 }
 
-export {Info, Success, Failed, Process, Base, BASECOLOR};
+export {Info, Success, Failed, Process, Base, BASECOLOR, modalWrapName};

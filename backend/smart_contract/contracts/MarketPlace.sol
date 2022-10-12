@@ -4,24 +4,28 @@ pragma solidity 0.8.15;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "./NFT.sol";
+import '@openzeppelin/contracts/interfaces/IERC20.sol';
 
 contract MarketPlace is ERC721Holder, Ownable{
 	
 	struct Product{
 		uint256 price;
+		bool isBNB;
 		bool forSale;
 	}
 
-	mapping(uint256 => Product) public products;
+	mapping(uint256 => Product) private products;
 
 	uint256[] public allProducts;
 
 	NFT private _store;
+	IERC20 _busdToken;
 	address payable _storeKeeper;
-	uint256 fee=500;
+	uint feePercent=25;//percentage 2.5%==25/1000 ...
 	
 	//EVENTS
-	event ProductCreated(address creator, uint256 productId);
+	event ProductCreated(address owner, uint256 productId);
+	event ProductUpdated(address owner, uint256 productId);
 	event ProductAdded(uint256 productId);
 	event ProductRemoved(uint256 productId);
 	event ProductPurchased(address seller, address buyer, uint256 productId, uint256 price);
@@ -49,34 +53,62 @@ contract MarketPlace is ERC721Holder, Ownable{
 		_;
 	}
 
-	constructor(address nftStore){
+	constructor(address nftStore, address busdToken){
 		_store = NFT(nftStore);
+		_busdToken = IERC20(busdToken);
 		_storeKeeper = payable(msg.sender);
 	}
 
 	/*
 	 *should give the marketplace approval
 	 */
-	function sellItem(uint256 productId, uint256 price) public isAllowed(productId) onlyProductOwner(productId){
-		require(products[productId].price == 0,"Product already in market");
+	function sellItem(uint256 productId, uint256 price, bool isBNB) public isAllowed(productId) onlyProductOwner(productId){
 		require(price != 0,"Price cannot be 0");
-		Product memory newProduct = Product(price,true);
-		products[productId] = newProduct;
-		allProducts.push(productId);
-		emit ProductCreated(msg.sender, productId);
+		
+		if(products[productId].price == 0){
+			//register new products
+			Product memory newProduct = Product(price, isBNB, true);
+			products[productId] = newProduct;
+			allProducts.push(productId);
+			emit ProductCreated(msg.sender, productId);
+		}
+		else{
+			//change price is product already exist
+			if(products[productId].price != price){
+				products[productId].price = price;
+			}
+
+			if(products[productId].isBNB != isBNB){
+				products[productId].isBNB = isBNB;
+			}
+			emit ProductUpdated(msg.sender, productId);
+		}
+		
 	}
 
-	function changePrice(uint256 productId, uint256 price) public isAllowed(productId) productExist(productId) 
-	onlyProductOwner(productId){
-		require(price != 0,"Price cannot be 0");
-		require(price > fee*2,"price less then fee*2");
-		products[productId].price = price;
-	}
 
 	function productInfo(uint256 productId) public view productExist(productId) returns(Product memory){
 		return products[productId];
 	}
 
+	function size() public view returns (uint256){
+		return allProducts.length;
+	}
+
+	function get20Products(uint32 index) public view returns (uint256[] memory){
+		uint32 from = index*20;
+		if(from > allProducts.length){
+			return new uint256[](0);
+		}
+
+		uint lent = (from + 20) < allProducts.length ?20:allProducts.length-from;
+		uint256[] memory list = new uint256[](lent);
+
+		for(uint i=0;i<lent;i++){
+			list[i] = allProducts[from + i];
+		}
+		return list;
+	}
 
 	/**
 	 *make product [un]available for sale
@@ -84,12 +116,10 @@ contract MarketPlace is ERC721Holder, Ownable{
 	function toggleForSale(uint256 productId) public isAllowed(productId) productExist(productId){
 		if(products[productId].forSale){
 			products[productId].forSale = false;
-			//_store.approve(address(0), productId);
 			emit ProductAdded(productId);
 		}
 		else{
 			products[productId].forSale = true;
-			//_store.approve(address(this), productId);
 			emit ProductRemoved(productId);
 		}
 	}
@@ -97,33 +127,84 @@ contract MarketPlace is ERC721Holder, Ownable{
 	/**
 	 *Product is purchased
 	 */
-	function purchaseItem(uint256 productId) public isAllowed(productId) productForSale(productId) payable{
-		//buying condition must be met
-		require(msg.value == products[productId].price,"The amount must be equal to the price");
-		require(msg.value > fee*2,"price less then fee*2");
-		address payable seller = payable(_store.ownerOf(productId)); 
-		
-		uint sellValue = msg.value - fee;
-		
-		//send some money to seller
-		seller.transfer(sellValue);
-
+	function _transferItemOwnership(address seller, uint256 productId) private{
 		_store.safeTransferFrom(seller, msg.sender, productId);
 		products[productId].forSale = false;
-		emit ProductPurchased(seller, msg.sender, productId, sellValue);
 	}
+
+	/**
+	 * BNB Purchase Type
+	 */
+
+	 function purchaseItemBNB(uint256 productId) public isAllowed(productId) productForSale(productId) payable{
+	 	//buying condition must be met
+		require(products[productId].isBNB,"Can only pay for BNB");
+		require(msg.value == products[productId].price,"The amount must be equal to the price");
+
+		address payable seller = payable(_store.ownerOf(productId)); 
+		
+		uint256 fee = (msg.value*feePercent)/1000;
+
+		uint256 sellValue = msg.value - fee;
+		
+		//send some money to seller
+		(bool success, ) = seller.call{value:sellValue}("");
+		require(success,"Transaction Failed");
+
+		 _transferItemOwnership(seller, productId);
+		emit ProductPurchased(seller, msg.sender, productId, sellValue);
+	 }
+
+	 /**
+	 * BUSD Purchase Type
+	 */
+
+	 function purchaseItemBUSD(uint256 productId) public isAllowed(productId) productForSale(productId){
+	 	//buying condition must be met
+	 	require(!products[productId].isBNB,"Can only pay for BNB");
+	 	require(_busdToken.balanceOf(msg.sender)>products[productId].price,"Insufficient Balance");
+		uint256 amount = _busdToken.allowance(msg.sender, address(this));
+		require(amount == products[productId].price,"The amount must be equal to the price");
+
+		address payable seller = payable(_store.ownerOf(productId)); 
+		
+		uint256 fee = (amount*feePercent)/1000;
+
+		uint256 sellValue = amount - fee;
+		
+		_busdToken.transferFrom(msg.sender, seller, sellValue);
+		_busdToken.transferFrom(msg.sender, address(this), _busdToken.allowance(msg.sender, address(this)));
+
+		_transferItemOwnership(seller, productId);
+		emit ProductPurchased(seller, msg.sender, productId, sellValue);
+	 }
 
 	/**
 	 *storeKeeper gets his profit
 	 */
-	function withdraw() public onlyOwner{
-		require(address(this).balance>0, "No funds to withdraw");
-		uint256 interest = address(this).balance;
-		_storeKeeper.transfer(interest);
+	function withdrawBNB() public onlyOwner{
+		require(totalInterestBNB()>0, "No funds to withdraw");
+		uint256 interest = totalInterestBNB();
+		
+		(bool success, ) = _storeKeeper.call{value:interest}("");
+		require(success,"Transaction Failed");
+		
 		emit Withdrawal(msg.sender, interest);
 	}
 
-	function totalInterest() public view onlyOwner returns(uint256) {
+	function withdrawBUSD() public onlyOwner{
+		require(totalInterestBUSD()>0, "No funds to withdraw");
+		uint256 interest = totalInterestBUSD();
+		_busdToken.transfer(_storeKeeper,interest);
+		
+		emit Withdrawal(msg.sender, interest);
+	}
+
+	function totalInterestBNB() public view onlyOwner returns(uint256) {
 		return address(this).balance;
+	}
+
+	function totalInterestBUSD() public view onlyOwner returns(uint256) {
+		return _busdToken.balanceOf(address(this));
 	}
 }

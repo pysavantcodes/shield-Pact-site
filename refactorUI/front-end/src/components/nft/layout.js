@@ -1,11 +1,15 @@
-import React, {useState} from "react";
+import React, {useState, useEffect, useMemo, useCallback} from "react";
 import {Outlet, NavLink} from "react-router-dom";
 import styled,{css} from 'styled-components';
 import { FaWallet } from "react-icons/fa";
 import {Button} from '../buttons';
 import logo from './logo.png';
 
-import { useConnectModal, useDisconnect, useAccount, useNetwork } from '@web3modal/react';
+import { useConnectModal, useDisconnect, useAccount, useSigner} from '@web3modal/react';
+import {ownerOfMarket, withdrawBNB, withdrawBUSD} from '../../context/_web3_container';
+import OptionController,{optionAt} from '../../components/cardOption';
+import useOptionModal from '../../components/customModal/useModal';
+
 
 const fgColor = "#acacac";
 const bgColor = "#1d1d1d";
@@ -144,31 +148,53 @@ const Header = ()=>{
 	const {open:connect} = useConnectModal();
 	const { address, isConnected } = useAccount();
 	const disconnect = useDisconnect();
-	// const chains = useNetwork();
-	// console.log(chains);
+
+	const [owner, setOwner] = useState();
+	const {data:signer} = useSigner();
+
+	useEffect(()=>{
+		(async function(){setOwner(await ownerOfMarket(signer, address))})();
+	},[address, signer]);
+	const {View:OptionView, update:optionUpdate} = useOptionModal({Controller:OptionController});
+	const actionUpdateList = useMemo(() => [value=>optionAt.process(optionUpdate, value),
+                                  (value,explorer)=>optionAt.success(optionUpdate, value, {explorer}),
+                                   value=>optionAt.failed(optionUpdate, value),
+                                   (value, Proceed)=>optionAt.info(optionUpdate, value, {Proceed})], [optionUpdate]);
+
+    const _withdrawBNB = useCallback(async()=>withdrawBNB(signer,...actionUpdateList),[signer]);
+    const _withdrawBUSD = useCallback(async()=>withdrawBUSD(signer, ...actionUpdateList),[signer]);
+
+  	const withdraw = useCallback(()=>optionAt.info(optionUpdate, "Withdraw Interest", 
+  										{withdrawBNB:_withdrawBNB, withdrawBUSD:_withdrawBUSD}),
+  															[optionUpdate, _withdrawBNB, _withdrawBUSD]);
 
 	return(
-	<HeaderWrapper>
-		<div className="title_menu_container">
-			<div className="title">
-				<img src={logo} alt="nft-logo"/>
-				ShieldPact NFT
+	<>
+		<HeaderWrapper>
+			<div className="title_menu_container">
+				<div className="title">
+					<img src={logo} alt="nft-logo"/>
+					ShieldPact NFT
+				</div>
+				<div className="menu">
+					<NavLink to="/nft/home">Home</NavLink>
+					<NavLink to="/nft/explore">Explore</NavLink>
+					{isConnected && <NavLink to="/nft/create">Create NFT</NavLink>}
+				</div>
 			</div>
-			<div className="menu">
-				<NavLink to="/nft/home">Home</NavLink>
-				<NavLink to="/nft/explore">Explore</NavLink>
-				{isConnected && <NavLink to="/nft/create">Create NFT</NavLink>}
-			</div>
-		</div>
-		<ConnectSection {...{address, connect, isConnected, disconnect}}/>
-	</HeaderWrapper>
+			<ConnectSection {...{address, connect, isConnected, disconnect, owner, withdraw}}/>
+		</HeaderWrapper>
+		<OptionView/>
+	</>
 	);
 }
 
 
-const ConnectSection = ({address, connect, isConnected, disconnect})=>{
+const ConnectSection = ({address, connect, isConnected, disconnect, owner, withdraw})=>{
+	
 	return(
 		<ConnectWrapper>
+			{owner && <Button onClick={withdraw}>Withdraw</Button>}
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
 			{/*<br/><small>{address}</small>*/}
 			<div className="walletDrop">
@@ -186,6 +212,7 @@ const ConnectWrapper = styled.div`
 	display:flex;
 	justify-content:center;
 	align-items:center;
+	gap:.75rem;
 	/*small{
 		color:#fff;
 		text-decoration:underline;
@@ -212,10 +239,12 @@ const ConnectWrapper = styled.div`
 
 const Layout = ()=>{
 	return (
-	<LayoutWrapper>
-		<Header/>
-		<Outlet/>
-	</LayoutWrapper>
+	<>
+		<LayoutWrapper>
+			<Header/>
+			<Outlet/>
+		</LayoutWrapper>
+	</>
 	);
 }
 
