@@ -171,6 +171,7 @@ const Header = () => {
           <NavLink to="/">LaunchPad</NavLink>
           <NavLink to="/staking">Staking</NavLink>
           <NavLink to="/swap">Swap</NavLink>
+          <NavLink to="/dashboard">Dashboard</NavLink>
         </div>
       </div>
       <ConnectSection {...{ address, connect, isConnected, disconnect }} />

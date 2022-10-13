@@ -18,6 +18,10 @@ html {
     padding-top: 3rem;
 }
 
+h5 {
+    margin-bottom: 0;
+}
+
 progress {
     --color: #a750cf;
     /* the progress color */

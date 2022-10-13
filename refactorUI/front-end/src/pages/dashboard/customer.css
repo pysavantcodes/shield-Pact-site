@@ -1,0 +1,203 @@
+.dashboard p {
+    margin-bottom: 0;
+}
+
+.tasks {
+    padding: 2rem 0;
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    margin: 1rem 0;
+    background: rgba(0, 0, 0, 0.438);
+    border-radius: 20px;
+    align-items: center;
+    word-wrap: break-word;
+}
+
+h2 {
+    font-size: 15px;
+    opacity: .5;
+    margin: 1rem 0;
+    margin-top: 3rem;
+}
+
+.center {
+    padding: 1rem 2rem;
+    background: #111;
+    font-size: 13px;
+    border-radius: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    background: linear-gradient(135deg, #bc82d6, #9404d8);
+    border-radius: 15px;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-right: .5rem;
+    box-shadow: 0 0 10px rgba(148, 4, 216, .7), 0 0 30px rgba(148, 4, 216, .5), 0 0 50px rgba(148, 4, 216, .3);
+}
+
+.btn:hover {
+    transform: scale(105%);
+}
+
+.card {
+    padding: 1.5rem 2rem;
+    margin: 1rem 0;
+    background: rgba(0, 0, 0, 0.438);
+    border-radius: 20px;
+    align-items: center;
+    word-wrap: break-word;
+}
+
+.card .to input {
+    width: 100%;
+    margin: 1rem 0;
+    resize: none;
+    border: none;
+    outline: none;
+    background-color: rgb(43, 43, 43);
+    border-radius: 10px;
+    color: white;
+    padding: 1rem;
+}
+
+.card .taskdescription textarea {
+    width: 100%;
+    margin: 1rem 0;
+    resize: none;
+    border: none;
+    outline: none;
+    background-color: rgb(43, 43, 43);
+    border-radius: 10px;
+    color: white;
+    padding: 1rem;
+}
+
+.specs {
+    background: black;
+    float: left;
+    width: fit-content;
+    padding: 6px 13px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    margin-right: .5rem;
+    margin-top: .5rem;
+}
+
+.specialization .btn-border {
+    padding: 5px 10px;
+    font-size: 13px;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width:600px) {
+    .task {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .center {
+        margin: 1rem 0;
+    }
+    progress {
+        width: 180px;
+    }
+}
+
+.upload {
+    margin: 1rem 0;
+    background: black;
+    max-width: fit-content;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.upload input[type="file"] {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    font-family: "Poppins";
+    background: transparent;
+}
+
+input[type="file"]::file-selector-button {
+    border: 2px solid #be7bdd;
+    font-family: "Poppins";
+    padding: .4rem .3rem;
+    border-radius: 0.2em;
+    margin-right: .5rem;
+    background: none;
+    color: #be7bdd;
+    transition: 1s;
+}
+
+#customers {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#customers td,
+#customers th {
+    border: 1px solid rgba(221, 221, 221, 0.24);
+    padding: 8px;
+}
+
+.specialization {
+    overflow: auto;
+    align-items: center;
+}
+
+td {
+    color: white;
+}
+
+#customers tr:nth-child(1) td {
+    color: black;
+}
+
+#customers tr {
+    background: transparent;
+}
+
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(8, 8, 8);
+    color: white;
+}
+
+.jobs-data {
+    overflow-x: auto;
+}
+
+@media screen and (max-width:360px) {
+    .progress {
+        justify-content: space-between;
+    }
+    progress {
+        width: 130px;
+    }
+    .task p {
+        font-size: 13px;
+    }
+}

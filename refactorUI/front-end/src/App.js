@@ -6,8 +6,8 @@ import SwapSection from "./pages/swap";
 import LaunchPadSection from "./pages/launchpad";
 import ChatSection from './pages/chat';
 import DashBoardLayout from "./components/dashboard/layout";
-import ClientSection from "./pages/dashboard/client";
-import CustomerSection from "./pages/dashboard/customer";
+import ClientSection from "./pages/dashboard/freelancer";
+import CustomerSection from "./pages/dashboard/client";
 import NFTLayout from "./components/nft/layout";
 import NFTHome from "./pages/nft/home";
 import NFTCreate from "./pages/nft/create";
@@ -50,11 +50,12 @@ const router = createBrowserRouter([
 					},
 					{
 						path:'client',
-						element:<ClientSection/>
+						element:<CustomerSection/>
 					}, 
 					{
-						path:'customer',
-						element:<CustomerSection/>
+						path:'freelancer',
+						
+						element:<ClientSection/>
 					}
 				]
 			},
