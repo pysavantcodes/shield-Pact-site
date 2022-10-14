@@ -1,10 +1,10 @@
-const ethers = require('ethers');
+import {ethers} from 'ethers';
 
-const {Token, TokenAmount, Fetcher, Trade, Percent}  = require('@pancakeswap-libs/sdk-v2');
+import {Token, TokenAmount, Fetcher, Trade, Percent} from '@pancakeswap-libs/sdk-v2';
 
-const {viewExplorer} = require('../context/_web3_container');
+import {viewExplorer} from '../context/_web3_container';
 //BNB BUSD CAKE BTCB => common bases first five
-const token_list = require('./token_list');
+import token_list from './token_list';
 
 //MAINNET CHAINID USED
 const allToken = token_list.map(d=>new Token(d.chainId, d.address, d.decimals, d.symbol, d.name));
@@ -227,4 +227,4 @@ const exchangeNetwork = async(signer, inputToken, outputToken, _inputValue, _out
 }
 
 
-module.exports = {exTrade, getToken, getPairsCache, getPairs, makeTrade, exchangeNetwork};
+export {exTrade, getToken, getPairsCache, getPairs, makeTrade, exchangeNetwork};
