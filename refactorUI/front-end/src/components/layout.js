@@ -70,7 +70,7 @@ const HeaderWrapper = styled.header`
 	}
 
 	@media (max-width:900px){
-		flex-direction:column;
+		
 
 		.title_menu_container{
 			flex-direction:column;
