@@ -38,6 +38,7 @@ const HeaderWrapper = styled.header`
 	background-color: #1515218c;
 	backdrop-filter: blur(10px);
 	z-index:1000;
+        height:40px;
 
 	&, .title_menu_container,
 	.title, .menu
