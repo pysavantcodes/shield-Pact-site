@@ -20,6 +20,14 @@ const Container = () => {
   const [displayModal, setDisplayModal] = useState(false)
   const [displayChat, setDisplayChat] = useState(false);
 
+  function disableInput (){
+    if(document.getElementById("check").checked === true){
+      document.getElementById("to").disabled = true
+    }else{
+      document.getElementById("to").disabled = false
+    }
+  }
+
 
   return (
     <section class="dashboard">
@@ -37,8 +45,11 @@ const Container = () => {
                 <div class="card">
                     <div class="to">
                         <h3>To</h3>
-                        <input placeholder="0x2727923932397bd" type="text" name="" id=""/>
-                        <input type="checkbox" />
+                        <input placeholder="0x2727923932397bd" type="text" name="" id="to"/>
+                        <div onClick={()=>disableInput()} className="check">
+                        <input id="check" type="checkbox" />
+                        <label htmlFor="check">Display Job To all</label>
+                        </div>
                     </div>
                     <div class="to">
                         <h3>Name of Job</h3>
@@ -47,6 +58,10 @@ const Container = () => {
                     <div class="taskdescription">
                         <h3>Description</h3>
                         <textarea placeholder="Enter the details of your task.." name="" id="" cols="30" rows="10"></textarea>
+                    </div>
+                    <div class="to">
+                        <h3>Budget</h3>
+                        <input placeholder="2 BNB" type="text" name="" id=""/>
                     </div>
         
                     <h3>

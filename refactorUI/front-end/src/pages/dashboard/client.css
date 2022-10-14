@@ -305,6 +305,26 @@ progress::-moz-progress-bar {
     cursor: pointer;
 }
 
+.check {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+#check {
+    all: revert;
+    margin-right: .5rem;
+    padding: 1rem;
+}
+
+#to {
+    margin-bottom: 0;
+}
+
+input:disabled {
+    opacity: .4;
+}
+
 @media screen and (max-width:600px) {
     .task {
         flex-direction: column;
