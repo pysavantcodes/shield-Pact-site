@@ -1,11 +1,12 @@
 const ethers = require('ethers');
 
-const {ChainId, Token, TokenAmount, Pair, Fetcher, Route, Trade, TradeType, Percent}  = require('@pancakeswap-libs/sdk-v2');
+const {Token, TokenAmount, Fetcher, Trade, Percent}  = require('@pancakeswap-libs/sdk-v2');
 
-
+const {viewExplorer} = require('../context/_web3_container');
 //BNB BUSD CAKE BTCB => common bases first five
 const token_list = require('./token_list');
 
+//MAINNET CHAINID USED
 const allToken = token_list.map(d=>new Token(d.chainId, d.address, d.decimals, d.symbol, d.name));
 
 const provider = new ethers.providers.JsonRpcProvider(
@@ -23,38 +24,38 @@ const setPair = (_pair)=>{
 
 const getPairKey = (tokens)=>tokens.map(t=>t.name).sort().join('/');
 
-const getPairsCache = async (provider, tokens, _pairDB, setPair)=>{
+const getPairsCache = async (tokens, _pairDB, setPair)=>{
     let key = getPairKey(tokens);
     console.log(_pairDB);
     if(!_pairDB[key] || _pairDB[key].length==0){
-      let pair = await makePair(provider, tokens);
+      let pair = await makePair(tokens);
       setPair({[key]:pair});
       return pair;
     }
     return _pairDB[key];
 }
 
-const getPairs = async (provider, tokens)=>{
-    let pair = await makePair(provider, tokens);
+const getPairs = async (tokens)=>{
+    let pair = await makePair(tokens);
     return pair;
 }
 
 
 const baseToken = allToken.slice(0,4);
 
-const fetchPair = async (provider, tokens)=>{
+const fetchPair = async (tokens)=>{
 	let pair = await Fetcher.fetchPairData(tokens[0], tokens[1], provider);
 	return pair;
 } 
 
-const makePair = async(provider, tokens)=>{
+const makePair = async(tokens)=>{
 	let pairList = [];
   try{
-    let pair = await fetchPair(provider, tokens);
+    let pair = await fetchPair(tokens);
     pairList.push(pair);
     //console.log('Fetched Pair for =>',getPairKey(tokens));
   }catch(e){
-  //	console.log("Error=>",e.message??e.reason??e);
+  //console.log("Error=>",e.message??e.reason??e);
   	console.log("No pair for =>",getPairKey(tokens));
   //	console.log('------------');
   }
@@ -68,7 +69,7 @@ const makePair = async(provider, tokens)=>{
 
 	  		let temp_pair = [];
 			for(let j = 0; j<2; j++){
-				let pair = await fetchPair(provider, [tokens[j], baseToken[k]]);
+				let pair = await fetchPair([tokens[j], baseToken[k]]);
 				temp_pair.push(pair);
 			}
 			pairList = pairList.concat(temp_pair);
@@ -96,14 +97,14 @@ const exTrade = (trade, _percent)=>{//from 0.5 => 10
   return [outputValue, slipagePercent];
 }
 
-const run = async (_inputValue, inputId, outputId, _slipPercent)=>{
+const test = async (_inputValue, inputId, outputId, _slipPercent)=>{
 	const inputValue = _inputValue.toString();
 	//convert ETH to WEI
 	const inputAmountMax = ethers.utils.parseEther(inputValue);
 
 	//getToken
 	const tokens = [getToken(inputId), getToken(outputId)]
-	const pairs = await getPairs(provider, tokens, pairDB, setPair);
+	const pairs = await getPairs(tokens, pairDB, setPair);
 	
 	console.log();
 	if(pairs.length == 0){
@@ -136,18 +137,18 @@ const run = async (_inputValue, inputId, outputId, _slipPercent)=>{
 // const q_out = 11;
 // const slipPercent = 5;
 
-// run(5, q_in, q_out, slipPercent);
+// test(5, q_in, q_out, slipPercent);
 
-// run(11, 44, 49, slipPercent);
+// test(11, 44, 49, slipPercent);
 
-// run(23, 18, 32,slipPercent);
+// test(23, 18, 32,slipPercent);
 
 
 
 const tokenABI = [
-  "function allowance(address owner, address spender) external view returns (uint256);",
-  "function approve(address spender, uint256 amount) external returns (bool);",
-  "function balanceOf(address account) external view returns (uint256);"
+  "function allowance(address owner, address spender) external view returns (uint256)",
+  "function approve(address spender, uint256 amount) external returns (bool)",
+  "function balanceOf(address account) external view returns (uint256)"
   ];
 
 const routerABI = [
@@ -157,44 +158,73 @@ const routerABI = [
   ];
 
 
-const routerAddress = '';
-const routerContract = {};//new ethers.Contract(routerAddress, routerABI);
+const routerAddress = '0x10ED43C718714eb63d5aA57B78B54704E256024E';
+const routerContract = new ethers.Contract(routerAddress, routerABI);
 
-const exchangeNetwork = async(signer, inputToken, outputToken, inputValue, outputValue, deadlineInMinute, path)=>{
+const exchangeNetwork = async(signer, inputToken, outputToken, _inputValue, _outputValue, deadlineInMinute, path, handler)=>{
   
-  const deadline = Math.floor(Date.now()/1000) + deadlineInMinute*60;
-  
-  const myAddress = await signer.getAddress();
-  
-  const router= await routerContract.connect(signer);
-  
-  let result;
-  let reciept;
-  
-  if(inputToken.symbol === "ETH"){
-    //swapExactETHForTokens
-    result = router.swapExactETHForTokens(outputValue, path, myAddress, deadline, {value:inputValue});
-  }
-  else{
-    const tokenContract = new ethers.Contract(inputToken.address, tokenABI, signer);
-    let approveResult = tokenContract.approve(router.address, inputValue);
-    let approveReciept = await approveResult.wait();
-    let _func;
+  try{
+    const deadline = Math.floor(Date.now()/1000) + deadlineInMinute*60;
+    let inputValue = ethers.utils.parseEther(_inputValue);
+    let outputValue = ethers.utils.parseEther(_outputValue);
+    handler.process("Connecting to Router");
+    const myAddress = await signer.getAddress();
     
-    if (outputToken === "ETH"){
-    	//swapExactTokensForETH
-    	_func = router.swapExactTokensForETH;
+    const router= await routerContract.connect(signer);
+    
+    let result;
+    let reciept;
+    
+    if(inputToken.symbol === "WBNB"){
+      //swapExactETHForTokens
+      let acc_balance = await signer.getBalance();
+
+      if(acc_balance<inputValue)
+          throw Error("Not Sufficient Acc. Balance");
+      handler.process("Swapping BNB for Token");
+      result = await router.swapExactETHForTokens(outputValue, path, myAddress, deadline, {value:inputValue});
     }
     else{
-    	//swapExactTokensForTokens
-    	_func = router.swapExactTokensForTokens;
-    }
+      handler.process("Connecting to Token Contract");
+      const tokenContract = new ethers.Contract(inputToken.address, tokenABI, signer);
+      /*const tokenContract = await tokenContractBase.connect(signer);*/
+      handler.process("Checking Allowance");
+      let acc_balance = await tokenContract.balanceOf(myAddress);
 
-    result = _func(inputValue, outputValue, path, myAddress, deadline);
+      if(acc_balance<inputValue)
+          throw Error("Not Sufficient Acc. Balance");
+      
+      let allowance  = await tokenContract.allowance(myAddress, router.address);
+      
+      if(allowance<inputValue){
+        handler.process("Router requesting approval");
+        let approveResult = await tokenContract.approve(router.address, inputValue);
+        let approveReciept = await approveResult.wait();
+      }
+      let _func;
+      
+      if (outputToken.symbol === "WBNB"){
+      	//swapExactTokensForETH
+        handler.process("Swapping Token for BNB");
+      	_func = router.swapExactTokensForETH;
+      }
+      else{
+      	//swapExactTokensForTokens
+        handler.process("Swapping Token for Token");
+      	_func = router.swapExactTokensForTokens;
+      }
+
+      result = await _func(inputValue, outputValue, path, myAddress, deadline);
+    }
+    reciept = await result.wait();
+    handler.success("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
+    return reciept;
+  }catch(e){
+
+    handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+    console.log(e);
   }
-  reciept = await result.wait();
-  return reciept;
 }
 
 
-module.exports = {exTrade, getToken, getPairsCache, getPairs, makeTrade};
+module.exports = {exTrade, getToken, getPairsCache, getPairs, makeTrade, exchangeNetwork};

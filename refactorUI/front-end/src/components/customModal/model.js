@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	z-index:200;
+	z-index:999;
 	width:${props=>props.block?"100%":"auto"};
 	height:${props=>props.block?"100%":"auto"};
 
@@ -131,7 +131,7 @@ const SpinLoader = styled(FaSpinner)`
 `
 const getRand = ()=>(~~(Math.random()*777)%2);
 
-const Base = ({header, content, footer, baseColor, loader, handlers, icon, block=true, ClickOutSideModalFunc=console.log})=>{
+const Base = ({header, content, footer, baseColor, loader, handlers, icon, block=true, ClickOutSideModalFunc=()=>{}})=>{
 	//console.log(handlers);	
 	return (
 		<Wrapper className={modalWrapName} block={block} baseColor={baseColor} onClick={ClickOutSideModalFunc}>

@@ -1,5 +1,6 @@
 import React,{useState, useEffect, useMemo, useCallback} from "react";
 import {useAccount, useSigner} from '@web3modal/react';
+import {ethers} from 'ethers';
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
@@ -9,7 +10,15 @@ import {listNFT, myNFT, toggleForSale, addToMarket, buyNFT} from '../../context/
 import OptionController,{optionAt} from '../../components/cardOption';
 import useOptionModal from '../../components/customModal/useModal';
 
+const _default_provider = new ethers.providers.JsonRpcProvider(
+  "https://bsc-testnet.nodereal.io/v1/e9a36765eb8a40b9bd12e680a1fd2bc5",//"https://bsc-dataseed.binance.org/",
+  { name: "binance", chainId: 97}//56 }
+);
 
+
+const getProvider = (_provider)=>{
+  return _provider??_default_provider;
+}
 
 const Container = () => {
   const { address, isConnected } = useAccount();
@@ -82,7 +91,7 @@ const Container = () => {
                 {Fake.map((d,i)=><Card {...d} price={Math.round(Math.random()*73+5)} key={i} onClick={handler}/>)}
               </div>
             }
-             {isConnected && <Generate {...{address, provider, funcFactory:listNFT, onClick:handler}}/>}
+             {isConnected && <Generate {...{address, provider:getProvider(provider), funcFactory:listNFT, onClick:handler}}/>}
         </div>
       </div>
 

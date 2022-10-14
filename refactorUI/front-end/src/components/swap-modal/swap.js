@@ -4,8 +4,7 @@ import "./swap.css";
 import { MdSwapVert } from "react-icons/md";
 import rawToken from '../../swap/token_list';
 
-const Swap = ({iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline, setDeadline, price, status}) => {
-  
+const Swap = ({iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline, setDeadline, price, status, submit}) => {
 
   return (
     <div className="modal-bg">
@@ -13,7 +12,7 @@ const Swap = ({iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline,
         <h3>Swap</h3>
         <div className="swap-top">
           <div className="text">
-            <input type="number" onKeyUp={(e)=>setIv(e.target.value)} placeholder="0.0"/>
+            <input type="number" defaultValue={iV} onKeyUp={(e)=>setIv(e.target.value)} placeholder="0.0"/>
             <p></p>
           </div>
           <Token prev={tokens.second} value={tokens.first} setValue={e=>setTokens({first:+e.target.value})}/>
@@ -27,14 +26,14 @@ const Swap = ({iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline,
           <p>For</p>
           <div className="sec">
             <div className="text">
-              <input type="number" defaultValue={oV} disabled={true} placeholder="0.0"/>
+              <input type="number" value={oV} disabled={true} placeholder="0.0"/>
               <p></p>
             </div>
             <Token prev={tokens.first} value={tokens.second} setValue={e=>setTokens({second:+e.target.value})}/>
           </div>
           <br />
-          <p id="price">1 BNB = 430.30 SHIELD</p>
-          <button>Review Swap</button>
+          <p id="price" style={{fontSize:"1.25rem"}}>{price??'---'}</p>
+          <button onClick={submit}>Review Swap</button>
         </div>
         <SwapSetting>
           <div className="duration">
@@ -47,7 +46,6 @@ const Swap = ({iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline,
           </div>
         </SwapSetting>
         <InfoWrap>
-          {price && <p>{price}</p>}
           <p>{status}</p>
         </InfoWrap>
       </div>
@@ -83,12 +81,17 @@ const SelectBox = styled.div`
     font-weight:1.3rem;
     font-weight:bold;
   }
+
+  img{
+    width:30px;
+    height:auto;
+  }
 `;
 
 const Token = ({prev, value, setValue})=>{
   return (
     <SelectBox className="token">
-      <img src={rawToken[value]}/>
+      <img src={rawToken[value].logoURI}/>
       <select onChange={setValue}>
         {rawToken.map((v,i)=>i !== prev && <option key={v.name} value={i} selected={i === value}>{v.name}</option>)}
       </select>

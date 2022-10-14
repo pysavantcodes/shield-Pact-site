@@ -182,7 +182,7 @@ async function buyNFT(_signer, address, _itemId, onUpdate, onSuccess, onError, t
         ()=>__buy(_signer,address, nft, buyMarket, _itemId, buyProp, onUpdate, onSuccess, onError));
 
     }catch(e){
-      onError(e.reason??e.message??"Error occured");
+      onError(e?.data?.message??e?.reason??"Error Occured");
     }
 }
 
@@ -249,7 +249,7 @@ async function toggleForSale(_provider, _id, onUpdate, onSuccess, onError){
     onSuccess("Done");
   }
   catch(e){
-    onError(e.reason??e.message??"Error occured");
+    onError(e?.data?.message??e?.reason??"Error Occured")
   }
 }
 
@@ -284,7 +284,7 @@ async function withdrawBNB(_signer, onUpdate, onSuccess, onError){
     let reciept = await result.wait();
     onSuccess("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
   }catch(e){
-    onError(e.reason??e.message??"Error occured");
+    onError(e?.data?.message??e?.reason??"Error Occured")
   }
 }
 
@@ -298,11 +298,11 @@ async function withdrawBUSD(_signer, onUpdate, onSuccess, onError){
     let reciept = await result.wait();
     onSuccess("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
   }catch(e){
-    onError(e.reason??e.message??"Error occured");
+    onError(e?.data?.message??e?.reason??"Error Occured")
   }
 }
 
 export default Web3Container;
 
 export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, NFTConfig, MarketConfig, createNFT, listNFT, myNFT,
-      toggleForSale, addToMarket, buyNFT, ownerOfMarket, withdrawBNB, withdrawBUSD};
+      toggleForSale, addToMarket, buyNFT, ownerOfMarket, withdrawBNB, withdrawBUSD, viewExplorer};
