@@ -13,6 +13,7 @@ import NFTHome from "./pages/nft/home";
 import NFTCreate from "./pages/nft/create";
 import NFTExplore from './pages/nft/explore';
 import Web3Container from './context/_web3_container';
+import DashboardHome from './pages/dashboard/home';
 
 const router = createBrowserRouter([
 			{	
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
 				element:<DashBoardLayout/>,
 				children:[
 					{	path:'',//default to client
-						element:<Navigate to="client"/>
+						element:<DashboardHome/>
 					},
 					{
 						path:'client',

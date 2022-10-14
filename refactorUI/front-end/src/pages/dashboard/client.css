@@ -149,6 +149,20 @@
     line-height: normal;
 }
 
+.freelancer .eachFreelancer {
+    margin-bottom: .4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.freelancer .eachFreelancer p {
+    font-size: 23px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 72%;
+}
+
 .dashboard h2 {
     margin-bottom: 0;
     font-size: 15px;
@@ -264,6 +278,8 @@ progress::-moz-progress-bar {
     max-width: 700px;
     padding: 1rem;
     white-space: normal;
+    max-height: 600px;
+    overflow-y: scroll;
 }
 
 .reply-modal textarea {

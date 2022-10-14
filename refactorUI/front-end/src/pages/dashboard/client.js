@@ -20,13 +20,6 @@ const Container = () => {
   const [displayModal, setDisplayModal] = useState(false)
   const [displayChat, setDisplayChat] = useState(false);
 
-  for(let i=0; i<document.querySelectorAll(".categories ul li").length; i++ ){
-    document.querySelectorAll(".categories ul li")[i].addEventListener("click",()=>{
-      setDisplayModal(true);
-
-    })
-    
-  }
 
   return (
     <section class="dashboard">
@@ -45,6 +38,7 @@ const Container = () => {
                     <div class="to">
                         <h3>To</h3>
                         <input placeholder="0x2727923932397bd" type="text" name="" id=""/>
+                        <input type="checkbox" />
                     </div>
                     <div class="to">
                         <h3>Name of Job</h3>
@@ -67,107 +61,7 @@ const Container = () => {
                 </div>
 
             </div>
-            <div class="service">
-          <h2>Pick a Freelancer from these Categories</h2>
-          <div class="taske">
-            <div class="service-cont">
-              {/* <div class="search">
-                <input
-                  type="text"
-                  placeholder="Search Services"
-                  name=""
-                  id=""
-                />
-                <Md.MdSearch id="ic"/>
-              </div> */}
-              <div class="categories">
-          
-                <ul>
-                  <li>
-                  <Md.MdMovie id="ic"/>
-                    <div>
-                      Influencer Content
-                      <p>
-                        Videos, Pictures, <NavLink to="/nft">NFTs</NavLink>
-                        , Music
-                      </p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdDraw id="ic"/>
-                    <div>
-                      Graphic & Design
-                      <p>Logo & Brand Entity, Art & Illustration</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdShoppingCart id="ic"/>
-                    <div>
-                      Digital Marketing
-                      <p>Social Media Marketing, Social Media Advertising</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdDocumentScanner id="ic"/>
-                    <div>
-                      Writing & Translation
-                      <p>Articles & Blog Posts, Translation, Resume Writing</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdVideocam id="ic"/>
-                    <div>
-                      Video & Animation
-                      <p>Video Editing, Video Ads and Commercial</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdAudiotrack id="ic"/>
-                    <div>
-                      Music & Audio
-                      <p>Voice Over, Producers & Composers</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdCode id="ic"/>
-                    <div>
-                      Programming & Tech
-                      <p>Wordpress, Website Builders & CMS</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdFileCopy id="ic"/>
-                    <div>
-                      Data
-                      <p>Database, Data Processing</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdAddBusiness id="ic"/>
-                    <div>
-                      Business
-                      <p>Virtual Assistant, E-commerce Management</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdBook id="ic"/>
-                    <div>
-                      Lifestyle
-                      <p>Online Tutoring, Gaming</p>
-                    </div>
-                  </li>
-                  <li>
-                  <Md.MdHomeRepairService id="ic"/>
-                    <div>
-                      Miscellaneous
-                      <p>All Other Categories</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+           
 
         </section>
         <h2>Assigned Jobs</h2>

@@ -1,0 +1,79 @@
+.dashhome {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    padding-top: 3rem;
+}
+
+.dashhome .categories h2 {
+    opacity: 1;
+    font-size: 17px;
+    margin: 0;
+    margin-top: 5rem;
+    text-align: center;
+}
+
+.dashhome .title {
+    margin-bottom: 0;
+}
+
+.dashhome .categories .taske {
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.116);
+}
+
+.dashhome .categories .taske ul {
+    display: grid;
+    align-items: center;
+    grid-template-columns: auto auto auto;
+}
+
+.dashhome .categories .taske ul li p {
+    margin-bottom: 0;
+}
+
+.dashhome .hero {
+    padding: 1rem 0;
+}
+
+.dashhome .hero h1 {
+    margin-bottom: 0;
+}
+
+.dashhome .hero p {
+    margin-bottom: 0;
+    line-height: normal;
+}
+
+#roam {
+    position: relative;
+    margin: 0;
+    margin-bottom: 1rem;
+    width: fit-content;
+}
+
+#roam::after {
+    content: "";
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background: #7b13ac;
+    bottom: -5px;
+    left: 0;
+}
+
+#roamtxt {
+    font-size: 13px;
+}
+
+@media (max-width:1300px) {
+    .dashhome .categories .taske ul {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media (max-width:825px) {
+    .dashhome .categories .taske ul {
+        grid-template-columns: auto;
+    }
+}

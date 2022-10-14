@@ -175,12 +175,13 @@ const Header = () => {
       <div className="title_menu_container">
         <div className="title">
           <img src={logo} alt="nft-logo" />
-          ShieldPact
+          ShieldPact Job
         </div>
         <div className="menu">
-          <NavLink>Home</NavLink>
+          <NavLink to="/dashboard/">Home</NavLink>
           <NavLink to="/dashboard/client">Client</NavLink>
           <NavLink to="/dashboard/freelancer">Freelancer</NavLink>
+         
 
           {/* <NavLink className="dashboard">Dashboard
             <ul className="dropdown">
