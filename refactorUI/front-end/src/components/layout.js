@@ -32,7 +32,7 @@ const HeaderWrapper = styled.header`
 	justify-content:space-between;
 	padding:1rem 5rem;
 	font-size:1.25rem;
-	position:sticky;
+	
 	top:0;
 	border-bottom: 1px solid #ffffff14;
 	background-color: #1515218c;
