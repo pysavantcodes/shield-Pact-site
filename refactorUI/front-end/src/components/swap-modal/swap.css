@@ -12,7 +12,7 @@
     background: rgba(0, 0, 0, 0.6);
     z-index: 999;
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
     justify-content: center;
     padding: 1rem;
 }
