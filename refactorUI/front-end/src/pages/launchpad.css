@@ -153,13 +153,13 @@ progress::-moz-progress-bar {
     text-align: center;
 }
 
-.start div {
+.start .countdown {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.start div p {
+.start .countdown p {
     padding: .5rem;
     background: #a750cf;
     margin: 0 .3rem;
