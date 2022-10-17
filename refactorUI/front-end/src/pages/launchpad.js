@@ -269,7 +269,7 @@ const Container = () => {
 
           <div className="start">
             <p>Presale starts in</p>
-            <div>
+            <div className="countdown">
               <p>01</p>
               <p>23</p>
               <p>49</p>
