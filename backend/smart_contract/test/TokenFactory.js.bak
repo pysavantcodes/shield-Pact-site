@@ -1,0 +1,40 @@
+const { expect} = require("chai");
+const {tokenInfo} = require("../scripts/launchpad");
+
+
+describe("Token Factory", ()=>{
+	const feePrice = "5";
+	const fee = ethers.utils.parseEther(feePrice);
+	let contract;
+
+	before(async ()=>{
+		const factory = await ethers.getContractFactory("TokenFactory");
+		contract = await factory.deploy(fee);
+	});
+
+	it("create Token", async()=>{
+		let result = await contract.createToken("QNN","QueenNewNord",18, 1E6,{value:fee});
+		let reciept = await result.wait();
+
+		let tkAddress = reciept.events[reciept.events.length - 1].args.token;
+		let signer = await ethers.getSigner();
+		let tkInfo = await tokenInfo(signer, tkAddress);
+		
+		expect(signer.address,"Token Ownership not transferred").to.equal(tkInfo.owner);
+
+		let myToken = await contract.createdToken();
+		expect(myToken).to.include(tkAddress);
+	});
+
+
+	it("check Fee", async()=>{
+		let result = await contract.getRecievedFee();
+		expect(result).to.equal(fee);
+
+		result = await contract.withdrawFee();
+		await result.wait();
+
+		result = await contract.getRecievedFee();
+		expect(result).to.equal(0);
+	});
+})

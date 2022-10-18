@@ -13,15 +13,24 @@ import NFTHome from "./pages/nft/home";
 import NFTCreate from "./pages/nft/create";
 import NFTExplore from './pages/nft/explore';
 import Web3Container from './context/_web3_container';
-
+import CreateToken from './pages/create_token';
+import CreateLaunchPad from './pages/create_launchpad'; 
 const router = createBrowserRouter([
 			{	
 				path:'/',
 				element:<DefaultLayout/>,
 				children:[
 					{
+						path:'createtoken',//default
+						element:<CreateToken/>,
+					},
+					{
+						path:'createlaunchpad',//default
+						element:<CreateLaunchPad/>,
+					},
+					{
 						path:'',//default
-						element:<Navigate to='launchpad'/>
+						element:<Navigate to='launchpad'/>,
 					},
 					{
 						path:'staking',
