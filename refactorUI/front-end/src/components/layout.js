@@ -38,6 +38,7 @@ const HeaderWrapper = styled.header`
 	background-color: #1515218c;
 	backdrop-filter: blur(10px);
 	z-index:1000;
+        
 
 	&, .title_menu_container,
 	.title, .menu
@@ -70,7 +71,7 @@ const HeaderWrapper = styled.header`
 	}
 
 	@media (max-width:900px){
-		flex-direction:column;
+		
 
 		.title_menu_container{
 			flex-direction:column;
