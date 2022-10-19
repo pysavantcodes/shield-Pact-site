@@ -129,8 +129,8 @@ progress::-moz-progress-bar {
 }
 
 .presale .name-icon img {
-    width: 20px;
-    height: 20px;
+    width: 100px;
+    height: auto;
     margin-right: 5px;
 }
 

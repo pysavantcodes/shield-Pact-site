@@ -43,6 +43,27 @@ async function IpfsStoreNFT({name, description, image, properties}) {
     });
 }
 
+async function IpfsStoreBlob(data) {
+    let bp = new Blob([JSON.stringify(data)]);
+    return await nftstorage.storeBlob(bp);
+}
+
+
+async function IpfsStatus(cid){
+  try{
+    await nftstorage.check(cid)
+  }catch(e){
+    return false
+  }
+  return true;
+  
+}
+
+async function IpfsGetBlob(cid){
+    const result = await axios.get( baseURI + cid);
+    return result.data;
+}
+
 const baseURI = 'https://nftstorage.link/ipfs/';
 function IpfsgetURI(cid){
   return baseURI + cid +'/metadata.json';
@@ -305,4 +326,4 @@ async function withdrawBUSD(_signer, onUpdate, onSuccess, onError){
 export default Web3Container;
 
 export {IpfsStoreNFT, IpfsGetNFT, convertIpfs, NFTConfig, MarketConfig, createNFT, listNFT, myNFT,
-      toggleForSale, addToMarket, buyNFT, ownerOfMarket, withdrawBNB, withdrawBUSD, viewExplorer};
+      toggleForSale, addToMarket, buyNFT, ownerOfMarket, withdrawBNB, withdrawBUSD, viewExplorer, IpfsStoreBlob, IpfsGetBlob, IpfsStatus};

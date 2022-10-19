@@ -28,14 +28,14 @@ contract LaunchPad is Ownable{
     mapping(address => uint256) public investedAmount;
     uint256 public totalSale;//BNB or BUSD
 
-    uint256 capped;
+    uint256 public capped;
     uint256 public totalTokenSold;
     uint256 public tokenForPreSale;
     uint256 public tokenForDexSale;
     uint256 public dexPercent;
 
-    uint256 minPurchasePrice;
-    uint256 maxPurchasePrice;
+    uint256 public minPurchasePrice;
+    uint256 public maxPurchasePrice;
 
     bool preSaleCompleted;
 
@@ -79,8 +79,13 @@ contract LaunchPad is Ownable{
         require(remainingToken()>0, "Token Already Sold Out");
         _;
     }
+
+    /**
+     *can decide to withdraw after dexsale and fee is completed gained
+     */
     modifier tokenSoldOut(){
-        require(remainingToken()==0, "Token Not Sold Out");
+        require(totalSale >= tokenForDexSale.div(dexSaleRate) + fee);
+        //require(remainingToken()==0, "Token Not Sold Out");
         _;
     }
 
@@ -238,10 +243,10 @@ contract LaunchPad is Ownable{
     }
 
     function completePreSale() public onlyOwner tokenSoldOut hasPreSaleNotCompleted{
-        preSaleCompleted = true;
         _payFee();
         /*_addToDex();*/
         _ownerRecieveBalance();
+        preSaleCompleted = true;
         emit Completed(saleToken);
     }
 
@@ -269,7 +274,7 @@ contract LaunchPad is Ownable{
             (,,LpToken) = _Router.addLiquidity(saleToken, buyToken, tokenForDexSale, tokenDexFund, tokenForDexSale, tokenDexFund, address(this), block.timestamp);
         }
 
-        LpTokenTime = LpTokenLockPeriod + block.timestamp;
+        LpTokenTime = LpTokenLockPeriod.mul(24*60*60) + block.timestamp;//in days
         emit AddedToDex(LpToken, LpTokenTime);
     }
 

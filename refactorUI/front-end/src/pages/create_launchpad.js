@@ -5,7 +5,7 @@ import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
 import {createLaunchPad, createdTokens, tokenInfo} from '../launchUtil/main';
-
+import  {IpfsStoreBlob, IpfsGetBlob} from '../context/_web3_container';
 
 const Container = ()=>{
 	const _form = useRef();
@@ -21,6 +21,7 @@ const Container = ()=>{
 
 	const onSubmit = async (e)=>{
 		e.preventDefault();
+
 		_form.current?.reportValidity();
 		if(!_form.current.checkValidity()){
 			statusCreate.failed(update, "Fill Form Correctly");
@@ -36,22 +37,25 @@ const Container = ()=>{
 		cleanData.dexsale = +db.get("dexsale");
 		cleanData.whitelist = +db.get("whitelist")==1;
 		cleanData.capped = +db.get("capped");
-		cleanData.minbuy = +db.get("minbuy");
-		cleanData.maxbuy = +db.get("maxbuy");
+		cleanData.minbuy = db.get("minbuy");
+		cleanData.maxbuy = db.get("maxbuy");
+		cleanData.dexpercent = +db.get("dexpercent");
 		cleanData.lockup = +db.get("lockup");
 		cleanData.starttime = Math.floor(Date.parse(db.get("starttime"))/1000);
 		cleanData.endtime = Math.floor(Date.parse(db.get("endtime"))/1000);
-		cleanData.cid= "";
 		
 		const info = {}
 		info.logo = db.get("logo");
-		info.description = db.get("desc");
+		info.desc = db.get("desc");
 		info.website = db.get("web");
 		info.twitter = db.get("twitter");
 		info.social = db.get("social");
-		console.log(cleanData);
-		console.log(info);
-		return;
+		actionUpdateList.process("Uploading details to ipfs");
+		try{
+			cleanData.cid = await IpfsStoreBlob(info);
+		}catch(e){
+			actionUpdateList.failed(`Failed to upload details to ipfs:${e.message}`);
+		}
 		await createLaunchPad(signer, cleanData, actionUpdateList);
 	}
 
@@ -144,7 +148,7 @@ const Form2 = ()=>{
 	      </label>
 	      <label htmlFor="liquidity">
 	        Pancake Swap Liquidity (%)
-	        <input type="number" id="liquidity" name="dexPercent" placeholder="80" defaultValue={80} required/>
+	        <input type="number" id="liquidity" name="dexpercent" placeholder="80" min="50" max="100" defaultValue={80} required/>
 	      </label>
 
 	      <label htmlFor="time">
