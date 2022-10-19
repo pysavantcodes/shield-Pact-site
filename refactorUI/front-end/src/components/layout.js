@@ -153,7 +153,7 @@ const Header = ()=>{
 			<div className="title_menu_container">
 				<div className="title">
 					<img src={logo} alt="nft-logo"/>
-					ShieldPact NFT
+					ShieldPact LaunchPad
 				</div>
 				<div className="menu">
 					<NavLink to=""></NavLink>
