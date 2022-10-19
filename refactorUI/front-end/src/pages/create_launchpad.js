@@ -62,7 +62,7 @@ const Container = ()=>{
 	return (
 	<>
 		<View/>
-		<form ref={_form}>
+		<form style={{padding:"1.5rem"}} ref={_form}>
 			<Form1/>
 			<Form2/>
 			<Form3 onSubmit={onSubmit}/>
