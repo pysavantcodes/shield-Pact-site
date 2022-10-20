@@ -172,6 +172,7 @@ const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 	return(
 		<ConnectWrapper>
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
+			{address && <Button onClick={()=>window.open(`https://buy.ramp.network/?userAddress=${address}`,'_blank')}>Ramp Network</Button>}
 			{/*<br/><small>{address}</small>*/}
 			<div className="walletDrop">
 				<FaWallet style={{color: "white", fontSize: "30px", border: "1px solid white", padding:"8px", borderRadius:"50%"}}/>
@@ -180,7 +181,6 @@ const ConnectSection = ({address, connect, isConnected, disconnect})=>{
 		</ConnectWrapper>
 	);
 }
-
 
 
 const ConnectWrapper = styled.div`

@@ -8,6 +8,7 @@ const feePrice = "0.00005";
 const fee = ethers.utils.parseEther(feePrice);
 const feePercent = 1;//2%
 const router = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
+const busdAddress = "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee";
 async function main() {
   const [deployer] = await ethers.getSigners();
 
@@ -24,7 +25,7 @@ async function main() {
     console.log("Token Address =>",Token1.address);
 
     factory = await ethers.getContractFactory("LaunchPadFactory");
-    launchPadfactory = await factory.deploy(fee, feePercent, Token1.address, router);
+    launchPadfactory = await factory.deploy(fee, feePercent, busdAddress, router);
     console.log("LaunchPadFactory =>", launchPadfactory.address);
     await launchPadfactory.deployed();
 }

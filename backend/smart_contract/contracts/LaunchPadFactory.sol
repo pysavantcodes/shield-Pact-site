@@ -4,7 +4,9 @@ pragma solidity 0.8.15;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./LaunchPad.sol";
+import "./LaunchPadLib.sol";
+import {LaunchPad, IERC20} from "./LaunchPad.sol";
+
 
 contract LaunchPadFactory is Ownable{
     using SafeMath for uint256;
@@ -123,16 +125,11 @@ contract LaunchPadFactory is Ownable{
      *dexPercent => percentage of funds raised to be used for liquidity
      *Add percent fee of raised amount as token to be bought
      */
-    function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint256 _dexPercent) 
+    function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint8 _dexPercent) 
     public view 
     returns (uint256, uint256, uint256, uint256)
     {
-        uint256 _SaleToken = _saleRate.mul(_capped);
-        uint256 _DexToken = _capped.mul(_dexRate).mul(_dexPercent).div(100);
-        uint256 _feePrice = _capped.mul(feePercent).div(100);
-        uint256 _FeeToken = _feePrice.mul(_saleRate);
-        uint256 _NeededToken = _SaleToken +  _DexToken + _FeeToken;  
-        return (_NeededToken, _SaleToken, _DexToken, _feePrice);
+        return LaunchPadLib.totalTokenNeeded(_capped, _saleRate, _dexRate, _dexPercent, feePercent);
     }
    
 }

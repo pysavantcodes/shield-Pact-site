@@ -4,7 +4,7 @@ import * as Fa from "react-icons/fa";
 import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
-import {createLaunchPad, createdTokens, tokenInfo} from '../launchUtil/main';
+import {createLaunchPad, createdTokens, tokenInfo, withdrawLaunchFee} from '../launchUtil/main';
 import  {IpfsStoreBlob, IpfsGetBlob} from '../context/_web3_container';
 
 const Container = ()=>{
@@ -33,10 +33,10 @@ const Container = ()=>{
 		const cleanData = {}
 		cleanData.tokenAddress = db.get("tokenAddress");
 		cleanData.isBNB = +db.get("isBNB")==1;
-		cleanData.presale = +db.get("presale");
-		cleanData.dexsale = +db.get("dexsale");
+		cleanData.presale = db.get("presale");
+		cleanData.dexsale = db.get("dexsale");
 		cleanData.whitelist = +db.get("whitelist")==1;
-		cleanData.capped = +db.get("capped");
+		cleanData.capped = db.get("capped");
 		cleanData.minbuy = db.get("minbuy");
 		cleanData.maxbuy = db.get("maxbuy");
 		cleanData.dexpercent = +db.get("dexpercent");
@@ -59,9 +59,14 @@ const Container = ()=>{
 		await createLaunchPad(signer, cleanData, actionUpdateList);
 	}
 
+	const _withdrawLaunchFee = async(e)=>{
+		await withdrawLaunchFee(signer, actionUpdateList);
+	} 
+
 	return (
 	<>
 		<View/>
+		<button onClick={_withdrawLaunchFee}>withdrawLaunchFee</button>
 		<form ref={_form}>
 			<Form1/>
 			<Form2/>

@@ -4,6 +4,7 @@ pragma solidity 0.8.15;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "./LaunchPadLib.sol";
 
 contract LaunchPad is Ownable{
     using SafeMath for uint256;
@@ -13,7 +14,7 @@ contract LaunchPad is Ownable{
 
     PaymentType public payType;
     address payable private feeReciever;
-    uint8 private feePercent;
+    uint8 public feePercent;
     uint256 public fee;
 
     string public infoHash;//extra information on launchpad => ipfs CID
@@ -32,12 +33,12 @@ contract LaunchPad is Ownable{
     uint256 public totalTokenSold;
     uint256 public tokenForPreSale;
     uint256 public tokenForDexSale;
-    uint256 public dexPercent;
+    uint8 public dexPercent;
 
     uint256 public minPurchasePrice;
     uint256 public maxPurchasePrice;
 
-    bool preSaleCompleted;
+    bool public preSaleCompleted;
 
     uint256 public preSaleRate;
     uint256 public dexSaleRate;
@@ -50,7 +51,7 @@ contract LaunchPad is Ownable{
     uint256 public totalParticipant;
     bool public enableWhiteList;
     mapping (address => bool) public whiteList;
-    address[] public allWhiteListed;
+    address[] allWhiteListed;
 
     address dexRouter;
 
@@ -59,7 +60,8 @@ contract LaunchPad is Ownable{
     event RecievedBalance(address creator, uint256 amount);
     event Completed(address token);
     event AddedToDex(uint256 lpToken, uint256 lockTime);
-
+    event WhiteListed(address client);
+    
     modifier hasStarted(){
         require(startTime < block.timestamp, "has not started");
         _;
@@ -98,6 +100,8 @@ contract LaunchPad is Ownable{
         require(preSaleCompleted, "Pre Sale not yet Completed");
         _;
     }
+
+
 
     constructor(address _feeReciever, 
                 uint8 _feePercent,
@@ -175,9 +179,10 @@ contract LaunchPad is Ownable{
     /**
      *preSale Rate to be greater than dexSale Rate
      */
-    function setPurchaseRate(uint256 _capped, uint256 _preSale, uint256 _dexSale, uint256 _dexPercent) public onlyOwner{
+    function setPurchaseRate(uint256 _capped, uint256 _preSale, uint256 _dexSale, uint8 _dexPercent) public onlyOwner{
         require(startTime > block.timestamp || startTime == 0, "Already Initialized can't be changed after launch start time");
         require(_dexSale < _preSale && _dexSale > 0, "Invalid Purchase Rate");
+        require(_dexPercent >= 50,"DexPercent must be 50% above");
         capped = _capped;
         preSaleRate = _preSale;
         dexSaleRate = _dexSale;
@@ -202,7 +207,12 @@ contract LaunchPad is Ownable{
         if(!whiteList[client]){
             whiteList[client] = true;
             allWhiteListed.push(client);
+             emit WhiteListed(client);
         }
+    }
+
+    function getWhiteList() public view returns(address[] memory){
+        return allWhiteListed;
     }
 
     /**
@@ -331,7 +341,7 @@ contract LaunchPad is Ownable{
      *get amount of token to get from specified price
     */
     function calculateToken(uint256 amount) public view returns(uint256){
-        return amount.mul(preSaleRate).div(payType == PaymentType.BNB?(1 ether):IERC20(buyToken).decimals());
+        return amount.mul(preSaleRate).div(1 ether);
     }
 
 
@@ -340,16 +350,11 @@ contract LaunchPad is Ownable{
      *dexPercent => percentage of funds raised to be used for liquidity
      *Add percent fee of raised amount as token to be bought
      */
-    function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint256 _dexPercent) 
+    function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint8 _dexPercent) 
     public view 
     returns (uint256, uint256, uint256, uint256)
-    {
-        uint256 _SaleToken = _saleRate.mul(_capped);
-        uint256 _DexToken = _capped.mul(_dexRate).mul(_dexPercent).div(100);
-        uint256 _feePrice = _capped.mul(feePercent);
-        uint256 _FeeToken = _feePrice.div(100);
-        uint256 _NeededToken = _SaleToken +  _DexToken + _FeeToken;  
-        return (_NeededToken, _SaleToken, _DexToken, _feePrice);
+    {  
+        return LaunchPadLib.totalTokenNeeded(_capped, _saleRate, _dexRate, _dexPercent, feePercent);
     }
 }
 
@@ -405,3 +410,4 @@ interface IERC20{
     function allowance(address owner, address spender) external view returns (uint256);
     function transferFrom(address from, address to, uint256 value) external returns (bool);
 }
+

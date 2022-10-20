@@ -2,7 +2,7 @@ import React,{useRef, useMemo, useEffect, useState} from "react";
 import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
-import {createToken, createdTokens, tokenInfo} from '../launchUtil/main';
+import {createToken, createdTokens, tokenInfo, withdrawTokenFee} from '../launchUtil/main';
 
 const CreateTokenModal = () => {
 
@@ -31,10 +31,15 @@ const CreateTokenModal = () => {
 		await createToken(signer, cleanData, actionUpdateList);
 	}
 
+	const _withdrawTokenFee = async(e)=>{
+		await withdrawTokenFee(signer, actionUpdateList);
+	} 
+
   return (
   	<>
 	    <div style={{padding:"1.5rem"}}>
 	      <div className="token-modal">
+	      	<button onClick={_withdrawTokenFee}>withdrawTokenFee</button>
 	      	<form ref={_form}>
 		        <h3>Create Token</h3>
 		        <label htmlFor="type">Token Type
@@ -103,7 +108,7 @@ const TokenList = ({provider})=>{
 
 const TokenShow = ({provider, tkAddress})=>{
 	const [data, setData] = useState();
-	console.log(tkAddress);
+	
 	useEffect(()=>{
 		if(!provider)
 			return

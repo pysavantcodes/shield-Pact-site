@@ -14,7 +14,8 @@ import NFTCreate from "./pages/nft/create";
 import NFTExplore from './pages/nft/explore';
 import Web3Container from './context/_web3_container';
 import CreateToken from './pages/create_token';
-import CreateLaunchPad from './pages/create_launchpad'; 
+import CreateLaunchPad from './pages/create_launchpad';
+import LaunchDetails from './pages/launchdetails'; 
 const router = createBrowserRouter([
 			{	
 				path:'/',
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
 					{
 						path:'createlaunchpad',//default
 						element:<CreateLaunchPad/>,
+					},
+					{
+						path:'launchDetails/:addr',//default
+						element:<LaunchDetails/>,
 					},
 					{
 						path:'',//default

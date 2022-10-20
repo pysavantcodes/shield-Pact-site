@@ -2,8 +2,8 @@ import {ethers} from "ethers";
 
 
 const defaultProvider = new ethers.providers.JsonRpcProvider(
-  "https://bsc-dataseed.binance.org/",
-  { name: "binance", chainId: 56 }
+  "https://bsc-testnet.nodereal.io/v1/e9a36765eb8a40b9bd12e680a1fd2bc5",
+  { name: "binance", chainId: 97 }
 );
 
 const explorer = 'https://testnet.bscscan.com/tx/'
@@ -28,7 +28,8 @@ const tokenFactoryABI= [
 	"function fee() public view returns (uint256)",
 	"function allTokens(uint256) public view returns (address)",
 	"event TokenCreated(address creator, address token)",
-    "event FeeWithdrawn(uint256 amount)"
+    "event FeeWithdrawn(uint256 amount)",
+    "function owner() public view returns (address)"
 ];
 
 const tokenFactoryAddress  = "0x00910c9cBe37dbC92462eE32E7C15621144AF206";
@@ -44,7 +45,7 @@ const tokenInfo = async (provider, address)=>{
 	info.name = await token.name(); 
 	info.symbol = await token.symbol();
 	info.decimals = Number(await token.decimals());
-	info.totalSupply = Number(await token.totalSupply());
+	info.totalSupply = ethers.utils.formatUnits(await token.totalSupply(), info.decimals);
 	try{
 		info.owner = await token.owner();
 	}catch(e){
@@ -81,15 +82,15 @@ const createdTokens = async (provider)=>{
 }
 
 
-const LaunchPadFactoryAddress  ="0xd71ECBA016468D576f0c8cD229CcdD7976991f87";
-const busdAddress = "0x83d29B5abc19f51F62C446f19c8d185f77F05DEe";
+const LaunchPadFactoryAddress  ="0x764186E075ff01135fd9E611a24E3c1DF60C513B";
+const busdAddress = "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee";
 const admin = "0x712196554d705f00396b9cB7D8384D225E92DF1b";
 
 const LaunchPadFactoryABI = [
 	"function fee() public view returns (uint256)",
 	"function feePercent() public view returns (uint8)",
 	"function lengthOfAllPads() public view returns (uint256)",
-	"function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint256 _dexPercent) public view returns (uint256, uint256, uint256, uint256)",
+	"function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint8 _dexPercent) public view returns (uint256, uint256, uint256, uint256)",
 	"function createdPad() public view returns (address[] memory)",
 	`function createPad(address token_,
 	    bool payTypeIsBNB,
@@ -103,7 +104,11 @@ const LaunchPadFactoryABI = [
 	    string memory _CID,
 	    bool _enableWhiteList) public payable`,
 	"event PadCreated(address creator, address pad)",
-   	"event FeeWithdrawn(uint256 amount)"
+   	"event FeeWithdrawn(uint256 amount)",
+   	"function withdrawFee() public",
+   	"function getRecievedFee() public view returns (uint256)",
+   	"function owner() public view returns (address)",
+   	"function allPads(uint256) public view returns(address)"
 ];
 
 const getLaunchPadFactoryContract = (provider)=>new ethers.Contract(LaunchPadFactoryAddress, LaunchPadFactoryABI, provider);
@@ -111,7 +116,31 @@ const getLaunchPadFactoryContract = (provider)=>new ethers.Contract(LaunchPadFac
 const {parseEther} = ethers.utils;
 
 
-const createLaunchPad = async (signer, d, _handler)=>{
+let createTokenAmount = async(_addr)=>{
+	const contract = getTokenContract(defaultProvider, _addr);
+	const _decimals = await contract.decimals();
+	
+	function tokenAmount(amount){
+		return ethers.utils.parseUnits(amount, _decimals);
+	}
+
+	function tokenRaw(amount){
+		return ethers.utils.formatUnits(amount, _decimals);
+	}
+	return {tokenAmount, tokenRaw};
+};
+
+const listLaunchPad = async function*(signer){
+	const factory = getLaunchPadFactoryContract(signer||defaultProvider);
+	let lent = Number(await factory.lengthOfAllPads());
+	if(lent == 0)
+		return;
+	for(let i=lent - 1;i>=0;i--){
+		yield factory.allPads(i);
+	}
+}
+
+const createLaunchPad = async (signer, _d, _handler)=>{
 	try{
 		if(!signer)
 			return _handler.failed("No signer");
@@ -120,17 +149,21 @@ const createLaunchPad = async (signer, d, _handler)=>{
 
 		_handler.process("Getting amount of token needed");
 		
-		
-		const totalTokenNeeded = await factory.totalTokenNeeded(d.capped, d.presale, d.dexsale, d.dexpercent);
-		console.log("total =>",totalTokenNeeded);
-		_handler.process(`Need ${totalTokenNeeded[0]} amount of token for presale`);
-		
-		const token_contract= getTokenContract(signer, d.tokenAddress);
-		let decimals = Number(await token_contract.decimals())
-		
-		let tokenAmount = (amount)=>ethers.utils.parseUnits(amount, decimals);
+		const d = {..._d};
+		let {tokenAmount, tokenRaw} = await createTokenAmount(d.tokenAddress);
 
-		let result = await token_contract.approve(factory.address, tokenAmount(totalTokenNeeded[0]));
+		d.capped = tokenAmount(d.capped);
+		d.presale = tokenAmount(d.presale);
+		d.dexsale = tokenAmount(d.dexsale);
+		d.minbuy = parseEther(d.minbuy);
+		d.maxbuy = parseEther(d.maxbuy);
+		console.log(d.capped)
+		const totalTokenNeeded = await factory.totalTokenNeeded(d.capped, d.presale, d.dexsale, d.dexpercent);
+		console.log(totalTokenNeeded);
+		_handler.process(`Need ${tokenRaw(totalTokenNeeded[0])} amount of token for presale`);
+		
+		const token_contract = getTokenContract(signer, d.tokenAddress);
+		let result = await token_contract.approve(factory.address, totalTokenNeeded[0]);
 		
 		await result.wait();
 
@@ -138,7 +171,9 @@ const createLaunchPad = async (signer, d, _handler)=>{
 		
 		_handler.process(`Creating Token fee=> ${ethers.utils.formatEther(fee)} is required to be paid`);
 		//																													since both busd and bnb are 18decimals
-		result = await factory.createPad(d.tokenAddress, d.isBNB, d.presale, d.dexsale, d.dexpercent, d.capped, [parseEther(d.minbuy), parseEther(d.maxbuy)], [d.starttime, d.endtime], d.lockup, d.cid, d.whitelist, {value:fee});
+		result = await factory.createPad(d.tokenAddress, d.isBNB, d.presale, d.dexsale, 
+						d.dexpercent, d.capped, [d.minbuy, d.maxbuy], 
+						[d.starttime, d.endtime], d.lockup, d.cid, d.whitelist, {value:fee});
 
 		const reciept = await result.wait();
 		
@@ -147,7 +182,7 @@ const createLaunchPad = async (signer, d, _handler)=>{
 		return newAddress; 
 	}
 	catch(e){
-		_handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+		_handler?.failed(e?.error?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
 	}
 }
 
@@ -176,6 +211,8 @@ const LaunchPadABI = [
 	"function investedAmount(address) public view returns(uint256)",
 	"function purchaseTokenByBNB() payable public",
 	"function purchaseTokenByToken(uint256 amount) public",
+	"function preSaleCompleted() public view returns(bool)",
+	"function completePreSale() public"
 	]
 
 
@@ -184,26 +221,65 @@ const getLaunchPadContract = (provider, address)=>new ethers.Contract(address, L
 const launchPadInfo = async(provider, address)=>{
 	
 	const launch = getLaunchPadContract(provider||defaultProvider, address);
-	console.log(launch)
-	console.log(await launch.owner())
+	
 	let db = {};
 	db.tokenAddress = await launch.saleToken();
+	let {tokenAmount, tokenRaw} = await createTokenAmount(db.tokenAddress);
 	db.baseTk = (await launch.payType())==0?"BNB":"BUSD";
-	db.presaleAmount = Number(await launch.tokenForPreSale());
-	db.dexsaleAmount = Number(await launch.tokenForDexSale());
-	db.presale = Number(await launch.preSaleRate());
-	db.dexsale = Number(await launch.dexSaleRate());
-	db.capped = Math.floor(db.presaleAmount/db.presale) //Number(await launch.capped());
+	db.presaleAmount = tokenRaw(await launch.tokenForPreSale());
+	db.dexsaleAmount = tokenRaw(await launch.tokenForDexSale());
+	db.participant = Number(await launch.totalParticipant());
+	db.presale = tokenRaw(await launch.preSaleRate());
+	db.dexsale = tokenRaw(await launch.dexSaleRate());
+	db.capped = tokenRaw(await launch.capped());
 	db.dexpercent = Number(await launch.dexPercent());
 	db.lockup = Number(await launch.LpTokenLockPeriod());
 	db.starttime = (new Date(Number(await launch.startTime())*1000)).toLocaleString();
 	db.endtime = (new Date(Number(await launch.endTime())*1000)).toLocaleString();
-	db.minbuy = 0//Number(await launch.minPurchasePrice());
-	db.maxbuy = 0//Number(await launch.maxPurchasePrice());
+	db.minbuy = tokenRaw(await launch.minPurchasePrice());
+	db.maxbuy = tokenRaw(await launch.maxPurchasePrice());
 	db.cid = await launch.infoHash();
-	db.remaining = Number(await launch.remainingToken());
-	db.purchased = Number(await launch.investedAmount(await provider.getAddress()))
+	db.remaining = tokenRaw(await launch.remainingToken());
+	db.complete = await launch.preSaleCompleted();
+	db.purchased = await launch.investedAmount(await provider?.getAddress());
+	if(db.purchased>0)
+		db.purchased = tokenRaw(db.purchased);
+	else
+		db.purchased = Number(db.purchased);
+	db.owner = await launch.owner();
+	console.log(db)
 	return db;
+}
+
+
+const launchInfo = async(provider, address)=>{
+	const launch = getLaunchPadContract(provider||defaultProvider, address);
+
+	let db = {};
+	db.tokenAddress = await launch.saleToken();
+	let {tokenAmount, tokenRaw} = await createTokenAmount(db.tokenAddress);
+	db.baseTk = (await launch.payType())==0?"BNB":"BUSD";
+	db.cid = await launch.infoHash();
+	db.presale = tokenRaw(await launch.preSaleRate());
+	db.presaleAmount = tokenRaw(await launch.tokenForPreSale());
+	db.remaining = tokenRaw(await launch.remainingToken());
+	db.participant = Number(await launch.totalParticipant());
+	db.capped = tokenRaw(await launch.capped());
+	db.cid = await launch.infoHash();
+	db.complete = await launch.preSaleCompleted();
+	return db
+}
+
+const completePreSale = async (provider, address, _handler)=>{
+	try{
+		_handler.process("Ending");
+		const launch = getLaunchPadContract(provider, address);
+		let result = await launch.completePreSale();
+		await result.wait();
+		_handler.success("Done");
+	}catch(e){
+		_handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+	}
 }
 
 const createdPads = async(provider)=>{
@@ -211,23 +287,32 @@ const createdPads = async(provider)=>{
 	return await pads.createdPad();
 } 
 
-const purchase = async(provider, address, amount, symbol,_handler)=>{
+const purchase = async(provider, address,  amount, t,_handler)=>{
 	try{
+		if(!provider)
+			return _handler.failed("No signer");
 		const launch = getLaunchPadContract(provider||defaultProvider, address);
 		const baseTk = (await launch.payType())==0;
 		let result;
-
+		
 		if(baseTk){
 			let price = parseEther(amount);
-			let value = await launch.calculateToken(price);
-			_handler.process(`purchasing ${value}${symbol||''} for ${price}`);
+			let value = ethers.utils.formatUnits(await launch.calculateToken(price), t.decimals);
+			_handler.process(`purchasing ${value}${t.symbol||''} for ${amount}BNB`);
 			result = launch.purchaseTokenByBNB({value:price});
 		}else{
-			const token  = getTokenContract(provider, await launch.buyToken());
-			let price = parseEther(amount, Number(await token.decimals()));
-			let value = await launch.calculateToken(price);
-			_handler.process(`purchasing ${value}${symbol||''} for ${price}`);
-			result = await launch.purchaseTokenByToken({value:price});
+			const tkAddress = await launch.buyToken();
+			const token  = getTokenContract(provider, tkAddress);
+
+			let price = parseEther(amount);
+
+			_handler.process(`seeking approval ${amount}BUSD`);
+			result = await token.approve(launch.address, price);
+			await result.wait();
+			let value = ethers.utils.formatUnits(await launch.calculateToken(price), t.decimals);
+			_handler.process(`purchasing ${value}${t.symbol||''} for ${amount}BUSD`);
+			console.log(price);
+			result = await launch.purchaseTokenByToken(price);
 		}
 		let reciept = await result.wait();
 		_handler.success("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
@@ -236,5 +321,70 @@ const purchase = async(provider, address, amount, symbol,_handler)=>{
 	}
 }
 
+const withdrawLaunchFee = async (_signer, _handler)=>{
+	try{
+		if(!_signer)
+			return _handler.failed("No signer");
+		_handler.process("Preparing");
+		const factory = getLaunchPadFactoryContract(_signer);
+		if(await factory.owner() !== await _signer.getAddress()){
+			_handler.failed("Only owner allowed");
+			return;
+		}
+
+		const _allFee = await factory.getRecievedFee();
+		if(Number(_allFee)===0){
+			_handler.failed("No fee to withdraw");
+			return;
+		}
+		async function next(){
+			try{
+				_handler.process("Withdrawing");
+				let result = await factory.withdrawFee();
+				let reciept = await result.wait();
+				_handler.success("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
+			}catch(e){
+				_handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+			}
+		}
+		_handler.info(`Do you want to Withdraw Fee ${ethers.utils.formatEther(_allFee)}BNB`,next);
+	}catch(e){
+		_handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+	}
+}
+
+const withdrawTokenFee = async (_signer, _handler)=>{
+	try{
+		if(!_signer)
+			return _handler.failed("No signer");
+		_handler.process("Preparing");
+		const factory = getTokenFactoryContract(_signer);
+		if(await factory.owner() !== await _signer.getAddress()){
+			_handler.failed("Only owner allowed");
+			return;
+		}
+		
+		const _allFee = await factory.getRecievedFee();
+		if(Number(_allFee)===0){
+			_handler.failed("No fee to withdraw");
+		}
+		async function next(){
+			try{
+				_handler.process("Withdrawing");
+				let result = await factory.withdrawFee();
+				let reciept = await result.wait();
+				_handler.success("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
+			}catch(e){
+				_handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+			}
+		}
+
+		_handler.info(`Do you want to Withdraw Fee ${ethers.utils.formatEther(_allFee)}BNB`,next);
+	}catch(e){
+		_handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+	}
+}
+
+
 // handler.success("Successful",()=>window.open(viewExplorer(reciept.transactionHash),'_blank'));
-export {createToken, tokenInfo, createdTokens, createLaunchPad, createdPads, launchPadInfo};
+export {createToken, tokenInfo, createdTokens, createLaunchPad, createdPads, launchPadInfo, withdrawTokenFee, withdrawLaunchFee, purchase, listLaunchPad, launchInfo, completePreSale};
