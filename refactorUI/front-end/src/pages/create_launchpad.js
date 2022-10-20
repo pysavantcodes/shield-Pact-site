@@ -66,12 +66,8 @@ const Container = ()=>{
 	return (
 	<>
 		<View/>
-<<<<<<< HEAD
 		<button onClick={_withdrawLaunchFee}>withdrawLaunchFee</button>
-		<form ref={_form}>
-=======
 		<form style={{padding:"1.5rem"}} ref={_form}>
->>>>>>> 4e9115b46ad653c45ffeca990ddfaff0f89a2ac9
 			<Form1/>
 			<Form2/>
 			<Form3 onSubmit={onSubmit}/>
