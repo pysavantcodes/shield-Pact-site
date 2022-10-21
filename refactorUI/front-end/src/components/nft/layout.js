@@ -225,7 +225,7 @@ const Header = ()=>{
         </div>
         <GiHamburgerMenu onClick={()=>dropDown()} className="hamburger" />
       </div>
-      <ConnectSection {...{ address, connect, isConnected, disconnect }} />
+      <ConnectSection {...{address, connect, isConnected, disconnect, owner, withdraw}}/>
     </HeaderWrapper>
   );
 }
