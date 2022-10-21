@@ -1,0 +1,82 @@
+const { expect } = require("chai");
+
+const {parseEther, formatEther} = ethers.utils;
+
+describe("Staking contract", function () {
+	let stake;
+	let bnb;
+	let bonusToken;
+	let stakeToken;
+	let deployer;
+	let clients;
+
+ 	before("Deploying Contract", async function(){
+ 		[deployer,...clients] = await ethers.getSigners();
+		let factory = await ethers.getContractFactory("Token");
+		bonusToken = await factory.deploy("Bonus Token", "BT", 18);
+		await bonusToken.deployed();
+		await bonusToken.mint(deployer.address, parseEther("1000000"));
+		console.log("BonusToken deployed address=>", bonusToken.address);
+		
+		stakeToken = await factory.deploy("Stake Token", "ST", 18);
+		await stakeToken.deployed();
+		await stakeToken.mint(deployer.address, parseEther("1000000"));
+		console.log("stakeToken deployed address=>", stakeToken.address);
+
+		factory = await ethers.getContractFactory("WETH");
+		bnb = await factory.deploy();
+		await bnb.deployed();
+		console.log("WBNB address=>",bnb.address);
+
+		factory = await ethers.getContractFactory("Staking");
+		stake = await factory.deploy(bnb.address);
+	});
+
+	it("create Stake BNB", async ()=>{
+		const duration = 1//1sec
+	
+		let result = await bonusToken.approve(stake.address, parseEther("50"));
+		
+		console.log(formatEther(await bonusToken.allowance(clients[0].address, stake.address)));
+		result = await stake.setStakeableBNB(bonusToken.address, parseEther("1"), parseEther("3"), parseEther("50"), duration);
+		expect(await stake.allStakeTokens(0)).to.equal(bnb.address);
+		expect(await stake.allBonusTokens(0)).to.equal(bonusToken.address);
+
+		result = await stake.stakeInterest(bnb.address, bonusToken.address);
+		expect(result.duration).to.equal(duration);
+		console.log(await stake.getStakeable());
+		expect(await stake.pairExist(bnb.address, bonusToken.address)).to.be.true;
+	});
+
+	it("Stake BNB", async ()=>{
+		const bt = await bonusToken.connect(clients[0]);
+		const contract = await stake.connect(clients[0]);
+
+		let result = await contract.stakeBNB(bonusToken.address, {value:parseEther("2")});
+		let reciept = await result.wait();
+		let _id = reciept.events[reciept.events.length - 1].args.stakeId;
+
+		expect((await contract.bank(clients[0].address, _id)).amount).to.equal(parseEther("2"));
+		expect(await contract.getOwnedStake()).to.have.deep.members([_id]);
+
+		st = await stake.connect(clients[1]);
+		await st.stakeBNB(bonusToken.address, {value:parseEther("14.4")});
+	});
+
+	it("Claim BNB", async ()=>{
+		let st = await stake.connect(clients[0]);
+		let stakes = await st.getOwnedStake();
+		expect(await bonusToken.balanceOf(clients[0].address)).to.equal(0);
+		console.log("Prev Baalance=> ", formatEther(await clients[0].getBalance()));
+		let result = await st.claim(stakes[0]);
+		console.log("Current Balance=> ",formatEther(await clients[0].getBalance()));
+		expect(await bonusToken.balanceOf(clients[0].address)).to.equal(parseEther(`${2*3}`));
+		expect(await st.treasure(bnb.address)).to.equal(parseEther("14.4"));
+		let s1 = st.connect(clients[1]);
+		stakes1 = await s1.getOwnedStake();
+		result = await s1.claim(stakes1[0]);
+		expect(await st.treasure(bnb.address)).to.equal(0);
+		console.log(await s1.bank(clients[0].address, stakes[0]))
+	});
+
+});
