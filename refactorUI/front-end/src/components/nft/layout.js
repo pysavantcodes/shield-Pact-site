@@ -33,62 +33,94 @@ const flex = css`
 `;
 
 const HeaderWrapper = styled.header`
-	justify-content:space-between;
-	padding:1rem 5rem;
-	font-size:1.25rem;
-	position:sticky;
-	top:0;
-	border-bottom: 1px solid #ffffff14;
-	background-color: #1515218c;
-	backdrop-filter: blur(10px);
-	z-index:2;
+  justify-content: space-between;
+  padding: 1rem 5rem;
+  font-size: 1.25rem;
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid #ffffff14;
+  background-color: #1515218c;
+  backdrop-filter: blur(10px);
+  z-index: 2;
+  overflow: hidden;
 
-	&, .title_menu_container,
-	.title, .menu
-	{
-		${flex}
-	}
+  &,
+  .title_menu_container,
+  .title,
+  .menu {
+    ${flex}
+  }
 
-	.title_menu_container{
-		gap:1rem;
-	}
+  .title_menu_container {
+    gap: 1rem;
+  }
 
-	.title{
-		font-weight:bold;
-		border-right:solid 1px #ffffff14;
-		padding-right:1rem;
-		color:#fff;
+  .title {
+    font-weight: bold;
+    border-right: solid 1px #ffffff14;
+    padding-right: 1rem;
+    color: #fff;
 
-		font-size:20px;
+    font-size: 20px;
 
-		img{
-			width:3rem;
-			height:auto;
-		}
-	}
+    img {
+      width: 3rem;
+      height: auto;
+    }
+  }
 
-	.menu{
-		gap:1.4rem;
+  .menu {
+    gap: 1.4rem;
 
-		font-size:17px;
-	}
+    font-size: 17px;
+  }
 
-	@media (max-width:900px){
-		flex-direction:column;
+  button {
+    margin-right: 0.5rem;
+  }
+  
 
-		.title_menu_container{
-			flex-direction:column;
-		}
+  .hamburger, .home {
+    display: none;
+  }
 
-		.menu{
-			margin-bottom:1rem;
-			font-size:15px;
-		}
-		.title{
-			border-right:none;
-		}
+  .drop {
+      display: none;
+    }
 
-	}
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    padding: 1rem 2rem;
+    .title_menu_container {
+      flex-direction: column;
+    }
+    .btn {
+      margin-right: 0rem;
+    }
+
+    .menu {
+      margin-bottom: 1rem;
+      font-size: 15px;
+    }
+    .title {
+      border-right: none;
+    }
+    
+    .hamburger {
+      display: block;
+      position: absolute;
+      right: 30px;
+      top: 30px;
+      cursor: pointer;
+    }
+    .home {
+      display: block;
+      position: absolute;
+      left: 30px;
+      top: 30px;
+      cursor: pointer;
+    }
+  }
 `;
 
 const TitleWrapper = styled.div`
@@ -139,11 +171,13 @@ const TitleWrapper = styled.div`
 		}
 	}
 
-	@media (max-width:900px){
+	@media (max-width:1200px){
 		padding:1.5rem 2rem;
 	}
 
-`
+  
+
+`;
 const Header = ()=>{
 	const {open:connect} = useConnectModal();
 	const { address, isConnected } = useAccount();
@@ -168,39 +202,55 @@ const Header = ()=>{
   										{withdrawBNB:_withdrawBNB, withdrawBUSD:_withdrawBUSD}),
   															[optionUpdate, _withdrawBNB, _withdrawBUSD]);
 
-	return(
-	<>
-		<HeaderWrapper>
-			<div className="title_menu_container">
-				<div className="title">
-					<img src={logo} alt="nft-logo"/>
-					ShieldPact NFT
-				</div>
-				<div className="menu">
-					<NavLink to="/nft/home">Home</NavLink>
-					<NavLink to="/nft/explore">Explore</NavLink>
-					{isConnected && <NavLink to="/nft/create">Create NFT</NavLink>}
-				</div>
-			</div>
-			<ConnectSection {...{address, connect, isConnected, disconnect, owner, withdraw}}/>
-		</HeaderWrapper>
-		<OptionView/>
-	</>
-	);
+	const dropDown = ()=>{
+      document.querySelector(".menu").classList.toggle("drop")
+      document.querySelector(".dropBtn").classList.toggle("drop");
+    }
+
+  
+
+  return (
+    <HeaderWrapper>
+      <div className="title_menu_container">
+        <NavLink className="home" to="/"><FaHome /></NavLink>
+        <div className="title">
+          <img src={logo} alt="nft-logo" />
+          ShieldPact NFT MarketPlace
+        </div>
+
+        <div className="menu">
+          <NavLink to="/nft/home">Home</NavLink>
+          <NavLink to="/nft/explore">Explore</NavLink>
+          {isConnected && <NavLink to="/nft/create">Create NFT</NavLink>}
+        </div>
+        <GiHamburgerMenu onClick={()=>dropDown()} className="hamburger" />
+      </div>
+      <ConnectSection {...{ address, connect, isConnected, disconnect }} />
+    </HeaderWrapper>
+  );
 }
 
+const toggleDisplay = () => {
+  document.getElementById("small").classList.toggle("small");
+};
 
 const ConnectSection = ({address, connect, isConnected, disconnect, owner, withdraw})=>{
 	
 	return(
-		<ConnectWrapper>
+		<ConnectWrapper className="dropBtn">
 			{owner && <Button onClick={withdraw}>Withdraw</Button>}
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
 			{/*<br/><small>{address}</small>*/}
-			<div className="walletDrop">
-				<FaWallet style={{color: "white", fontSize: "30px", border: "1px solid white", padding:"8px", borderRadius:"50%"}}/>
-				<small>{address}</small>
-			</div>
+			{isConnected && (
+        <div class="walletDrop">
+          <div onClick={() => toggleDisplay()} className="wallt">
+            <FaWallet id="wallet" />
+            <span>&#9660;</span>
+          </div>
+
+          <small id="small">{address}</small>
+        </div>
+      )}
 		</ConnectWrapper>
 	);
 }
