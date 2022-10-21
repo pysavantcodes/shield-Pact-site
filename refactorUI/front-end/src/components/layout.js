@@ -242,6 +242,7 @@ const ConnectSection = ({ address, connect, isConnected, disconnect }) => {
       <Button onClick={isConnected ? disconnect : connect}>
         {isConnected ? "Disconnect" : "Connect"} Wallet
       </Button>
+      {address && <Button onClick={()=>window.open(`https://buy.ramp.network/?userAddress=${address}`,'_blank')}>Ramp Network</Button>}
       {/*<br/><small>{address}</small>*/}
       {isConnected && (
         <div class="walletDrop">
