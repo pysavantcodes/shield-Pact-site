@@ -217,7 +217,7 @@ const Header = ()=>{
         <NavLink className="home" to="/"><FaHome /></NavLink>
         <div className="title">
           <img src={logo} alt="nft-logo" />
-          ShieldPact NFT MarketPlace
+          ShieldPact NFT
         </div>
 
         <div className="menu">
@@ -244,50 +244,85 @@ const ConnectSection = ({address, connect, isConnected, disconnect, owner, withd
 			<Button onClick={isConnected?disconnect:connect}>{isConnected?"Disconnect":"Connect"} Wallet</Button>
 			{/*<br/><small>{address}</small>*/}
 			{isConnected && (
-        <div class="walletDrop">
-          <div onClick={() => toggleDisplay()} className="wallt">
-            <FaWallet id="wallet" />
-            <span>&#9660;</span>
-          </div>
-
-          <small id="small">{address}</small>
-        </div>
-      )}
-		</ConnectWrapper>
-	);
+        			<div class="walletDrop">
+          			   <div onClick={() => toggleDisplay()} className="wallt">
+            				<FaWallet id="wallet" />
+            				<span>&#9660;</span>
+          			   </div>
+				   <small id="small">{address}</small>
+        		        </div>
+      			)}
+			</ConnectWrapper>
+		);
 }
 
 
 
 const ConnectWrapper = styled.div`
-	position:relative;
-	display:flex;
-	justify-content:center;
-	align-items:center;
-	gap:.75rem;
-	/*small{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*small{
 		color:#fff;
 		text-decoration:underline;
 		position:absolute;
 		right:0;
 		top:100%;
 	}*/
-	.walletDrop{
-		text-align:center;
-	}
-	small{
-		color:#fff;
-		font-size:10px;
-		background:#111;
-		padding:3px;
-		border-radius:5px;
-		margin-top:2px;
-	}
-	
-	@media (max-width:900px){
-		flex-direction:column;
-	}
-`
+  .walletDrop {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  small {
+    display: block;
+    color: #fff;
+    font-size: 10px;
+    background: #111;
+    border-radius: 5px;
+    margin-top: 2px;
+    width: 0px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .small {
+    padding: 3px;
+    width: 100%;
+  }
+
+  .wallt {
+    color: white;
+    font-size: 15px;
+    border: 1px solid white;
+    padding: 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-right: 0.3rem;
+  }
+
+  .wallt span {
+    font-size: 10px;
+    margin-left: 0.3rem;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    .walletDrop {
+      margin-top: 0.5rem;
+    }
+  }
+
+  @media (max-width: 317px) {
+    .walletDrop {
+      flex-direction: column;
+    }
+  }
+`;
 
 const Layout = ()=>{
 	return (
