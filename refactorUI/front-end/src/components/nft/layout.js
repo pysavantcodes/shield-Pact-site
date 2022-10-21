@@ -2,6 +2,8 @@ import React, {useState, useEffect, useMemo, useCallback} from "react";
 import {Outlet, NavLink} from "react-router-dom";
 import styled,{css} from 'styled-components';
 import { FaWallet } from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { FaHome } from "react-icons/fa";
 import {Button} from '../buttons';
 import logo from './logo.png';
 
