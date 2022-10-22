@@ -222,7 +222,7 @@ const Header = () => {
         </div>
         <div className="menu">
 	{/*<NavLink to="/">Home</NavLink>*/}
-          <NavLink to="/">LaunchPad</NavLink>
+          <NavLink to="/launchpad">LaunchPad</NavLink>
           {/*<NavLink to="/staking">Staking</NavLink>*/}
           <NavLink to="/swap">Swap</NavLink>
           <NavLink to="/nft">NFT</NavLink>
