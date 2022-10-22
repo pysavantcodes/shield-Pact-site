@@ -5,6 +5,7 @@ import { FaWallet } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "./buttons";
 import logo from "./nft/logo.png";
+import useLocation from "react-router-dom"
 
 import {
   useConnectModal,
@@ -211,13 +212,13 @@ const Header = () => {
     }
 
   
-
+  const location = useLocation();
   return (
     <HeaderWrapper>
       <div className="title_menu_container">
         <div className="title">
           <img src={logo} alt="nft-logo" />
-          ShieldPact
+          Shield <span style={{textTransform:"capitalize"}}> {(location.pathname).replace("/"," ")}</span>
         </div>
         <div className="menu">
 	{/*<NavLink to="/">Home</NavLink>*/}
