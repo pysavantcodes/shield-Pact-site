@@ -217,7 +217,7 @@ const Header = ()=>{
         <NavLink className="home" to="/"><FaHome /></NavLink>
         <div className="title">
           <img src={logo} alt="nft-logo" />
-          ShieldPact NFT
+          ShieldNFT
         </div>
 
         <div className="menu">
