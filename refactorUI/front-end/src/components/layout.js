@@ -217,7 +217,7 @@ const Header = () => {
       <div className="title_menu_container">
         <div className="title">
           <img src={logo} alt="nft-logo" />
-          Shield <span style={{textTransform:"capitalize"}}> {(location.pathname).replace("/"," ")}</span>
+          Shield <span style={{textTransform:"capitalize"}}> {(location.pathname).split("/")[1]}</span>
         </div>
         <div className="menu">
 	{/*<NavLink to="/">Home</NavLink>*/}
