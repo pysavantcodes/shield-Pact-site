@@ -35,7 +35,7 @@ const router = createBrowserRouter([
 					},
 					{
 						path:'',//default
-						element:<Navigate to='launchpad'/>,
+						element:<Navigate to='swap'/>,
 					},
 					{
 						path:'staking',
