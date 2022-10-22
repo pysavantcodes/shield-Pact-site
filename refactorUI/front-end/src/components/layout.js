@@ -221,9 +221,10 @@ const Header = () => {
         </div>
         <div className="menu">
 	{/*<NavLink to="/">Home</NavLink>*/}
-          <NavLink activeClassName="active" to="/launchpad">LaunchPad</NavLink>
-          {/*<NavLink to="/staking">Staking</NavLink>*/}
           <NavLink activeClassName="active" to="/swap">Swap</NavLink>
+          <NavLink activeClassName="active" to="/launchpad">LaunchPad</NavLink>
+          <NavLink to="/staking">Staking</NavLink>
+          
           <NavLink activeClassName="active" to="/nft">NFT</NavLink>
         </div>
         <GiHamburgerMenu onClick={()=>dropDown()} className="hamburger" />
