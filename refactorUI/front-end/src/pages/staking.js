@@ -24,7 +24,7 @@ const Container = () => {
       <h1>Staking</h1>
       <h3>Maximize yield by staking BNB for BTS</h3>
       <p>
-        When your BNB is staked receive xSUSHI in return
+        When your BNB is staked receive BTS in return
         for voting rights and a fully composable token that can interact with
         other protocols.
       </p>
