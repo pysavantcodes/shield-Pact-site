@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { FaWallet } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "./buttons";
 import logo from "./nft/logo.png";
-import useLocation from "react-router-dom"
 
 import {
   useConnectModal,
