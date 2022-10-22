@@ -220,11 +220,11 @@ const Header = () => {
           ShieldPact
         </div>
         <div className="menu">
-	{/*<NavLink to="/">Home</NavLink>
+	{/*<NavLink to="/">Home</NavLink>*/}
           <NavLink to="/">LaunchPad</NavLink>
-          <NavLink to="/staking">Staking</NavLink>
+          {/*<NavLink to="/staking">Staking</NavLink>*/}
           <NavLink to="/swap">Swap</NavLink>
-          <NavLink to="/nft">NFT</NavLink>*/}
+          <NavLink to="/nft">NFT</NavLink>
         </div>
         <GiHamburgerMenu onClick={()=>dropDown()} className="hamburger" />
       </div>
