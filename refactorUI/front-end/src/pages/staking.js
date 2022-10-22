@@ -62,6 +62,7 @@ const StakeCenter = ({signer, handler})=>{
             <p>Total Reward Available {ethers.utils.formatEther(info.totalRewardAmount??0)}BTS</p>
           </h3>
           <p>Duration: {Number(info.duration??0)/60} mins</p>
+          <p>Interest Recieve: {(+state||0)*Number(info.reward)}</p>
           <div className="input">
             <input type="number" placeholder="0.00" onKeyUp={(e)=>setState(e.target.value)}/>
             {/*<p>Balance: 2.617</p>*/}
