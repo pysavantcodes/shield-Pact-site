@@ -34,8 +34,9 @@ const Container = () => {
   
     <div className="launchpad">
       <section className="--full-page">
-        <Link to="/createtoken">Create Token</Link><br/>
-        <Link to="/createlaunchpad">Create LaunchPad</Link>
+        <button className="btn" style={{margin:"0",fontSize:"12px", marginRight:"8px"}}><Link style={{color:"white"}} to="/createtoken">Create a Token</Link></button>
+        <button className="btn" style={{margin:"0",fontSize:"12px"}}><Link style={{color:"white"}} to="/createlaunchpad">Create Launchpad</Link></button>
+   
         <h1>Launched Token View</h1>
       {created?.length>0 ?
         <div>
