@@ -19,6 +19,7 @@ const bgColor = "#1d1d1d";
 const LayoutWrapper = styled.section`
   background-color: ${bgColor};
   color: ${fgColor};
+  z-index:999999999999999;
 
   a {
     color: ${fgColor};
