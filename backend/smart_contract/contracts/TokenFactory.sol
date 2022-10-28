@@ -47,7 +47,7 @@ contract TokenFactory is Ownable{
         _;  
     }
 
-    constructor(address _router, uint256 _fee, address StandardCreator_, address ReflectCreator_, address LiquidCreator_){
+    constructor(uint256 _fee, address _router, address StandardCreator_, address ReflectCreator_, address LiquidCreator_){
         setRouter(_router);
         setFee(_fee);
 

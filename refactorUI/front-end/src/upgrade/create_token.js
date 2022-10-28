@@ -2,7 +2,7 @@ import * as helper from './web3Helper';
 import * as contract from './contract';
 
 
-const tokenFactoryAddress = "0x00910c9cBe37dbC92462eE32E7C15621144AF206";
+const tokenFactoryAddress = "0x0AED08168aE1Aa0E363877D34BD7b094Bc7e4f0b";
 
 const getTokenFactory = (signer)=>
 					helper.getContract(tokenFactoryAddress, 
@@ -14,8 +14,8 @@ const plug = {};
 const getTokenInfo = async (provider, address)=>{
 	const token = await helper.fetchToken(address, provider);
 	const info  = {};
-	info.name = token.name(); 
-	info.symbol = token.symbol();
+	info.name = token.name; 
+	info.symbol = token.symbol;
 	info.decimals = Number(token.decimals);
 	info.totalSupply = token.format(await token._token.totalSupply());
 	try{
@@ -37,20 +37,25 @@ const __tokenType = {
   liquid:2
 }
 
-const __createToken = async(factory, fee, __type, {name, symbols, decimals, totalSupply, taxBps, liqBps})=>{
+const __createToken = async(factory, fee, __type, {name, symbol, decimals, totalSupply, taxBps, liqBps})=>{
   let result;
+  console.log(__type);
+  console.log(name, symbol, decimals, totalSupply, taxBps, liqBps)
   switch(__type){
     case __tokenType.reflect:
-      result = factory.createReflectToken(name, symbols, decimals, totalSupply,{value:fee});
+      result = await factory.createReflectToken(name, symbol, decimals, totalSupply,{value:fee});
       break;
     case __tokenType.liquid:
-      result = factory.createLiquidToken(name, symbols, decimals, totalSupply, taxBps, liqBps, {value:fee});
+      result = await factory.createLiquidToken(name, symbol, decimals, totalSupply, taxBps, liqBps, {value:fee});
       break;
     default:
-      result = factory.createStandardToken(name, symbols, decimals, totalSupply,{value:fee});
+      result = await factory.createStandardToken(name, symbol, decimals, totalSupply,{value:fee});
+      break;
   }
-  const reciept = result.wait();
-  return reciept.events[(reciept.events.length - 1)].args.token;//created token address
+  console.log("Result ",result);
+  const reciept = await result.wait();
+  //return reciept.events[(reciept.events.length - 1)].args.token;//created token address
+  return reciept.transactionHash;
 }
 
 const createToken = async (signer, tokenData,  _handler)=>{

@@ -147,7 +147,7 @@ contract LaunchPadFactory is Ownable{
     uint16 dexBps_,
     uint16 bnbFeeBps_,
     uint16 tkFeeBps_)
-    public view
+    public pure
     returns (uint256)
     {
         return LaunchPadLib.totalTokenSold(

@@ -80,7 +80,7 @@ const CreateTokenModal = () => {
 		        <label htmlFor="liq">{_type!==2?'':"liquid Percent"}
 		        <input name="liq" type={_type!==2?"hidden":"number"} placeholder="Ex: 0.00" defaultValue={0} required/>
 		        </label>
-		        <p><strong>taxPercent + liquidPercent not more than 25%</strong></p>
+		        <p><strong>{_type!==2?'':"taxPercent + liquidPercent not more than 25%"}</strong></p>
 		        <button className="btn" onClick={onSubmit}>Create Token</button>
 		    </form>
 		    <br/>

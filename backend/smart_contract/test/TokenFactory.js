@@ -3,17 +3,19 @@ const {tokenInfo} = require("../scripts/launchpad");
 
 
 describe("Token Factory", ()=>{
-	const feePrice = "5";
+	const feePrice = "0.000002";
 	const fee = ethers.utils.parseEther(feePrice);
+	const tokenFactoryAddr = "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318";
 	let contract;
 
 	before(async ()=>{
-		const factory = await ethers.getContractFactory("TokenFactory");
-		contract = await factory.deploy(fee);
+		let deployer = await ethers.getSigner();
+		contract = await ethers.getContractAt("TokenFactory", tokenFactoryAddr, deployer);
 	});
 
 	it("create Token", async()=>{
-		let result = await contract.createToken("QNN","QueenNewNord",18, 1E6,{value:fee});
+		
+		let result = await contract.createStandardToken("QNN","QueenNewNord",18, 1E6,{value:fee});
 		let reciept = await result.wait();
 
 		let tkAddress = reciept.events[reciept.events.length - 1].args.token;
