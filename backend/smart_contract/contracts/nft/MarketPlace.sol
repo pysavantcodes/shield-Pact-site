@@ -3,11 +3,13 @@
 pragma solidity 0.8.15;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./NFT.sol";
 import '@openzeppelin/contracts/interfaces/IERC20.sol';
 
 contract MarketPlace is ERC721Holder, Ownable{
-	
+	using SafeMath for uint256;
+
 	struct Product{
 		uint256 price;
 		bool isBNB;
@@ -21,7 +23,8 @@ contract MarketPlace is ERC721Holder, Ownable{
 	NFT private _store;
 	IERC20 _busdToken;
 	address payable _storeKeeper;
-	uint feePercent=25;//percentage 2.5%==25/1000 ...
+	
+	uint32 public feeBps;//percentage 2%==200/10000 ...
 	
 	//EVENTS
 	event ProductCreated(address owner, uint256 productId);
@@ -53,10 +56,15 @@ contract MarketPlace is ERC721Holder, Ownable{
 		_;
 	}
 
-	constructor(address nftStore, address busdToken){
+	constructor(address nftStore, address busdToken, uint32 _feeBps){
 		_store = NFT(nftStore);
 		_busdToken = IERC20(busdToken);
 		_storeKeeper = payable(msg.sender);
+		setFee(_feeBps);
+	}
+
+	function setFee(uint32 _feeBps) public {
+		feeBps = _feeBps;
 	}
 
 	/*
@@ -67,16 +75,14 @@ contract MarketPlace is ERC721Holder, Ownable{
 		
 		if(products[productId].price == 0){
 			//register new products
-			Product memory newProduct = Product(price, isBNB, true);
+			Product memory newProduct = Product(price + price.mul(feeBps).div(10000), isBNB, true);
 			products[productId] = newProduct;
 			allProducts.push(productId);
 			emit ProductCreated(msg.sender, productId);
 		}
 		else{
 			//change price is product already exist
-			if(products[productId].price != price){
-				products[productId].price = price;
-			}
+			products[productId].price = price + price.mul(feeBps).div(10000);
 
 			if(products[productId].isBNB != isBNB){
 				products[productId].isBNB = isBNB;
@@ -143,7 +149,7 @@ contract MarketPlace is ERC721Holder, Ownable{
 
 		address payable seller = payable(_store.ownerOf(productId)); 
 		
-		uint256 fee = (msg.value*feePercent)/1000;
+		uint256 fee = uint256(feeBps).mul(msg.value).div(10000 + feeBps);
 
 		uint256 sellValue = msg.value - fee;
 		
@@ -168,7 +174,7 @@ contract MarketPlace is ERC721Holder, Ownable{
 
 		address payable seller = payable(_store.ownerOf(productId)); 
 		
-		uint256 fee = (amount*feePercent)/1000;
+		uint256 fee = uint256(feeBps).mul(amount).div(10000 + feeBps);
 
 		uint256 sellValue = amount - fee;
 		

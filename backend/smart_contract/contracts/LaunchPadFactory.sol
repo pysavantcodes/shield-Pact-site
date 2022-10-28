@@ -4,15 +4,15 @@ pragma solidity 0.8.15;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./LaunchPadLib.sol";
-import {LaunchPad, IERC20} from "./LaunchPad.sol";
-
+import "./IERC20.sol";
+import "./launch/LaunchPadLib.sol";
+import "./launch/LaunchPad.sol";
 
 contract LaunchPadFactory is Ownable{
     using SafeMath for uint256;
+    
    //Fee
     uint256 public fee;
-    uint8 public feePercent;
     //fee Reciever is the owner of the Factory
 
     //Dex Router e.g PancakeSwap
@@ -26,6 +26,13 @@ contract LaunchPadFactory is Ownable{
 
     address bnbAltToken;
     
+    //constant tokenfeeBps and BnbfeeBps
+    uint16[2][3] public feeOption;/* = [
+                                    [0,500],//0% and 5%=>500/10000
+                                    [200,200],
+                                    [0,300]
+                                ];*/
+
     event PadCreated(address creator, address pad);
    	event FeeWithdrawn(uint256 amount);
     
@@ -34,11 +41,14 @@ contract LaunchPadFactory is Ownable{
         _;
     }
 
-    constructor(uint256 _fee, uint8 _feePercent, address _altToken, address _router){
+    constructor(uint256 _fee, address _altToken, address _router){
         setFee(_fee);
-        setFeePercent(_feePercent);
         setBNBAltToken(_altToken);
         setDexRouter(_router);
+       // feeOption = new uint16[2][](3);
+        feeOption[0] = [0,500];
+        feeOption[1] = [200,200];
+        feeOption[2] = [0,300];
     }
     
     function setDexRouter(address _dexRouter) public onlyOwner{
@@ -55,35 +65,40 @@ contract LaunchPadFactory is Ownable{
         fee = _fee;
     }
 
-    function setFeePercent(uint8 _percent) public onlyOwner{
-        require(_percent > 0,"Percent <= 0");
-        feePercent = _percent;
-    }
-    
-    
-    function createPad(address token_,
-                    bool payTypeIsBNB,
-                    uint256 _preSaleRate,
-                    uint256 _dexSaleRate,
-                    uint8 _dexPercent,
-                    uint256 _capped,//fund to be raised
-                    uint256[] memory MinMaxBuy,//lowest 7 highest amount of token purchase
-                    uint256[] memory _startEndTime,
-                    uint256 _lpLockPeriod,
-                    string memory _CID,
-                    bool _enableWhiteList
-                        ) public paidFee payable{
+    function createPad(
+        uint8 _launchType,
+        address token_,
+        bool payTypeIsBNB,
+        uint256 _capped,
+        //fund to be raised
+        uint16 _dexBps,
+        uint256[] memory _preDexRate,
+        uint256[] memory MinMaxBuy,
+        //lowest 7 highest amount of token purchase
+        uint256[] memory _startEndTime,
+        uint32 _lpLockPeriod,
+        string memory _CID,
+        bool _enableWhiteList
+        )public paidFee payable{
         require(token_ != address(0),"Token can not be zero");
         require(bytes(IERC20(token_).name()).length != 0, "Token does not exist");
+        
+        uint16[2] storage _launchFee = feeOption[_launchType];
 
-        (uint256 totalToken,,,) = totalTokenNeeded(_capped, _preSaleRate, _dexSaleRate, _dexPercent);
+        uint256 totalToken = totalTokenNeeded(
+                                _capped,
+                                _preDexRate[0],
+                                _preDexRate[1],
+                                _dexBps,
+                                _launchFee[1],
+                                _launchFee[0]
+                            );
     
-       
-        LaunchPad newPad = new LaunchPad(owner(), feePercent, dexRouter, bnbAltToken);
+        LaunchPad newPad = new LaunchPad(owner(), dexRouter, bnbAltToken, _launchFee[1], _launchFee[0]);
      
         newPad.setToken(token_);
         newPad.setPayType(payTypeIsBNB);
-        newPad.setPurchaseRate(_capped, _preSaleRate, _dexSaleRate, _dexPercent);//extimate all purchase
+        newPad.setPurchaseRate(_capped, _preDexRate[0], _preDexRate[1], _dexBps);//extimate all purchase
         newPad.setPurchaseLimit(MinMaxBuy[0], MinMaxBuy[1]);//set upeer and lower buy limit
         newPad.setPeriod(_startEndTime[0], _startEndTime[1]);//set period of purchase
         newPad.setInfo(_CID);//set launch description
@@ -91,7 +106,7 @@ contract LaunchPadFactory is Ownable{
         newPad.setEnableWhiteList(_enableWhiteList);
 
         address newPadAddress = address(newPad);
-        require(totalToken <= IERC20(token_).allowance(msg.sender, address(this)), "Allowance needed");
+        (totalToken <= IERC20(token_).allowance(msg.sender, address(this)), "Allowance needed");
         IERC20(token_).transferFrom(msg.sender, newPadAddress, totalToken);
         newPad.transferOwnership(msg.sender);
         allPads.push(newPadAddress);
@@ -122,14 +137,20 @@ contract LaunchPadFactory is Ownable{
 
     /** 
      *capped amount => fund to be raised
-     *dexPercent => percentage of funds raised to be used for liquidity
-     *Add percent fee of raised amount as token to be bought
+     *dexBps => percentage of funds raised to be used for liquidity
+     *feeBps for bnb and token
      */
-    function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint8 _dexPercent) 
-    public view 
-    returns (uint256, uint256, uint256, uint256)
+    function totalTokenNeeded(
+    uint256 capped_,
+    uint256 saleRate_,
+    uint256 dexRate_,
+    uint16 dexBps_,
+    uint16 bnbFeeBps_,
+    uint16 tkFeeBps_)
+    public view
+    returns (uint256)
     {
-        return LaunchPadLib.totalTokenNeeded(_capped, _saleRate, _dexRate, _dexPercent, feePercent);
+        return LaunchPadLib.totalTokenSold(
+        capped_, saleRate_, dexRate_, dexBps_, bnbFeeBps_, tkFeeBps_);
     }
-   
 }

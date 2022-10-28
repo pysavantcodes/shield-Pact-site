@@ -2,7 +2,9 @@ import React from "react";
 import {FaEllipsisV} from "react-icons/fa";
 import "../pages/nft/style.css";
 
-const Card = ({itemId, name, description, image, forSale, price, isOwner, isBNB, onClick}) => {
+const Card = ({itemId, name, description, image, forSale, price, owner, isBNB, userAddress, onClick}) => {
+  const isOwner = owner && owner === userAddress;
+  
   return (
     <div className="product-style-one">
       <div className="card-thumbnail">

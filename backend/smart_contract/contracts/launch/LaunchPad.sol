@@ -4,7 +4,51 @@ pragma solidity 0.8.15;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "../IERC20.sol";
 import "./LaunchPadLib.sol";
+
+
+interface IRouter{
+    function WETH() external pure returns (address);
+    function factory() external pure returns (address);
+
+    function addLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to,
+        uint256 deadline
+    )
+        external
+        returns (
+            uint256 amountA,
+            uint256 amountB,
+            uint256 liquidity
+        );
+
+    function addLiquidityETH(
+        address token,
+        uint256 amountTokenDesired,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline
+    )
+        external
+        payable
+        returns (
+            uint256 amountToken,
+            uint256 amountETH,
+            uint256 liquidity
+        );
+}
+
+interface IDEXFactory{
+    function getPair(address tokenA, address tokenB) external view returns (address pair);
+}
 
 contract LaunchPad is Ownable{
     using SafeMath for uint256;
@@ -14,8 +58,6 @@ contract LaunchPad is Ownable{
 
     PaymentType public payType;
     address payable private feeReciever;
-    uint8 public feePercent;
-    uint256 public fee;
 
     string public infoHash;//extra information on launchpad => ipfs CID
 
@@ -32,8 +74,10 @@ contract LaunchPad is Ownable{
     uint256 public capped;
     uint256 public totalTokenSold;
     uint256 public tokenForPreSale;
-    uint256 public tokenForDexSale;
-    uint8 public dexPercent;
+    uint16 public dexBps;
+
+    uint16 public bnbFeeBps;
+    uint16 public tkFeeBps;
 
     uint256 public minPurchasePrice;
     uint256 public maxPurchasePrice;
@@ -44,7 +88,7 @@ contract LaunchPad is Ownable{
     uint256 public dexSaleRate;
 
     uint256 public LpToken;
-    uint256 public LpTokenLockPeriod;
+    uint32 public LpTokenLockPeriod;
     uint256 public LpTokenTime;
     bool public addedToDex;
 
@@ -86,7 +130,7 @@ contract LaunchPad is Ownable{
      *can decide to withdraw after dexsale and fee is completed gained
      */
     modifier tokenSoldOut(){
-        require(totalSale >= tokenForDexSale.div(dexSaleRate) + fee);
+        require(totalSale >= tokenForPreSale.mul(75).div(100));//soldout starts when 75% of token is sold
         //require(remainingToken()==0, "Token Not Sold Out");
         _;
     }
@@ -104,18 +148,20 @@ contract LaunchPad is Ownable{
 
 
     constructor(address _feeReciever, 
-                uint8 _feePercent,
                 address _router,
-                address _buyToken//The token for exchange like BUSD
+                address _buyToken,//The token for exchange like BUSD
+                uint16 _bnbFeeBps,
+                uint16 _tkFeeBps
         ){
         
         feeReciever = payable(_feeReciever);
         
-        feePercent  = _feePercent;
-
         buyToken = _buyToken;
 
         dexRouter = _router;
+
+        bnbFeeBps = _bnbFeeBps;
+        tkFeeBps = _tkFeeBps;
     }
 
     function setEnableWhiteList(bool _enable) public onlyOwner{
@@ -126,7 +172,7 @@ contract LaunchPad is Ownable{
      *set TokenForSale
      */
      function setToken(address _token) public onlyOwner{
-        require(saleToken == address(0),"Already initliazed");
+        require(saleToken == address(0),"Already initiliazed");
         saleToken = _token;
      } 
 
@@ -141,10 +187,10 @@ contract LaunchPad is Ownable{
 
 
     /**
-     *Set Lp Locking Period
+     *Set Lp Locking Period in days
      */
-    function setLpLock(uint256 _time) public onlyOwner{
-        require(_time > 0);
+    function setLpLock(uint32 _time) public onlyOwner{
+        require(_time >= 30,"Days must be greater 30 or above");
         LpTokenLockPeriod = _time;
     }
 
@@ -179,19 +225,19 @@ contract LaunchPad is Ownable{
     /**
      *preSale Rate to be greater than dexSale Rate
      */
-    function setPurchaseRate(uint256 _capped, uint256 _preSale, uint256 _dexSale, uint8 _dexPercent) public onlyOwner{
+    function setPurchaseRate(uint256 _capped, uint256 _preSale, uint256 _dexSale, uint16 _dexBps) public onlyOwner{
         require(startTime > block.timestamp || startTime == 0, "Already Initialized can't be changed after launch start time");
         require(_dexSale < _preSale && _dexSale > 0, "Invalid Purchase Rate");
-        require(_dexPercent >= 50,"DexPercent must be 50% above");
+        require(_dexBps >= 5000,"DexPercent must be 50% or above");
         capped = _capped;
         preSaleRate = _preSale;
         dexSaleRate = _dexSale;
-        dexPercent = _dexPercent;
+        dexBps = _dexBps;
 
-        {   uint256 total;
-            uint256 sale;
-            (total, sale, tokenForDexSale, fee) = totalTokenNeeded(_capped, _preSale, _dexSale, _dexPercent);
-            tokenForPreSale = total - tokenForDexSale;
+        {   uint256 saleTk;
+            uint256 bnbTk;
+            (,saleTk,,bnbTk,) = LaunchPadLib.BNBTokenSold(capped, preSaleRate, dexSaleRate, dexBps, bnbFeeBps, tkFeeBps);
+            tokenForPreSale = saleTk + bnbTk;
         }
     }
 
@@ -207,7 +253,7 @@ contract LaunchPad is Ownable{
         if(!whiteList[client]){
             whiteList[client] = true;
             allWhiteListed.push(client);
-             emit WhiteListed(client);
+            emit WhiteListed(client);
         }
     }
 
@@ -253,8 +299,18 @@ contract LaunchPad is Ownable{
     }
 
     function completePreSale() public onlyOwner tokenSoldOut hasPreSaleNotCompleted{
-        _payFee();
-        /*_addToDex();*/
+        
+        uint256 dexTokens_;
+        uint256 bnbTokens_;
+        uint256 tkTokens_;
+        
+        uint256 capped_ = payType == PaymentType.BNB?address(this).balance:IERC20(buyToken).balanceOf(address(this));
+        {
+            (,, dexTokens_, bnbTokens_, tkTokens_) = LaunchPadLib.BNBTokenSold(capped_, preSaleRate, dexSaleRate, dexBps, bnbFeeBps, tkFeeBps);
+        }
+       
+        _payFee(bnbTokens_, tkTokens_);
+        _addToDex(dexTokens_);
         _ownerRecieveBalance();
         preSaleCompleted = true;
         emit Completed(saleToken);
@@ -263,28 +319,35 @@ contract LaunchPad is Ownable{
     /**
      *Transfer fee to feeReciever
      */
-    function _payFee() private{
+    function _payFee(uint256 _bnbFee, uint256 _tkFee) private{
+        uint256 _fee = calculateAmount(_bnbFee);
+
         if(payType == PaymentType.BNB){
-            feeReciever.sendValue(fee);
+            feeReciever.sendValue(_fee);
         }else{
-            IERC20(buyToken).transfer(feeReciever, fee);
+            IERC20(buyToken).transfer(feeReciever, _fee);
+        }
+
+        if(_tkFee>0){
+        //recieve token
+            IERC20(saleToken).transfer(feeReciever, _tkFee);
         }
     }
 
-    function _addToDex() private{
+    function _addToDex(uint256 tokenForDexSale) private{
         //add token to liquidity
 
         IRouter _Router = IRouter(dexRouter);
-        uint256 tokenDexFund = tokenForDexSale.div(dexSaleRate);
+        uint256 tokenDexFund = LaunchPadLib.bnbFromToken(tokenForDexSale, dexSaleRate);
         if(payType == PaymentType.BNB){
-            (,,LpToken) = _Router.addLiquidityETH{value:tokenDexFund}(saleToken, tokenForDexSale, tokenForDexSale, tokenDexFund, address(this), block.timestamp);
+            (,,LpToken) = _Router.addLiquidityETH{value:tokenDexFund}(saleToken, tokenForDexSale, 0, 0, address(this), block.timestamp);
         }
         else{
             IERC20(saleToken).approve(dexRouter, tokenDexFund);
-            (,,LpToken) = _Router.addLiquidity(saleToken, buyToken, tokenForDexSale, tokenDexFund, tokenForDexSale, tokenDexFund, address(this), block.timestamp);
+            (,,LpToken) = _Router.addLiquidity(saleToken, buyToken, tokenForDexSale, tokenDexFund, 0, 0, address(this), block.timestamp);
         }
 
-        LpTokenTime = LpTokenLockPeriod.mul(24*60*60) + block.timestamp;//in days
+        LpTokenTime = uint256(LpTokenLockPeriod).mul(24*60*60) + block.timestamp;//in days
         emit AddedToDex(LpToken, LpTokenTime);
     }
 
@@ -306,6 +369,12 @@ contract LaunchPad is Ownable{
                  _buyToken.transfer(owner(), _balance);
                  emit RecievedBalance(msg.sender, _balance);
             }
+        }
+
+        //transfer token back to source
+        uint256 _unused = IERC20(saleToken).balanceOf(address(this));
+        if(_unused>0){
+            IERC20(saleToken).transfer(owner(), _unused);
         }
     }
 
@@ -341,73 +410,16 @@ contract LaunchPad is Ownable{
      *get amount of token to get from specified price
     */
     function calculateToken(uint256 amount) public view returns(uint256){
-        return amount.mul(preSaleRate).div(1 ether);
+        return LaunchPadLib.tokenFromBNB(amount, preSaleRate);
     }
 
-
-    /** 
-     *capped amount => fund to be raised
-     *dexPercent => percentage of funds raised to be used for liquidity
-     *Add percent fee of raised amount as token to be bought
-     */
-    function totalTokenNeeded(uint256 _capped, uint256 _saleRate, uint256 _dexRate, uint8 _dexPercent) 
-    public view 
-    returns (uint256, uint256, uint256, uint256)
-    {  
-        return LaunchPadLib.totalTokenNeeded(_capped, _saleRate, _dexRate, _dexPercent, feePercent);
+    function calculateAmount(uint256 amount) public view returns(uint256){
+        return LaunchPadLib.bnbFromToken(amount, preSaleRate);
     }
+
 }
 
 
-interface IRouter{
-    function WETH() external pure returns (address);
-    function factory() external pure returns (address);
 
-    function addLiquidity(
-        address tokenA,
-        address tokenB,
-        uint256 amountADesired,
-        uint256 amountBDesired,
-        uint256 amountAMin,
-        uint256 amountBMin,
-        address to,
-        uint256 deadline
-    )
-        external
-        returns (
-            uint256 amountA,
-            uint256 amountB,
-            uint256 liquidity
-        );
 
-    function addLiquidityETH(
-        address token,
-        uint256 amountTokenDesired,
-        uint256 amountTokenMin,
-        uint256 amountETHMin,
-        address to,
-        uint256 deadline
-    )
-        external
-        payable
-        returns (
-            uint256 amountToken,
-            uint256 amountETH,
-            uint256 liquidity
-        );
-}
-
-interface IDEXFactory{
-    function getPair(address tokenA, address tokenB) external view returns (address pair);
-}
-
-interface IERC20{
-    function name() external view returns (string memory);
-    function decimals() external view returns (uint8);
-    function balanceOf(address owner) external view returns (uint256);
-    function transfer(address to, uint256 value) external returns (bool);
-    function approve(address spender, uint256 value) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
-    function transferFrom(address from, address to, uint256 value) external returns (bool);
-}
 

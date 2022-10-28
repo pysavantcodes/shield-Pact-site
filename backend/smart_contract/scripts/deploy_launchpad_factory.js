@@ -4,11 +4,11 @@
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_token_factory.js
 
-const feePrice = "0.00005";
-const fee = ethers.utils.parseEther(feePrice);
-const feePercent = 1;//2%
-const router = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
+const mainAccountAddress = "";
+const fee = ethers.utils.parseEther("0.0001");
+const router = "0xdc4904b5f716Ff30d8495e35dC99c109bb5eCf81";
 const busdAddress = "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee";
+
 async function main() {
   const [deployer] = await ethers.getSigners();
 
@@ -16,18 +16,16 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-      //Owned by signer2
-    factory = await ethers.getContractFactory("Token");
-    Token1 = await factory.deploy("TOKEN_TEST","TTEST", 18);
-    await Token1.deployed();
-    await Token1.mint(deployer.address,1e6);
-  
-    console.log("Token Address =>",Token1.address);
+  console.log('Deploying LaunchPadFactory');
+  factory = await ethers.getContractFactory("LaunchPadFactory");
+  launchPadfactory = await factory.deploy(fee, busdAddress, router);
+  console.log("LaunchPadFactory =>", launchPadfactory.address);
+  await launchPadfactory.deployed();
 
-    factory = await ethers.getContractFactory("LaunchPadFactory");
-    launchPadfactory = await factory.deploy(fee, feePercent, busdAddress, router);
-    console.log("LaunchPadFactory =>", launchPadfactory.address);
-    await launchPadfactory.deployed();
+  if(mainAccountAddress && deployer.address != mainAccountAddress){
+    const result =  contract.transferOwnership(mainAccountAddress);
+    await result.wait();
+  }
 }
 
 main()

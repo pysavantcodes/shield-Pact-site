@@ -5,9 +5,12 @@ import * as Fa from "react-icons/fa";
 import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
-import {createLaunchPad, createdPads, launchPadInfo, tokenInfo, purchase, listLaunchPad, launchInfo, completePreSale} from '../launchUtil/main';
-import  {IpfsStoreBlob, IpfsGetBlob} from '../context/_web3_container';
+import * as helper from '../upgrade/web3Helper';
+import launchLib from '../upgrade/launch';
+import tokenLib from '../upgrade/create_token';
 
+const {createLaunchPad, createdPads, launchPadInfo, purchase, listLaunchPad, launchInfo, completePreSale} = launchLib;
+const {tokenInfo} = tokenLib;
 
 const Container  = ()=>{
 	const {data:signer} = useSigner();
@@ -33,7 +36,7 @@ const TokenPreSale = ({provider, address})=>{
         console.log(d);
         setP({...d, address});
         
-        Promise.all([tokenInfo(provider, d.tokenAddress), IpfsGetBlob(d.cid)]).then(d=>{
+        Promise.all([tokenInfo(d.tokenAddress), helper.IpfsGetBlob(d.cid)]).then(d=>{
           setT(d[0]);
           setD(d[1]);
           console.log(d[1]);
@@ -52,7 +55,7 @@ const TokenPreSale = ({provider, address})=>{
 
 
   const purchaseBTN = ()=>{
-    purchase(provider, address, amount_input.current.value, t, actionUpdateList);
+    purchase(provider, address, amount_input.current.value, actionUpdateList);
   }
 
   const completePreSaleBTN = async ()=>{
@@ -112,10 +115,6 @@ const TokenPreSale = ({provider, address})=>{
           <li>
             <p>Token for Presale</p>
             <span>{p.presaleAmount} {t.symbol}</span>
-          </li>
-          <li>
-            <p>Token for Liquidity</p>
-            <span>{p.dexsaleAmount} {t.symbol}</span>
           </li>
           <li>
             <p>Presale Rate</p>

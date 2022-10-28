@@ -6,6 +6,10 @@
 
 const symbol = 'SHC';
 const name = 'SHIELD PACT';
+const mainAccountAddress = "";
+const busdAddress = "";
+const feeBps = 200;//2%
+
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -14,21 +18,25 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const factory = await ethers.getContractFactory("Token");
-  tokenContract = await factory.deploy(ethers.utils.parseEther('10000.0'));
-  await tokenContract.deployed();
-  console.log("tokenContract Address => ", tokenContract.address);
-  
-  const nftFactory = await ethers.getContractFactory("NFT");
+  console.log("Deploying NFT");
+  const nftFactory = await ethers.getContractFactory("nft/NFT");
   const nftContract = await nftFactory.deploy(name, symbol);
-  await nftContract.deployed();
   console.log("NFT Contract address:", nftContract.address);
+  await nftContract.deployed();
 
   console.log("Deploying MarketPlace");
 
-  const marketFactory = await ethers.getContractFactory('MarketPlace');
-  const marketContract = await marketFactory.deploy(nftContract.address, tokenContract.address);
-  console.log("marketContract address is=> ", marketContract.address);
+  const marketFactory = await ethers.getContractFactory('nft/MarketPlace');
+  const marketContract = await marketFactory.deploy(nftContract.address, busdAddress, feeBps);
+  console.log("marketContract address:", marketContract.address);
+  await marketContract.deployed();
+  
+  if(mainAccountAddress && deployer.address != mainAccountAddress){
+    for(let contract of [nftContract, marketContract]){
+      result = await contract.transferOwnership(mainAccountAddress);
+      await result.wait();
+    }
+  }
 }
 
 main()

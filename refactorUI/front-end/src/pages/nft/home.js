@@ -1,51 +1,45 @@
 import React,{useState, useEffect, useMemo, useCallback} from "react";
 import {useAccount, useSigner} from '@web3modal/react';
-import {ethers} from 'ethers';
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
 import {NavLink} from "react-router-dom";
 import Fake from "../../context/fake.json";
-import {listNFT, myNFT, toggleForSale, addToMarket, buyNFT} from '../../context/_web3_container';
+import nftLib from '../../upgrade/nft';
 import OptionController,{optionAt} from '../../components/cardOption';
 import useOptionModal from '../../components/customModal/useModal';
 
-const _default_provider = new ethers.providers.JsonRpcProvider(
-  "https://bsc-testnet.nodereal.io/v1/e9a36765eb8a40b9bd12e680a1fd2bc5",//"https://bsc-dataseed.binance.org/",
-  { name: "binance", chainId: 97}//56 }
-);
+const {listNFT, myNFT, toggleForSale, addToMarket, buyNFT} = nftLib;
 
-
-const getProvider = (_provider)=>{
-  return _provider??_default_provider;
-}
+const DELAY_SEC = 15000;
 
 const Container = () => {
   const { address, isConnected } = useAccount();
-  const {data:provider} = useSigner();
+  const {data:signer} = useSigner();
   const {View:OptionView, update:optionUpdate} = useOptionModal({Controller:OptionController});
 
   const close = useMemo(()=>optionAt.reset(optionUpdate),[optionUpdate])
 
-  const actionUpdateList = useMemo(() => [value=>optionAt.process(optionUpdate, value),
-                                  (value,explorer)=>optionAt.success(optionUpdate, value, {explorer}),
-                                   value=>optionAt.failed(optionUpdate, value),
-                                   (value, Proceed)=>optionAt.info(optionUpdate, value, {Proceed})], [optionUpdate]);
+const actionUpdateList = useMemo(() => ({process:value=>optionAt.process(optionUpdate, value),
+                                  success:(value,explorer)=>optionAt.success(optionUpdate, value, {explorer}),
+                                   failed:value=>optionAt.failed(optionUpdate, value),
+                                   info:(value, Proceed)=>optionAt.info(optionUpdate, value, {Proceed}),
+                                  next:(value, No, Yes)=>optionAt.info(optionUpdate, value, {No, Yes})}), [optionUpdate]);
 
   const _toggleMarketSubmit = useCallback(
                 (id)=>
-                      async ()=>await toggleForSale(provider, id, ...actionUpdateList),
-                      [provider, actionUpdateList]
+                      async ()=>await toggleForSale(signer, id, actionUpdateList),
+                      [signer, actionUpdateList]
                 );
 
-  const _addToMarketSubmit = useCallback((itemId, price, isBNB)=>addToMarket(provider,itemId, price, isBNB,...actionUpdateList),[provider, actionUpdateList]);
+  const _addToMarketSubmit = useCallback((itemId, price, isBNB)=>addToMarket(signer,itemId, price, isBNB, actionUpdateList),[signer, actionUpdateList]);
 
   const _addToMarket = useCallback(({itemId})=>()=>optionAt.addToMarket(optionUpdate, {itemId}, {submit:_addToMarketSubmit}),[_addToMarketSubmit, optionUpdate]);
   
   const _about = useCallback(cardProp=>()=>
           optionAt.about(optionUpdate,cardProp),[optionUpdate]);
 
-  const _buy = useCallback((itemId)=>()=>buyNFT(provider, address, itemId, ...actionUpdateList),[provider, actionUpdateList, address]);
+  const _buy = useCallback((itemId)=>()=>buyNFT(signer, itemId, actionUpdateList),[signer, actionUpdateList]);
   
   const handler = useCallback(cardProp=>
                       ()=>optionAt.home(optionUpdate, cardProp, {toggleMarket:_toggleMarketSubmit, addToMarket:_addToMarket, about:_about, buy:_buy}),[optionUpdate, _toggleMarketSubmit, _addToMarket])
@@ -78,10 +72,10 @@ const Container = () => {
 
       <div className="rn-live-bidding-area rn-section-gapTop">
         <div>
-         {isConnected?
+         {signer?
             <>
               <h3 className="title">Created NFT</h3>
-                 <Generate {...{address, provider, funcFactory:myNFT, onClick:handler}}/>
+                 <Generate {...{signer, address, funcFactory:myNFT, onClick:handler}}/>
               </>
             :''}
             <br/>
@@ -91,7 +85,7 @@ const Container = () => {
                 {Fake.map((d,i)=><Card {...d} price={Math.round(Math.random()*73+5)} key={i} onClick={handler}/>)}
               </div>
             }
-             {isConnected && <Generate {...{address, provider:getProvider(provider), funcFactory:listNFT, onClick:handler}}/>}
+             {<Generate {...{signer:true, address, funcFactory:listNFT, onClick:handler}}/>}
         </div>
       </div>
 
@@ -105,40 +99,43 @@ const Container = () => {
 };
 
 
-const genFunc = (_funcFactory)=>async (_signer, _address, status, setStatus, setData)=>{
-  if(!_signer || status === "LOADING" || status === "COMPLETED")
-    return;
-
-  try{
-    setStatus("LOADING");
-    const _func = await _funcFactory(_signer, _address);
-    const pack = _func();
-    let db = [];
- 
-    for await(let data of pack){
-      db.push(data);
-      setData(db);
-    }
-    setStatus("COMPLETED");
-  }catch(e){
-    setStatus("ERROR");
+const genFunc = (_funcFactory)=>async (_signer, setData)=>{
+  const _func = await _funcFactory(_signer);
+  const pack = _func();
+  let db = [];
+  for await(let data of pack){
+    db.push(data);
+    setData(db);
   }
+  return db;
 };
 
-  const Generate = ({provider, address, funcFactory, onClick})=>{
+const Generate = ({signer, address, funcFactory, onClick})=>{
   const [status, setStatus]= useState();
   const [data, setData] = useState([]);
 
-
   useEffect(()=>{
-    genFunc(funcFactory)(provider, address, status, setStatus, setData);
-  },[provider, address]);
+    if(!signer || status === "LOADING" || status === "COMPLETED"){
+      console.log(status);
+      return;
+    }
+
+    const run = ()=>{
+      setStatus("LOADING");
+      genFunc(funcFactory)(signer, setData)
+                          .then(()=>setStatus("COMPLETED"))
+                              .catch((e)=>{console.log(e); setStatus("ERROR")});
+    }
+
+    const k_time = setTimeout(run, DELAY_SEC);//delay 15sec
+    return ()=>clearTimeout(k_time);
+  },[signer, status]);
 
 
   return (
   <>
     <div className="product-grid">
-      {data.map((d,i)=><Card {...d} key={i} onClick={onClick}/>)}
+      {data.map((d,i)=><Card {...d} userAddress={address} key={i} onClick={onClick}/>)}
     </div>
     {status==="LOADING" && <h2 style={{textAlign:'center'}}>Loading....</h2>}
     {status==="ERROR" && <h2 style={{textAlign:'center'}} onClick={()=>window.location.reload()}>Reload</h2>}

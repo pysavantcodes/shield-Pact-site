@@ -1,11 +1,15 @@
 import React from "react";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef} from "react";
 import {ethers} from 'ethers';
 import "./staking.css";
 import {useSigner} from '@web3modal/react';
-import {stakeBNB, claimBNB, ownedStake, listStakeCenters} from '../launchUtil/stake';
+import * as helper from '../upgrade/web3Helper';
+import  stakeLib from '../upgrade/stake';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
+
+
+const {stakeBNB, stakeBUSD, claimBNB, ownedStake, listStakeCenters, setStakeBNB, setStakeBUSD, stakeOwner} = stakeLib;
 
 const Container = () => {
 
@@ -29,22 +33,44 @@ const Container = () => {
         other protocols.
       </p>
       
-      <StakeCenter signer={signer} handler={actionUpdateList}/>
+      <AllStakeCenter signer={signer} handler={actionUpdateList}/>
       <ListStake signer={signer} handler={actionUpdateList}/>
     </section>
   );
 };
 
 
-const StakeCenter = ({signer, handler})=>{
-  const [state, setState] = useState();
-  const [info, setInfo]  = useState({});
+const AllStakeCenter = ({signer, handler})=>{
+  const [info, setInfo]  = useState([]);
+  const [owner, setOwner] = useState(false);
   
   useEffect(()=>{
-    listStakeCenters(signer).then(setInfo);
+    (async function(){
+      const res = await Promise.all([stakeOwner(signer),signer?.getAddress()]);
+      setOwner(res[0]===res[1]);
+    })();
+  },[signer]);
+
+  useEffect(()=>{
+    listStakeCenters().then(setInfo);
   });
 
-  
+
+
+  return (
+  <>
+    <div>
+      {owner?info.map(d=><UpdateStake key={d.STk} info={d} signer={signer} handler={handler}/>):''}
+    </div>
+    <div>
+      {info.map(d=><StakeCenter key={d.sTk} info={d} signer={signer} handler={handler}/>)}
+    </div>
+  </>
+  );
+}
+
+const StakeCenter = ({info, signer, handler})=>{
+  const [state, setState] = useState();
   const _click = (e)=>{
     e.preventDefault();
 
@@ -53,13 +79,13 @@ const StakeCenter = ({signer, handler})=>{
       return;
     }
     
-    stakeBNB(signer, state, handler);
+    (info.isBNB?stakeBNB:stakeBUSD)(signer, state, handler);
   }
   return(
      <div className="stake">
           <h3>
-            Stake BNB <span className="wallet">1 BNB = {Number(info.reward??0)} BTS</span>
-            <p>Total Reward Available {ethers.utils.formatEther(info.totalRewardAmount??0)}BTS</p>
+            Stake {info.isBNB?"BNB":"BUSD"} <span className="wallet">1 {info.isBNB?"BNB":"BUSD"} = {Number(info.reward??0)} BTS</span>
+            <p>Total Reward Available {helper.formatEther(info.totalRewardAmount??0)}BTS</p>
           </h3>
           <p>Duration: {Number(info.duration??0)/60} mins</p>
           <p>Interest Recieve: {(+state||0)*Number(info.reward)}</p>
@@ -68,7 +94,7 @@ const StakeCenter = ({signer, handler})=>{
             {/*<p>Balance: 2.617</p>*/}
           </div>
           <button className="btn" onClick={_click}>Stake</button>
-        </div>
+      </div>
   );
 }
 
@@ -81,13 +107,14 @@ const ListStake = ({signer, handler})=>{
       let db = []
       const ond = await ownedStake(signer);
       for await (let data of ond()){
-        db= [...db, data]; 
+        db = [...db, data]; 
         setState(db);
       }
     })();
   },[signer])
 
   const _click = (id)=>()=>{
+    console.log(signer);
     claimBNB(signer, id, handler);
   }
   
@@ -107,16 +134,16 @@ const ListStake = ({signer, handler})=>{
         <td></td>
         </tr>
       }
-      {state.map((x,i)=>
+      {[...state].reverse().map((x,i)=>
               <tr key={i} cellSpacing="10px">
                 <td>{Number(x.id)}</td>
                 <td>BNB</td>
-                <td>Bonus Token</td>
+                <td>BTS</td>
                 <td>{ethers.utils.formatEther(x.amount)}</td>
                 <td>{ethers.utils.formatEther(x.reward)}</td>
-                <td>{(new Date(Number(x.endTime)*1000)).toLocaleString()}</td>
+                <td>{x.endTime == 0?'':(new Date(Number(x.endTime)*1000)).toLocaleString()}</td>
                 <td>
-                  <button className="btn" onClick={_click(x.id)}>Claim</button>
+                  <button className="btn" onClick={x.endTime == 0?()=>{}:_click(x.id)}>CLAIM{x.endTime == 0?"ED":""}</button>
                 </td>
               </tr>)}
     </tbody>
@@ -125,74 +152,50 @@ const ListStake = ({signer, handler})=>{
   );
 }
 
+const UpdateStake = ({signer, info, handler})=>{
+  const _form = useRef();
+  const _click = (e)=>{
+    console.log(e);
+    e.preventDefault();
+    helper.needSigner(signer);
+    _form.current.reportValidity();
 
-const yuu=()=>{
-   return (
-    <section className="stakingContainer">
-    <View/>
-      <h1>Staking</h1>
-      <h3>Maximize yield by staking SUSHI for xSUSHI</h3>
-      <p>
-        When your BNB is staked receive xSUSHI in return
-        for voting rights and a fully composable token that can interact with
-        other protocols.
-      </p>
-      <div className="apr">
-        <div className="left">
-         {/*<h3>Staking APR</h3>
-          <button className="btn">View Stats</button>*/}
-        </div>
-        <div className="right">
-          {/*<h3>5.20%</h3>
-          <p>Yesterday's APR</p>*/}
-        </div>
-      </div>
-      <div className="select">
-       {/*} <p style={{ margin: "1rem 0" }}>Select an Option</p>
-        <select onChange={(e)=>displayStakeContainer()} id="stake">
-          <option value="Stake">Stake</option>
-          <option value="Unstake">Unstake</option>
-        </select>*/}
-      </div>
-      {false ? (
-        <div className="stake">
-          <h3>
-            Stake SUSHI <span className="wallet">1 xSUSHI = 1.1664 SUSHI</span>
-          </h3>
-          <div className="input">
-            <input type="number" placeholder="0.00 SUSHI" />
-            <p>Balance: 2.617</p>
-          </div>
-          <button className="btn">Approve</button>
-        </div>
-      ) : (
-        <div className="stake">
-          <h3>
-            Unstake <span className="wallet">1 xSUSHI = 1.1664 SUSHI</span>
-          </h3>
-          <div className="input">
-            <input type="number" placeholder="0.00 xSUSHI" />
-            <p>Balance: 4.33</p>
-          </div>
-          <button className="btn">Confirm Withdrawal</button>
-        </div>
-      )}
+    const db = new FormData(_form.current);
+    
+    if(!(+db.get('total')>0 && +db.get('reward'))){
+        return handler.failed("Error in Amount set");
+    }
 
-      <div className="stats">
-        <div>
-          <h3>Balance</h3>
-          <p>0 xSUSHI</p>
-        </div>
-        <div>
-          <h3>Unstaked</h3>
-          <p>2.16 SUSHI</p>
-        </div>
-        <button className="btn" disabled>
-          Your SushiBar Stats
-        </button>
-      </div>
-    </section>
-  );  
+    (info.isBNB?setStakeBNB:setStakeBUSD)(signer, db.get('reward'), db.get('total'), Math.floor(+db.get('duration')*24*60*60)/*to seconds*/, handler);
+  }
+  return(
+    <form ref={_form}>
+    <br/>
+    <br/>
+    
+      <h1>Update Stake for {info.isBNB?"BNB":"BUSD"}</h1>
+      <label>
+        <span>Reward <b>(in BTS)</b></span>
+        <input type="text" name="reward" required/>
+      </label>
+      <br/>
+      <br/>
+      <label>
+        <span>TotalReward <b>(in BTS)</b></span>
+        <input type="text" name="total" required/>
+      </label>
+      <br/>
+       <br/>
+      <label>
+        <span>Duration <b>(in days)</b></span>
+        <input type="number" name="duration" required/>
+      </label>
+
+      <button className="btn" onClick={_click}>Update</button>
+      <br/>
+      <br/>
+    </form>
+  );
 }
 
 export default Container;

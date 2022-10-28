@@ -4,8 +4,10 @@ import * as Fa from "react-icons/fa";
 import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
-import {createLaunchPad, createdTokens, tokenInfo, withdrawLaunchFee} from '../launchUtil/main';
-import  {IpfsStoreBlob, IpfsGetBlob} from '../context/_web3_container';
+import launchLib from '../upgrade/launch';
+import {IpfsStoreBlob, IpfsGetBlob} from '../upgrade/web3Helper';
+
+const {createLaunchPad, createdTokens, tokenInfo, withdrawLaunchFee}  = launchLib;
 
 const Container = ()=>{
 	const _form = useRef();
@@ -31,11 +33,12 @@ const Container = ()=>{
 		const db = new FormData(_form.current);
 		console.log(db.get("isBNB"));
 		const cleanData = {}
+		cleanData.type = +db.get("type");
 		cleanData.tokenAddress = db.get("tokenAddress");
-		cleanData.isBNB = +db.get("isBNB")==1;
+		cleanData.isBNB = +db.get("isBNB")===1;
 		cleanData.presale = db.get("presale");
 		cleanData.dexsale = db.get("dexsale");
-		cleanData.whitelist = +db.get("whitelist")==1;
+		cleanData.whitelist = +db.get("whitelist")===1;
 		cleanData.capped = db.get("capped");
 		cleanData.minbuy = db.get("minbuy");
 		cleanData.maxbuy = db.get("maxbuy");
@@ -100,6 +103,15 @@ const Form1 = ()=>{
 	        BUSD
 	      </label>
 	      <p>token investor will pay this token type</p>
+	      <br/>
+
+	      <p><strong>Fee</strong></p>
+	      <label htmlFor="fee_">
+	        <select id="fee_" name="type">
+	        	<option value={0} selected>(1 BNB + 5% of Sold)</option>
+	        	<option value={1}>(1 BNB + 2% of Token + 2% of Sold)</option>
+	        </select>  
+	      </label>
 	</div>
 	);
 }

@@ -1,11 +1,13 @@
 import React,{useRef, useMemo, useEffect, useState} from "react";
-import {useSigner} from '@web3modal/react';
+import {useSigner, useAccount} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
-import {createToken, createdTokens, tokenInfo, withdrawTokenFee} from '../launchUtil/main';
+import tokenLIB from '../upgrade/create_token';
+
+const {createToken, createdTokens, tokenInfo, withdrawTokenFee, factoryOwner} = tokenLIB;
 
 const CreateTokenModal = () => {
-
+	const [_type, setType] = useState(0);
 	const _form = useRef();
 
 	const {View, update} = useModal({Controller:defaultController});
@@ -14,7 +16,18 @@ const CreateTokenModal = () => {
                                   success:(value,explorer)=>statusCreate.success(update, value, {explorer}),
                                    failed:value=>statusCreate.failed(update, value),
                                    info:(value, Proceed)=>statusCreate.info(update, value, {Proceed})}), [update]);
+	
+
 	const {data:signer} = useSigner();
+	const {address} = useAccount();
+	const [isOwner, setOwner] = useState();
+
+	useEffect(()=>{
+		if(signer && address){
+			factoryOwner().then(d=>setOwner(d===address));
+		}
+	},[signer, address])
+	
 
 	const onSubmit = async (e)=>{
 		e.preventDefault();
@@ -26,7 +39,7 @@ const CreateTokenModal = () => {
 
 		const db = new FormData(_form.current);
 
-		const cleanData = ["name","symbol","decimals","totalSupply"].reduce((acc, d)=>({...acc, [d]:db.get(d)}),{});
+		const cleanData = ["name","symbol","decimals","totalSupply", "type", "tax", "liq"].reduce((acc, d)=>({...acc, [d]:db.get(d)}),{});
 		
 		await createToken(signer, cleanData, actionUpdateList);
 	}
@@ -39,12 +52,14 @@ const CreateTokenModal = () => {
   	<>
 	    <div style={{padding:"1.5rem"}}>
 	      <div className="token-modal">
-	      	<button onClick={_withdrawTokenFee}>withdrawTokenFee</button>
+	      	{isOwner && <button onClick={_withdrawTokenFee}>withdrawTokenFee</button>}
 	      	<form ref={_form}>
 		        <h3>Create Token</h3>
 		        <label htmlFor="type">Token Type
-		        <select name="type">
-		            <option value="Standard Token">Standard Token</option>
+		        <select name="type" onChange={(e)=>setType(+e.target.value)}>
+		            <option value={0} selected>Standard Token</option>
+		            <option value={1}>Reflection Token</option>
+		            <option value={2}>Liquid Minting Token</option>
 		        </select>
 		        </label>
 		        <label htmlFor="name">Name
@@ -59,6 +74,13 @@ const CreateTokenModal = () => {
 		        <label htmlFor="supply">Total supply
 		        <input name="totalSupply" type="number" placeholder="Ex: 10000000000" defaultValue={10000000000} required/>
 		        </label>
+		        <label htmlFor="tax">{_type!==2?'':"tax Percent"}
+		        <input name="tax" type={_type!==2?"hidden":"number"} placeholder="Ex: 0.00" defaultValue={0} required/>
+		        </label>
+		        <label htmlFor="liq">{_type!==2?'':"liquid Percent"}
+		        <input name="liq" type={_type!==2?"hidden":"number"} placeholder="Ex: 0.00" defaultValue={0} required/>
+		        </label>
+		        <p><strong>taxPercent + liquidPercent not more than 25%</strong></p>
 		        <button className="btn" onClick={onSubmit}>Create Token</button>
 		    </form>
 		    <br/>
@@ -99,21 +121,19 @@ const TokenList = ({provider})=>{
 				</tr>
 			</thead>
 			<tbody>
-			{tokens?.map(d=><TokenShow provider={provider} key={d} tkAddress={d}/>)}
+			{tokens?.map(d=><TokenShow key={d} tkAddress={d}/>)}
 			</tbody>
 		</table>
 	</>
 	);
 }
 
-const TokenShow = ({provider, tkAddress})=>{
+const TokenShow = ({tkAddress})=>{
 	const [data, setData] = useState();
 	
 	useEffect(()=>{
-		if(!provider)
-			return
-		tokenInfo(provider, tkAddress).then(setData);
-	},[provider, tkAddress])
+		tokenInfo(tkAddress).then(setData).catch(console.log);
+	},[tkAddress]);
 	
 	return (
 		<tr>

@@ -31,19 +31,6 @@ const explorer = 'https://testnet.bscscan.com/tx/'
 const viewExplorer = (txHash)=>`${explorer}${txHash}`;
 
 const stakeABI = [
-	/*`struct Stake{
-        uint256 id;
-        address sTk;
-        address bTk;
-        uint256 amount;
-        uint256 endTime;
-        uint256 reward;
-    }`,
-    `struct Interest{
-    	uint256 reward;
-    	uint256 totalRewardAmount;
-    	uint256 duration;
-    }`,*/
     "function stakeInterest(address, address) public view returns(tuple(uint256 reward, uint256 totalRewardAmount, uint256 duration) Interest)",
     "function stakeBNB(address) public payable",
     "function claim(uint256) public",
