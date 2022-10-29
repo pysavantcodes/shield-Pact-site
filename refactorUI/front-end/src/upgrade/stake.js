@@ -43,7 +43,9 @@ plug.ownedStake = async(signer)=>{
 
 	return async function*(){
 		for(let _id of allStake){
-			yield stake.bank(address, _id); 
+			let data = {...(yield stake.bank(address, _id))};
+			data.isBNB = data.sTk == config.busdAddress;
+			return data;
 		}
 	}
 }
@@ -51,8 +53,15 @@ plug.ownedStake = async(signer)=>{
 const stakeBNB = async(signer, amount, _handler)=>{
 	helper.needSigner(signer);
 	let stake = getStake(signer);
+	const _amount = helper.parseEther(amount);
+	_handler.process("Checking Balance");
+	const _bal = await signer.getBalance();
+	//console.log(_bal,"=",+_amount);
+	if(Number(_bal) < Number(_amount)){
+		throw Error("Insuffient Balance");
+	}
 	_handler.process("Staking");
-	let result = await stake.stakeBNB(bonusTokenAddr, {value:helper.parseEther(amount)});
+	let result = await stake.stakeBNB(bonusTokenAddr, {value:_amount});
 	let reciept = await result.wait();
 	return reciept.transactionHash;
 }
@@ -71,11 +80,18 @@ const stakeBUSD = async(signer, amount, _handler)=>{
 	helper.needSigner(signer);
 	let stake = getStake(signer);
 	const busdToken = helper.getToken(config.busdAddress, signer);
+	const _amount = helper.parseEther(amount);
+	_handler.process("Checking Balance");
+	const _bal = await busdToken.balanceOf(await signer.getAddress());
+	//console.log(_bal,"=",+_amount);
+	if(Number(_bal) < Number(_amount)){
+		throw Error("Insuffient Balance");
+	}
 	_handler.process(`Requesting approval for ${amount} BUSD`)
-	let result = busdToken.approve(stakeAddr, helper.parseEther(amount));
+	let result = await busdToken.approve(stakeAddr, _amount);
 	await result.wait();
 	_handler.process("Staking");
-	result = await stake.stakeToken(config.busdAddress,bonusTokenAddr, helper.parseEther(amount));
+	result = await stake.stakeToken(config.busdAddress,bonusTokenAddr, _amount);
 	let reciept = await result.wait();
 	return reciept.transactionHash;
 }

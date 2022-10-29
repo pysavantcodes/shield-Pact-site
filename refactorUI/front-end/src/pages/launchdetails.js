@@ -33,13 +33,13 @@ const TokenPreSale = ({provider, address})=>{
   const amount_input = useRef();
   useEffect(()=>{
       launchPadInfo(provider,address).then(d=>{
-        console.log(d);
+        //console.log(d);
         setP({...d, address});
         
         Promise.all([tokenInfo(d.tokenAddress), helper.IpfsGetBlob(d.cid)]).then(d=>{
           setT(d[0]);
           setD(d[1]);
-          console.log(d[1]);
+          console.log(d);
         })
 
       });
@@ -60,8 +60,8 @@ const TokenPreSale = ({provider, address})=>{
 
   const completePreSaleBTN = async ()=>{
   	let myAddr = await provider?.getAddress();
-  	console.log(p.owner);
-  	console.log(myAddr);
+  	//console.log(p.owner);
+  	//console.log(myAddr);
 
   	if(await myAddr !== p.owner){
   		actionUpdateList.failed("Not Priviledge");

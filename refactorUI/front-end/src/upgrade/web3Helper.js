@@ -70,7 +70,9 @@ export const getContract = (addr, abi, provider = defaultProvider)=>new ethers.C
 export const executeTask = (_run, _successHandler, _errHandler)=>
   _run()
     .then(_successHandler??console.log)
-    .catch((e)=>(_errHandler??console.log)(e?.error?.data?.message ?? e.message ?? e?.reason ?? "Error Occured"));
+    .catch((e)=>{(_errHandler??console.log)(e?.error?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+      console.log('Error=>',e);
+  });
 
 class Token{
   constructor(addr, _provider){

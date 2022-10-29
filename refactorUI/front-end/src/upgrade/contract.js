@@ -57,7 +57,7 @@ export const tokenFactoryABI= [
 
 
 export const launchFactoryABI = [
-  "function allPads(unit256) public view returns(address)",
+  "function allPads(uint256) public view returns(address)",
   "function fee() public view returns(uint256)",
   "function owner() public view returns(address)",
   `function totalTokenNeeded(
@@ -97,6 +97,7 @@ export const launchFactoryABI = [
   ]
 
 export const launchPadABI = [
+  "function dexBps() public view returns(uint16)",
   "function capped() public view returns(address)",
   "function saleToken() public view returns(address)",
   "function buyToken() public view returns(address)",

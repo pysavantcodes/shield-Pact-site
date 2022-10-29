@@ -25,15 +25,13 @@ library LaunchPadLib{
         uint256 saleTokens = capped_.mul(saleRate_).div(1 ether);
         
         uint256 dexTokens = capped_;
-        {
-            dexTokens = dexTokens.mul(dexBps_).div(10**4);
-            dexTokens = dexTokens.mul(dexRate_).div(1 ether);
-        }
+        dexTokens = dexTokens.mul(dexBps_).div(10**4);
+        dexTokens = dexTokens.mul(dexRate_).div(1 ether);
+        
         
         uint256 bnbTokens = capped_;
-        {
-            bnbTokens = bnbTokens.mul(bnbFeeBps_).div(10**4);
-        }
+        bnbTokens = bnbTokens.mul(bnbFeeBps_).div(10**4);
+        bnbTokens = bnbTokens.mul(saleRate_).div(1 ether);
         
         uint256 tkTokens = saleTokens.mul(tkFeeBps_).div(10**4);
     

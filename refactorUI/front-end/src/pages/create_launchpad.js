@@ -55,7 +55,7 @@ const Container = ()=>{
 		info.social = db.get("social");
 		actionUpdateList.process("Uploading details to ipfs");
 		try{
-			cleanData.cid = "hello"//await IpfsStoreBlob(info);
+			cleanData.cid = await IpfsStoreBlob(info);
 		}catch(e){
 			actionUpdateList.failed(`Failed to upload details to ipfs:${e.message}`);
 		}

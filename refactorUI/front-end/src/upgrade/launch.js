@@ -2,7 +2,7 @@ import * as helper from './web3Helper';
 import * as contract from './contract';
 import tkLib from './create_token';
 
-const launchFactoryAddress = "0x9c74ce055F8843Fb7762899fB76dc7DA8A17ACaD";//"0x00910c9cBe37dbC92462eE32E7C15621144AF206";
+const launchFactoryAddress = "0xf9e6E7E11514e3BEA47873EE6202598D2cB47fcB";//"0x00910c9cBe37dbC92462eE32E7C15621144AF206";
 
 const getLaunchFactory = (signer)=>
 					helper.getContract(launchFactoryAddress, 
@@ -37,7 +37,8 @@ const createLaunchPad = async (signer, _d, _handler)=>{
 	_handler.process("Getting amount of token needed");
 	
 	const d = {..._d};
-
+	// console.log(d)
+	// console.log(signer);
 	let _token = await helper.fetchToken(d.tokenAddress, signer);
 
 	d.capped = helper.parseEther(d.capped);
@@ -46,13 +47,13 @@ const createLaunchPad = async (signer, _d, _handler)=>{
 	d.minbuy = helper.parseEther(d.minbuy);
 	d.maxbuy = helper.parseEther(d.maxbuy);
 	d.dexBps = helper.percentToBps(+d.dexpercent);
-	console.log(d.dexBps);
+	
 	d.bnbFeeBps = LaunchFeeOption[+d.type||0][1];
 	d.tkFeeBps = LaunchFeeOption[+d.type||0][0];
-	console.log(d);
-	console.log(d.capped)
+
+
 	const totalTokenNeeded = await factory.totalTokenNeeded(d.capped, d.presale, d.dexsale, d.dexBps, d.bnbFeeBps, d.tkFeeBps);
-	console.log(_token.format(totalTokenNeeded));
+	
 	_handler.process(`Need ${_token.format(totalTokenNeeded)} amount of token for presale`);
 	
 	const token_contract = _token._token;
@@ -127,7 +128,7 @@ plug.launchPadInfo = async(provider, address)=>{
 	else
 		db.purchased = Number(db.purchased);
 	db.owner = await launch.owner();
-	console.log(db)
+	//console.log(db)
 	return db;
 }
 
@@ -143,7 +144,7 @@ plug.launchInfo = async(provider, address)=>{
 	db.presaleAmount = _token.format(await launch.tokenForPreSale());
 	db.remaining = _token.format(await launch.remainingToken());
 	db.participant = Number(await launch.totalParticipant());
-	db.capped = _token.format(await launch.capped());
+	db.capped = helper.formatEther(await launch.capped());
 	db.cid = await launch.infoHash();
 	db.complete = await launch.preSaleCompleted();
 	return db
@@ -174,6 +175,8 @@ plug.createdPads = (provider)=>{
 const purchase = async(provider, address,  amount, _handler)=>{
 	helper.needSigner(provider);
 	const launch = getLaunchPad(address, provider);
+	_handler.process("Preparing");
+
 	const baseTk = Number(await launch.payType())===0;
 	let result;
 	

@@ -65,8 +65,11 @@ const TokenView = ({provider, address})=>{
   const [d, setD] = useState({});
 
   useEffect(()=>{
-      launchInfo(provider, address).then(setState).then(()=>{
-        Promise.all([tokenInfo(provider, state.tokenAddress), IpfsGetBlob(state.cid)]).then(d=>{
+      launchInfo(provider, address).then((_state)=>{
+       
+        setState(_state);
+        return Promise.all([tokenInfo(_state.tokenAddress), IpfsGetBlob(_state.cid)]).then(d=>{
+          console.log(d)
           setT(d[0]);
           setD(d[1]);
           console.log(d[1]);
@@ -74,9 +77,10 @@ const TokenView = ({provider, address})=>{
       });
   },[address, provider]);
 
-
+  
   return (
-
+  !state.tokenAddress?
+  <div>Loading Launchpad</div>:
   <div className="launchpadInfoContainer">
     <Link to={`/launchdetails/${address}`}>
     <div className="tokenhead">
@@ -106,7 +110,7 @@ const TokenView = ({provider, address})=>{
       </div>
       <div>
         <span>Cap</span>
-        <p>{state.capped} </p>
+        <p>{state.capped} {state.baseTk}</p>
       </div>
       <div>
         <span>Access</span>

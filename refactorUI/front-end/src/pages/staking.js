@@ -119,6 +119,7 @@ const ListStake = ({signer, handler})=>{
       for await (let data of ond()){
         db = [...db, data]; 
         setState(db);
+        console.log(db);
       }
     })();
   },[signer])
@@ -147,7 +148,7 @@ const ListStake = ({signer, handler})=>{
       {[...state].reverse().map((x,i)=>
               <tr key={i} cellSpacing="10px">
                 <td>{Number(x.id)}</td>
-                <td>BNB</td>
+                <td>{x.isBNB?"BNB":"BUSD"}</td>
                 <td>BTS</td>
                 <td>{ethers.utils.formatEther(x.amount)}</td>
                 <td>{ethers.utils.formatEther(x.reward)}</td>
