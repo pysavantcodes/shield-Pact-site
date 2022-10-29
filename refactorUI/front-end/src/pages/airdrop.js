@@ -4,10 +4,11 @@ import * as Fa from "react-icons/fa";
 import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
-import launchLib from '../upgrade/launch';
-import {IpfsStoreBlob, IpfsGetBlob} from '../upgrade/web3Helper';
 
-const {createLaunchPad, createdTokens, tokenInfo, withdrawLaunchFee}  = launchLib;
+import {IpfsStoreBlob, IpfsGetBlob} from '../upgrade/web3Helper';
+import airDropLib from '../upgrade/air';
+
+const {createDrop} = airDropLib;
 
 const Container = ()=>{
 	const _form = useRef();
@@ -32,6 +33,14 @@ const Container = ()=>{
 
 		const db = new FormData(_form.current);
 		
+		const cleanData = {};
+
+		cleanData.tokenAddress = db.get('tokenAddress');
+		cleanData.rate = db.get("rate");
+		cleanData.amount = db.get("amount");
+		cleanData.startTime = db.get("startTime");
+		cleanData.endTime = db.get("endTime");
+
 		const info = {}
 		info.logo = db.get("logo");
 		info.desc = db.get("desc");
@@ -44,31 +53,24 @@ const Container = ()=>{
 		}catch(e){
 			actionUpdateList.failed(`Failed to upload details to ipfs:${e.message}`);
 		}
-		await createLaunchPad(signer, cleanData, actionUpdateList);
+		await createDrop(signer, cleanData, actionUpdateList);
 	}
-
-	const _withdrawLaunchFee = async(e)=>{
-		await withdrawLaunchFee(signer, actionUpdateList);
-	} 
 
 	return (
 	<>
 		<View/>
-		<button onClick={_withdrawLaunchFee}>withdrawLaunchFee</button>
 		<form style={{padding:"1.5rem"}} ref={_form}>
-			<Form1/>
-			<Form2/>
-			<Form3 onSubmit={onSubmit}/>
+			<AirForm onSubmit={onSubmit}/>
 		</form>
 	</>
 	)
 }
 
 
-const Form1 = ()=>{
+const AirForm = ({onSubmit})=>{
 	return (
 	<div className="launchpadInfoContainer">
-	      <h1>Token Info</h1>
+	      <h1>Create Air Drop</h1>
 	      <label htmlFor="rate">
 	        Token Address
 	        <input id="rate" type="text" placeholder="your token address" name="tokenAddress" required/>
@@ -98,91 +100,8 @@ const Form1 = ()=>{
           <input type="datetime-local" id="end" name="endtime" required/>
         </label>
       </label>
-      
-	</div>
-	);
-}
 
-const Form2 = ()=>{
-  return (
-	    <div className="launchpadInfoContainer">
-	      <h1>LaunchPad Info</h1>
-	      <label htmlFor="rate">
-	        Presale Rate
-	        <input id="rate" type="number" placeholder="200" name="presale" required/>
-	        <p>If i spend 1BNB how many tokens will i receive?</p>
-	      </label>
-	      <label htmlFor="drate">
-	        DEXsale Rate
-	        <input id="drate" type="number" placeholder="150" name="dexsale" required/>
-	        <p>If i swap 1BNB how many tokens will i receive on dex?</p>
-	      </label>
-	      <p>Presale must be greater than Dexsale</p>
-	      <label htmlFor="whitelist">Whitelist</label>
-	      <label htmlFor="disable">
-	        <input type="radio" id="disable" name="whitelist" value={0} defaultChecked/>
-	        Disable
-	      </label>
-
-	      <label htmlFor="enable">
-	        <input type="radio" id="enable" name="whitelist" value={1}/>
-	        Enable
-	      </label>
-	      <p>You can enable/disable whitelist</p>
-	      <br />
-
-	      <label htmlFor="capped">
-	        Capped (BNB)
-	        <input type="text" name="capped" id="capped" placeholder="500" required/>
-	      </label>
-
-	      <label htmlFor="minbuy">
-	        Minimum Buy (BNB)
-	        <input type="text" name="minbuy" id="minbuy" placeholder="0.01" defaultValue={0.01} required/>
-	      </label>
-	      <label htmlFor="maxbuy">
-	        Maximum Buy (BNB)
-	        <input type="text" name="maxbuy" id="maxbuy" placeholder="0.1" defaultValue={0.1} required/>
-	      </label>
-	      <label htmlFor="router">
-	        Router
-	        <select name="router">
-	          <option>PancakeSwap</option>
-	        </select>
-	      </label>
-	      <label htmlFor="liquidity">
-	        Pancake Swap Liquidity (%)
-	        <input type="number" id="liquidity" name="dexpercent" placeholder="80" min="50" max="100" defaultValue={80} required/>
-	      </label>
-
-	      <label htmlFor="time">
-	        Select Start Time and End Time (UTC)
-	        <label htmlFor="start">
-	          Start time (UTC)
-	          <input type="datetime-local" id="start" name="starttime" required/>
-	        </label>
-	        <label htmlFor="end">
-	          End time (UTC)
-	          <input type="datetime-local" id="end" name="endtime" required/>
-	        </label>
-	      </label>
-	      <label htmlFor="lockup">
-	        Liquidity Lockup (days)
-	        <input type="number" id="lockup" placeholder="30" name="lockup" required defaultValue={30}/>
-	      </label>
-	      
-	      {/*<div className="buttons">
-	        <button className="btn-border">Back</button>
-	        <button className="btn">Next</button>
-	      </div>*/}
-	    </div>
-	
-  );
-}
-
-const Form3 = ({onSubmit})=>{
-  return (
-     <div className="launchpadInfoContainer">
+      <div className="launchpadInfoContainer">
       <h1>LaunchPad Additional Info</h1>
       <label htmlFor="logo">
         Logo Url
@@ -207,15 +126,7 @@ const Form3 = ({onSubmit})=>{
           placeholder="https://site.com"
         />
       </label>
-      <label htmlFor="twitter">
-        Twitter
-        <input
-          type="text"
-          id="twitter"
-          name="twitter"
-          placeholder="https://twitter.com/user"
-        />
-      </label>
+     
       <label htmlFor="social">
         Social
         <input
@@ -225,18 +136,21 @@ const Form3 = ({onSubmit})=>{
           placeholder="https://instagram.com/user"
         />
       </label>
+
       <label htmlFor="desc">
         Description
         <textarea id="desc" rows="6" placeholder="Describe the token..." name="desc"/>
       </label>
-      
+
+    </div>
+
+
       <div className="button">
       	<br/>
      	<button className="btn" onClick={onSubmit}>submit</button>
   	  </div>
-    </div>
-  );
+	</div>
+	);
 }
-
 
 export default Container;

@@ -152,7 +152,7 @@ export const stakeABI = [
 export const airDropABI = [
   "event DropCreated(uint256 id)",
   "event DropCollected(address indexed token, uint256 amount)",
-  `function createDrops(address token_, uint256 amount_, uint256 total_, uint256 start_, uint256 end_) public payable`,
+  `function createDrops(address token_, uint256 amount_, uint256 total_, uint256 start_, uint256 end_, string memory hash_) public payable`,
   `function collect(uint256 id) public`,
   "function getCreatedDrop() public view returns (unit256[])",
   "function fee() public view returns (uint256)",
@@ -162,13 +162,15 @@ export const airDropABI = [
       address token,
         uint256 amount,
         uint256 startTime,
-        uint256 endTime
+        uint256 endTime,
+        string hash
       )
     )`,
   "function balanceOf(uint256) public view returns (uint256)",
   "function given(uint256) public view returns (uint256)",
   "function totalParticipant(uint256) public view returns (uint256)",
-  "function hasCollected(uint256 id) public view returns (bool)" 
+  "function hasCollected(uint256 id) public view returns (bool)",
+  "function empty(uint256 id) public" 
 ]
 
 

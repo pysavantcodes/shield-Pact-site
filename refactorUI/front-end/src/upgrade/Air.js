@@ -1,24 +1,24 @@
-import helper from './Web3Helper';
-import contract from './contract';
+import * as helper from './web3Helper';
+import * as contract from './contract';
 
-const airDropAddress = "";
+const airDropAddress = "0xc09FD3423c63281DafE8609e3BDd8eCfEdE14ED6";
 
 const getAirDrop = (signer) => helper.getContract(airDropAddress, contract.airDropABI, signer || helper.defaultProvider);
 
 const plug = {};
 
-const createDrop = (signer, data, _handler)=>{
+const createDrop =async (signer, data, _handler)=>{
   helper.needSigner(signer);
   _handler.process("Preparaing");
   const tk  = await helper.fetchToken(data.token);
   const _data = {...data};
   _data.amount = tk.parse(_data.amount);
   _data.total = tk.parse(_data.total);
-  _handler.process(`Request approval of ${amount}{tk.symbol}`);
+  _handler.process(`Request approval of ${data.amount}{tk.symbol}`);
   tk._token.approve(airDropAddress, _data.amount);
   const air = getAirDrop(signer);
   const fee = await air.fee();
-  _helper.process(`Creating AirDrop with fee ${helper.formatEther(fee)} BNB`);
+  _handler.process(`Creating AirDrop with fee ${helper.formatEther(fee)} BNB`);
   let result = air.createDrop(_data.token, _data.amount, _data.total, _data.start, _data.end, {value:fee});
   return (await result.wait()).transactionHash;
 }
@@ -32,7 +32,7 @@ plug.createDrop = (signer, _data, _handler)=>{
 }
 
 
-plug.dropInfo = (signer, id)=>{
+plug.dropInfo = async (signer, id)=>{
   const air = getAirDrop(signer);
   const [result,  ..._d] = await Promise.all([
     air.drops(id),
@@ -46,3 +46,6 @@ plug.dropInfo = (signer, id)=>{
   
   return result;
 }
+
+
+export default plug;

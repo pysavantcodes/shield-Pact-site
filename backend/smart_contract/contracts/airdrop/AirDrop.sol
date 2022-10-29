@@ -18,6 +18,7 @@ contract AirDrop is Ownable{
         uint256 amount;
         uint256 startTime;
         uint256 endTime;
+        string hash;
     }
     
     //id to tokenAddress
@@ -45,7 +46,7 @@ contract AirDrop is Ownable{
     }
     
     
-    function createDrops(address token_, uint256 amount_, uint256 total_, uint256 start_, uint256 end_)
+    function createDrops(address token_, uint256 amount_, uint256 total_, uint256 start_, uint256 end_, string memory hash_)
     public payable
     {
     require(msg.value == fee, "PayFee");
@@ -61,7 +62,7 @@ contract AirDrop is Ownable{
     require(sent, "Fee Payment Failure");
     dropCount += 1;
     uint256 id = dropCount;
-    Drop memory newDrop = Drop(token_, amount_, start_, end_);
+    Drop memory newDrop = Drop(token_, amount_, start_, end_, hash_);
    
     balanceOf[id] = total_;
     
@@ -88,11 +89,11 @@ contract AirDrop is Ownable{
     emit DropCollected(drops[id].token, _recv);
     }
     
-    function empty(uint256 id) public {
+    function empty(uint256 id) public onlyOwner{
         require(drops[id].endTime < block.timestamp, "Not yet ended");
         require(balanceOf[id]>0, "Unable to empty");
-       IERC20(drops[id].token).transfer(msg.sender, balanceOf[id]);
-       balanceOf[id] = 0;
+        IERC20(drops[id].token).transfer(msg.sender, balanceOf[id]);
+        balanceOf[id] = 0;
     }
     
     function getCreatedDrop() public view returns (uint256[] memory){

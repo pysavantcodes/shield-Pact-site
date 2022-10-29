@@ -310,7 +310,8 @@ contract LaunchPad is Ownable{
         }
        
         _payFee(bnbTokens_, tkTokens_);
-        _addToDex(dexTokens_);
+        //enable dex when on mainnet
+        //_addToDex(dexTokens_);
         _ownerRecieveBalance();
         preSaleCompleted = true;
         emit Completed(saleToken);
