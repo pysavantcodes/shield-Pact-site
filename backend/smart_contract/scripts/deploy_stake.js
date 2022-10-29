@@ -5,6 +5,10 @@
 //yarn hardhat run --network localhost ./scripts/deploy_chat.js
 
 
+const mainAccountAddress = "";
+const BonusAddress = "0xdc4904b5f716Ff30d8495e35dC99c109bb5eCf81"; 
+let WBNBAddress = "";
+const duration = 24*60*60;//24hours
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -13,34 +17,28 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  let [_,...clients] = await ethers.getSigners();
-    let factory = await ethers.getContractFactory("Token");
-    bonusToken = await factory.deploy("Bonus Token", "BT", 18);
-    await bonusToken.deployed();
-    let result = await bonusToken.mint(deployer.address, parseEther("1000000000"));
-    console.log("BonusToken deployed address=>", bonusToken.address);
-    await result.wait();
-    stakeToken = await factory.deploy("Stake Token", "ST", 18);
-    await stakeToken.deployed();
-    result= await stakeToken.mint(deployer.address, parseEther("1000000000"));
-    console.log("stakeToken deployed address=>", stakeToken.address);
-    await result.wait();
+    if(!WBNBAddress){
+      console.log("Deploying WBNB");
+      factory = await ethers.getContractFactory("WETH");
+      bnb = await factory.deploy();
+      await bnb.deployed();
+      WBNBAddress = bnb.address;
+      console.log("WBNB address=>",bnb.address);
+    }
 
-    factory = await ethers.getContractFactory("WETH");
-    bnb = await factory.deploy();
-    await bnb.deployed();
-    console.log("WBNB address=>",bnb.address);
-
+    console.log('Deploying Staking')
     factory = await ethers.getContractFactory("Staking");
     stake = await factory.deploy(bnb.address);
+    console.log("Staking Contract Address=>", stake.address);
     await stake.deployed();
-    const duration = 24*60*60;//24hours
-  
-    result = await bonusToken.approve(stake.address, parseEther("5000000"));
+
+    result = await stake.setStakeableBNB(BonusAddress, parseEther("0.00001"), parseEther("3"), parseEther("5000000"), duration);
     await result.wait();
-    console.log(formatEther(await bonusToken.allowance(clients[0].address, stake.address)));
-    result = await stake.setStakeableBNB(bonusToken.address, parseEther("0.00001"), parseEther("3"), parseEther("5000000"), duration);
+
+    if(mainAccountAddress && deployer.address != mainAccountAddress){
+    const result = contract.transferOwnership(mainAccountAddress);
     await result.wait();
+  }
 }
 
 main()
