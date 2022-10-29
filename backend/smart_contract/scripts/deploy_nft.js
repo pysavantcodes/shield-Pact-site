@@ -4,10 +4,10 @@
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_nft.js
 
-const symbol = 'SHC';
-const name = 'SHIELD PACT';
+const symbol = 'BHC';
+const name = 'BAHNC NFT';
 const mainAccountAddress = "";
-const busdAddress = "";
+const busdAddress = "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee";
 const feeBps = 200;//2%
 
 
@@ -19,14 +19,13 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   console.log("Deploying NFT");
-  const nftFactory = await ethers.getContractFactory("nft/NFT");
+  const nftFactory = await ethers.getContractFactory("NFT");
   const nftContract = await nftFactory.deploy(name, symbol);
   console.log("NFT Contract address:", nftContract.address);
   await nftContract.deployed();
 
   console.log("Deploying MarketPlace");
-
-  const marketFactory = await ethers.getContractFactory('nft/MarketPlace');
+  const marketFactory = await ethers.getContractFactory('MarketPlace');
   const marketContract = await marketFactory.deploy(nftContract.address, busdAddress, feeBps);
   console.log("marketContract address:", marketContract.address);
   await marketContract.deployed();

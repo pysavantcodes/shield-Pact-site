@@ -91,6 +91,8 @@ plug.__withdrawFee = async(_signer, _handler, getFactory)=>{
 
 	const factory = getFactory(_signer);
 
+	_handler.process("Preparing");
+
 	if(await factory.owner() !== await _signer.getAddress()){
 		throw Error("Only owner allowed");
 		//return;

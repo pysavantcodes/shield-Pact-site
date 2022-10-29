@@ -2,7 +2,7 @@ import * as helper from './web3Helper';
 import * as contract from './contract';
 import tkLib from './create_token';
 
-const launchFactoryAddress = "0xf0700C0E4B90114240800CCebA90F9C2E5d9D594"//"0x00910c9cBe37dbC92462eE32E7C15621144AF206";
+const launchFactoryAddress = "0x9c74ce055F8843Fb7762899fB76dc7DA8A17ACaD";//"0x00910c9cBe37dbC92462eE32E7C15621144AF206";
 
 const getLaunchFactory = (signer)=>
 					helper.getContract(launchFactoryAddress, 
@@ -23,32 +23,36 @@ plug.withdrawLaunchFee = (_signer, _handler)=>{
 
 
 const LaunchFeeOption = [//tokenfeeBps and BnbfeeBps
-            [0,50],
-            [20,20],
-            [0,30]
+            [0,500],
+            [200,200],
+            [0,300]
         ]
 
 const createLaunchPad = async (signer, _d, _handler)=>{
 	helper.needSigner(signer);
+
 
 	const factory = getLaunchFactory(signer);
 
 	_handler.process("Getting amount of token needed");
 	
 	const d = {..._d};
+
 	let _token = await helper.fetchToken(d.tokenAddress, signer);
 
-	d.capped = _token.parse(d.capped);
+	d.capped = helper.parseEther(d.capped);
 	d.presale = _token.parse(d.presale);
 	d.dexsale = _token.parse(d.dexsale);
 	d.minbuy = helper.parseEther(d.minbuy);
 	d.maxbuy = helper.parseEther(d.maxbuy);
 	d.dexBps = helper.percentToBps(+d.dexpercent);
+	console.log(d.dexBps);
 	d.bnbFeeBps = LaunchFeeOption[+d.type||0][1];
 	d.tkFeeBps = LaunchFeeOption[+d.type||0][0];
+	console.log(d);
 	console.log(d.capped)
 	const totalTokenNeeded = await factory.totalTokenNeeded(d.capped, d.presale, d.dexsale, d.dexBps, d.bnbFeeBps, d.tkFeeBps);
-	console.log(totalTokenNeeded);
+	console.log(_token.format(totalTokenNeeded));
 	_handler.process(`Need ${_token.format(totalTokenNeeded)} amount of token for presale`);
 	
 	const token_contract = _token._token;
@@ -59,10 +63,15 @@ const createLaunchPad = async (signer, _d, _handler)=>{
 	const fee = await factory.fee();//get Fee to be paid
 	
 	_handler.process(`Creating Token fee=> ${helper.formatEther(fee)} is required to be paid`);
-	//																													since both busd and bnb are 18decimals
-	result = await factory.createPad(+d.type||0, d.tokenAddress, d.isBNB, d.capped, d.dexBps, [d.presale, d.dexsale], 
-					[d.minbuy, d.maxbuy], [d.starttime, d.endtime], d.lockup, d.cid, d.whitelist, {value:fee});
-
+	
+	
+	try{//since both busd and bnb are 18decimals
+		result = await factory.pank(+d.type||0, d.tokenAddress, [d.isBNB, d.whitelist], [d.dexBps ,d.lockup], [d.capped, d.presale, d.dexsale, d.minbuy, d.maxbuy, d.starttime, d.endtime],
+					d.cid);
+	}catch(e){
+		console.log(e);
+		throw e;
+	}
 	const reciept = await result.wait();
 	
 	const newAddress = reciept.events[reciept.events.length - 1].args.pad;
@@ -75,7 +84,7 @@ plug.createLaunchPad = (signer, data, _handler)=>{
 	helper.executeTask(
 		()=>createLaunchPad(signer, data, _handler),
 		(tx)=>_handler.success(`LaunchPad Created`,()=>helper.explorerWindow(tx)),
-		_handler?.failed
+		e=>{_handler?.failed(e);console.log(e)}
 	);
 }
 

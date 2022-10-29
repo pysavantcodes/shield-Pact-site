@@ -4,9 +4,9 @@ pragma solidity 0.8.15;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./IERC20.sol";
-import "./launch/LaunchPadLib.sol";
-import "./launch/LaunchPad.sol";
+import "../interface/IERC20.sol";
+import "../launch/LaunchPadLib.sol";
+import "../launch/LaunchPad.sol";
 
 contract LaunchPadFactory is Ownable{
     using SafeMath for uint256;
@@ -93,7 +93,8 @@ contract LaunchPadFactory is Ownable{
                                 _launchFee[1],
                                 _launchFee[0]
                             );
-    
+        require(totalToken <= IERC20(token_).allowance(msg.sender, address(this)), "Allowance needed");
+
         LaunchPad newPad = new LaunchPad(owner(), dexRouter, bnbAltToken, _launchFee[1], _launchFee[0]);
      
         newPad.setToken(token_);
@@ -106,13 +107,67 @@ contract LaunchPadFactory is Ownable{
         newPad.setEnableWhiteList(_enableWhiteList);
 
         address newPadAddress = address(newPad);
-        (totalToken <= IERC20(token_).allowance(msg.sender, address(this)), "Allowance needed");
+        
         IERC20(token_).transferFrom(msg.sender, newPadAddress, totalToken);
         newPad.transferOwnership(msg.sender);
         allPads.push(newPadAddress);
         creatorPad[msg.sender].push(newPadAddress);
         emit PadCreated(msg.sender, newPadAddress);
     }
+
+    function pank(
+        uint8 _launchType,
+        address token_,
+        bool[] calldata payTypeIsBNB_enableWhiteList,
+        uint16[] calldata _dexBps_lpLockPeriod,
+        uint256[] calldata _capped_preDexRate_MinMaxBuy_startEndTime,
+        string calldata _CID
+        )external payable{
+        
+
+        require(token_ != address(0),"Token can not be zero");
+        require(bytes(IERC20(token_).name()).length != 0, "Token does not exist");
+        
+        uint16[2] storage _launchFee = feeOption[_launchType];
+
+        uint256 totalToken = totalTokenNeeded(
+                                _capped_preDexRate_MinMaxBuy_startEndTime[0],
+                                _capped_preDexRate_MinMaxBuy_startEndTime[1],
+                                _capped_preDexRate_MinMaxBuy_startEndTime[2],
+                                _dexBps_lpLockPeriod[0],
+                                _launchFee[1],
+                                _launchFee[0]
+                            );
+        require(totalToken <= IERC20(token_).allowance(msg.sender, address(this)), "Allowance needed");
+
+        LaunchPad newPad = new LaunchPad(owner(), dexRouter, bnbAltToken, _launchFee[1], _launchFee[0]);
+     
+        newPad.setToken(token_);
+        newPad.setPayType(payTypeIsBNB_enableWhiteList[0]);
+        newPad.setPurchaseRate(
+            _capped_preDexRate_MinMaxBuy_startEndTime[0],
+            _capped_preDexRate_MinMaxBuy_startEndTime[1],
+            _capped_preDexRate_MinMaxBuy_startEndTime[2],
+            _dexBps_lpLockPeriod[0]);//extimate all purchase
+
+        newPad.setPurchaseLimit(
+            _capped_preDexRate_MinMaxBuy_startEndTime[3],
+            _capped_preDexRate_MinMaxBuy_startEndTime[4]);//set upeer and lower buy limit
+        newPad.setPeriod(
+            _capped_preDexRate_MinMaxBuy_startEndTime[5],
+            _capped_preDexRate_MinMaxBuy_startEndTime[6]);//set period of purchase
+        newPad.setInfo(_CID);//set launch description
+        newPad.setLpLock(_dexBps_lpLockPeriod[1]);//set lock period of lpToken
+        newPad.setEnableWhiteList(payTypeIsBNB_enableWhiteList[1]);
+
+        address newPadAddress = address(newPad);
+        
+        IERC20(token_).transferFrom(msg.sender, newPadAddress, totalToken);
+        newPad.transferOwnership(msg.sender);
+        allPads.push(newPadAddress);
+        creatorPad[msg.sender].push(newPadAddress);
+        emit PadCreated(msg.sender, newPadAddress);
+        }
     
     function createdPad() public view returns (address[] memory){
         return creatorPad[msg.sender];

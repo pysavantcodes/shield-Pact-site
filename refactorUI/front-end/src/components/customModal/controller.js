@@ -11,6 +11,7 @@ const FAILED  = "Failed";
 const INFO = "Info";
 
 const createController = (_obj)=>({status, update})=>{
+	
 	let Modal =  _obj[status.action];
 	if(Modal)
 		return <Modal {...status.data} update={update}/>

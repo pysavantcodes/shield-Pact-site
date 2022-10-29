@@ -45,17 +45,21 @@ const AllStakeCenter = ({signer, handler})=>{
   const [owner, setOwner] = useState(false);
   
   useEffect(()=>{
-    (async function(){
+    (async function(signer){
+      if(!signer)
+        return;
+      //console.log(signer);
       const res = await Promise.all([stakeOwner(signer),signer?.getAddress()]);
+      //console.log(res);
       setOwner(res[0]===res[1]);
-    })();
+    })(signer);
   },[signer]);
 
   useEffect(()=>{
     listStakeCenters().then(setInfo);
   });
 
-
+  //console.log(info)
 
   return (
   <>
@@ -70,6 +74,7 @@ const AllStakeCenter = ({signer, handler})=>{
 }
 
 const StakeCenter = ({info, signer, handler})=>{
+  //console.log("info ", info);
   const [state, setState] = useState();
   const _click = (e)=>{
     e.preventDefault();
@@ -79,8 +84,13 @@ const StakeCenter = ({info, signer, handler})=>{
       return;
     }
     
-    (info.isBNB?stakeBNB:stakeBUSD)(signer, state, handler);
+    const _func = info.isBNB?stakeBNB:stakeBUSD
+    _func(signer, state, handler);
+
   }
+
+  //console.log("Info=> ",info.reward)
+
   return(
      <div className="stake">
           <h3>
@@ -90,7 +100,7 @@ const StakeCenter = ({info, signer, handler})=>{
           <p>Duration: {Number(info.duration??0)/60} mins</p>
           <p>Interest Recieve: {(+state||0)*Number(info.reward)}</p>
           <div className="input">
-            <input type="number" placeholder="0.00" onKeyUp={(e)=>setState(e.target.value)}/>
+            <input type="number" placeholder="0.00001" step="0.00001" onKeyUp={(e)=>setState(e.target.value)}/>
             {/*<p>Balance: 2.617</p>*/}
           </div>
           <button className="btn" onClick={_click}>Stake</button>
@@ -114,7 +124,7 @@ const ListStake = ({signer, handler})=>{
   },[signer])
 
   const _click = (id)=>()=>{
-    console.log(signer);
+    //console.log(signer);
     claimBNB(signer, id, handler);
   }
   
@@ -155,10 +165,12 @@ const ListStake = ({signer, handler})=>{
 const UpdateStake = ({signer, info, handler})=>{
   const _form = useRef();
   const _click = (e)=>{
-    console.log(e);
+    //console.log(e);
     e.preventDefault();
     helper.needSigner(signer);
-    _form.current.reportValidity();
+    if(!_form.current.reportValidity()){
+      return handler.failed("Check input");
+    }
 
     const db = new FormData(_form.current);
     
@@ -166,7 +178,10 @@ const UpdateStake = ({signer, info, handler})=>{
         return handler.failed("Error in Amount set");
     }
 
-    (info.isBNB?setStakeBNB:setStakeBUSD)(signer, db.get('reward'), db.get('total'), Math.floor(+db.get('duration')*24*60*60)/*to seconds*/, handler);
+    const _func = info.isBNB?setStakeBNB:setStakeBUSD;
+    //console.log("isBNB", info.isBNB);
+
+    _func(signer, db.get('reward'), db.get('total'), Math.floor(+db.get('duration')*24*60*60)/*to seconds*/, handler);
   }
   return(
     <form ref={_form}>
@@ -176,19 +191,19 @@ const UpdateStake = ({signer, info, handler})=>{
       <h1>Update Stake for {info.isBNB?"BNB":"BUSD"}</h1>
       <label>
         <span>Reward <b>(in BTS)</b></span>
-        <input type="text" name="reward" required/>
+        <input type="number" name="reward" required/>
       </label>
       <br/>
       <br/>
       <label>
         <span>TotalReward <b>(in BTS)</b></span>
-        <input type="text" name="total" required/>
+        <input type="number" name="total" required/>
       </label>
       <br/>
        <br/>
       <label>
         <span>Duration <b>(in days)</b></span>
-        <input type="number" name="duration" required/>
+        <input type="number" name="duration" step="0.000001" required/>
       </label>
 
       <button className="btn" onClick={_click}>Update</button>

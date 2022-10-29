@@ -20,6 +20,8 @@ contract MarketPlace is ERC721Holder, Ownable{
 
 	uint256[] public allProducts;
 
+	address public busdAddress;
+
 	NFT private _store;
 	IERC20 _busdToken;
 	address payable _storeKeeper;
@@ -59,11 +61,12 @@ contract MarketPlace is ERC721Holder, Ownable{
 	constructor(address nftStore, address busdToken, uint32 _feeBps){
 		_store = NFT(nftStore);
 		_busdToken = IERC20(busdToken);
+		busdAddress = busdToken;
 		_storeKeeper = payable(msg.sender);
 		setFee(_feeBps);
 	}
 
-	function setFee(uint32 _feeBps) public {
+	function setFee(uint32 _feeBps) public onlyOwner{
 		feeBps = _feeBps;
 	}
 

@@ -8,10 +8,11 @@ import {Button} from '../buttons';
 import logo from './logo.png';
 
 import { useConnectModal, useDisconnect, useAccount, useSigner} from '@web3modal/react';
-import {ownerOfMarket, withdrawBNB, withdrawBUSD} from '../../context/_web3_container';
+import nftLib from '../../upgrade/nft';
 import OptionController,{optionAt} from '../../components/cardOption';
 import useOptionModal from '../../components/customModal/useModal';
 
+const {ownerOfMarket, withdrawBNB, withdrawBUSD} = nftLib;
 
 const fgColor = "#acacac";
 const bgColor = "#1d1d1d";
@@ -192,13 +193,13 @@ const Header = ()=>{
 		(async function(){setOwner(await ownerOfMarket(signer, address))})();
 	},[address, signer]);
 	const {View:OptionView, update:optionUpdate} = useOptionModal({Controller:OptionController});
-	const actionUpdateList = useMemo(() => [value=>optionAt.process(optionUpdate, value),
-                                  (value,explorer)=>optionAt.success(optionUpdate, value, {explorer}),
-                                   value=>optionAt.failed(optionUpdate, value),
-                                   (value, Proceed)=>optionAt.info(optionUpdate, value, {Proceed})], [optionUpdate]);
+	const actionUpdateList = useMemo(() => ({process:value=>optionAt.process(optionUpdate, value),
+                                  success:(value,explorer)=>optionAt.success(optionUpdate, value, {explorer}),
+                                   failed: value=>optionAt.failed(optionUpdate, value),
+                                   info:(value, Proceed)=>optionAt.info(optionUpdate, value, {Proceed})}), [optionUpdate]);
 
-    const _withdrawBNB = useCallback(async()=>withdrawBNB(signer,...actionUpdateList),[signer]);
-    const _withdrawBUSD = useCallback(async()=>withdrawBUSD(signer, ...actionUpdateList),[signer]);
+    const _withdrawBNB = useCallback(async()=>withdrawBNB(signer,actionUpdateList),[signer]);
+    const _withdrawBUSD = useCallback(async()=>withdrawBUSD(signer, actionUpdateList),[signer]);
 
   	const withdraw = useCallback(()=>optionAt.info(optionUpdate, "Withdraw Interest", 
   										{withdrawBNB:_withdrawBNB, withdrawBUSD:_withdrawBUSD}),
@@ -212,6 +213,7 @@ const Header = ()=>{
   
 
   return (
+    <>
     <HeaderWrapper>
       <div className="title_menu_container">
         <NavLink className="home" to="/"><FaHome /></NavLink>
@@ -229,6 +231,8 @@ const Header = ()=>{
       </div>
       <ConnectSection {...{address, connect, isConnected, disconnect, owner, withdraw}}/>
     </HeaderWrapper>
+    <OptionView/>
+    </>
   );
 }
 

@@ -35,7 +35,7 @@ const HomeContainer = styled.ul`
 `;
 
 const _Home = (props)=>{
-	console.log(props)
+	//console.log(props)
 	return (
 		<HomeContainer>
 	{props.isOwner &&

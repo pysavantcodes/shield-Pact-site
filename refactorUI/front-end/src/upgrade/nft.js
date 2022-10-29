@@ -3,8 +3,9 @@ import * as contract from './contract';
 // import config from './config';
 
 //NFT deployed address
-const nftAddress = "0x686E11CCc8ad69914F3fdd1AFb42712FD3dd36E6";
-const marketAddress = "0x9b17022650f5616B97c0Ad2862AD5348DD0567B1";
+const nftAddress = "0x9df5A067273096A4fa38CFF9dB33161355Cb6154";
+const marketAddress = "0x57EB5a1AcaC54071062aF2289945954cb12C8a84";
+
 const getNft = (_signer)=>helper.getContract(nftAddress, contract.nftABI, _signer);
 
 const getMarket = (_signer)=>helper.getContract(marketAddress, contract.marketABI, _signer);
@@ -108,8 +109,8 @@ const __buyNFT = async (_signer, itemId, buyProp, _handler)=>{
     reciept = await result.wait();
   }
   else{
-    let buyerToken = helper.getBusd(_signer);
     _handler?.process(`Approving Market to spend To ${helper.formatEther(buyProp.price)} BUSD`);
+    let buyerToken = helper.getToken(await market.busdAddress(), _signer);
     let result = await buyerToken.approve(market.address, buyProp.price);
     await result.wait();
     _handler?.process(`Purchasing NFT with ${helper.formatEther(buyProp.price)}BUSD`);
@@ -190,6 +191,8 @@ plug.myNFT = async (_signer)=>{
 }
 
 plug.ownerOfMarket = async (_signer)=>{
+  if(!_signer)
+    return null
   const address = await _signer.getAddress();
   const market = getMarket(_signer);
   const ownerAddress = await market.owner();
@@ -198,6 +201,7 @@ plug.ownerOfMarket = async (_signer)=>{
 
 const withdrawBNB = async (_signer, _handler)=>{
   helper.needSigner(_signer);
+  _handler?.process("Preparing");
   const market = getMarket(_signer);
   let interest = await market.totalInterestBNB();
   _handler?.process(`Request to Withdraw ${helper.formatEther(interest)}BNB`);
@@ -217,6 +221,7 @@ plug.withdrawBNB = async(_signer, _handler)=>{
 
 const withdrawBUSD = async (_signer, _handler)=>{
   helper.needSigner(_signer);
+  _handler?.process("Preparing");
   const market = getMarket(_signer);
   let interest = await market.totalInterestBUSD();
   _handler?.process(`Request to Withdraw ${helper.formatEther(interest)}BUSD`);

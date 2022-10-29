@@ -119,7 +119,7 @@ const setStakeBNB = async (_signer, _reward, _totalRewardAmount, _duration, _han
 	_handler.process(`Requesting approval for ${_totalRewardAmount} ${token.symbol}`);
 	let result = await token._token.approve(stakeAddr, token.parse(_totalRewardAmount));
 	await result.wait();
-	_handler.process("Staking...");
+	_handler.process("Updating Staking...");
 	result = await stake.setStakeableBNB(bonusTokenAddr, helper.parseEther("1"),
 			token.parse(_reward), token.parse(_totalRewardAmount), _duration);
 	return (await result.wait()).transactionHash;
@@ -135,23 +135,26 @@ plug.setStakeBNB = (signer, _reward, _totalRewardAmount, _duration, _handler)=>{
 
 
 const setStakeBUSD = async (_signer, _reward, _totalRewardAmount, _duration, _handler)=>{
-	helper.needSigner();
+	helper.needSigner(_signer);
+	//console.log("IN busd");
+	//console.log("config=>",config.busdAddress);
 	let stake = getStake(_signer);
 	_handler.process("Preparing");
-	const token =  await helper.fetchToken(config.bonusTokenAddr, _signer);
+	const token =  await helper.fetchToken(bonusTokenAddr, _signer);
 	//console.log(token);
 	_handler.process(`Requesting approval for ${_totalRewardAmount} ${token.symbol}`)
-	let result = await token.approve(stakeAddr, token.parse(_totalRewardAmount));
+	let result = await token._token.approve(stakeAddr, token.parse(_totalRewardAmount));
 	await result.wait();
-	_handler.process("Staking...");
+	_handler.process("updating Staking...");
+	console.log("Reward+>", token.parse(_reward))
 	result = await stake.setStakeable(config.busdAddress, bonusTokenAddr, helper.parseEther("1"),
 		token.parse(_reward), token.parse(_totalRewardAmount), _duration);
 	return (await result.wait()).transactionHash;
 }
 
-plug.setStakeBUSB = (signer, _reward, _totalRewardAmount, _duration, _handler)=>{
+plug.setStakeBUSD = (signer, _reward, _totalRewardAmount, _duration, _handler)=>{
 	helper.executeTask(
-		()=>setStakeBNB(signer, _reward, _totalRewardAmount, _duration, _handler),
+		()=>setStakeBUSD(signer, _reward, _totalRewardAmount, _duration, _handler),
 		(tx)=>_handler.success(`Updated`,()=>helper.explorerWindow(tx)),
 		_handler?.failed
 	);

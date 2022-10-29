@@ -101,7 +101,9 @@ const actionUpdateList = useMemo(() => ({process:value=>optionAt.process(optionU
 
 const genFunc = (_funcFactory)=>async (_signer, setData)=>{
   const _func = await _funcFactory(_signer);
+  
   const pack = _func();
+
   let db = [];
   for await(let data of pack){
     db.push(data);

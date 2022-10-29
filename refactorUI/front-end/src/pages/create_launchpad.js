@@ -55,7 +55,7 @@ const Container = ()=>{
 		info.social = db.get("social");
 		actionUpdateList.process("Uploading details to ipfs");
 		try{
-			cleanData.cid = await IpfsStoreBlob(info);
+			cleanData.cid = "hello"//await IpfsStoreBlob(info);
 		}catch(e){
 			actionUpdateList.failed(`Failed to upload details to ipfs:${e.message}`);
 		}
@@ -90,8 +90,6 @@ const Form1 = ()=>{
 	        <p>Creation pool fee: {2}BNB</p>
 	      </label>
 
-	      <label htmlFor="whitelist">Whitelist</label>
-	      <br/>
 	      <label htmlFor="_bnb">
 	        <input type="radio" id="_bnb"name="isBNB" value={1} defaultChecked/>
 	        BNB
@@ -172,11 +170,11 @@ const Form2 = ()=>{
 	        Select Start Time and End Time (UTC)
 	        <label htmlFor="start">
 	          Start time (UTC)
-	          <input type="date" id="start" name="starttime" required/>
+	          <input type="datetime-local" id="start" name="starttime" required/>
 	        </label>
 	        <label htmlFor="end">
 	          End time (UTC)
-	          <input type="date" id="end" name="endtime" required/>
+	          <input type="datetime-local" id="end" name="endtime" required/>
 	        </label>
 	      </label>
 	      <label htmlFor="lockup">

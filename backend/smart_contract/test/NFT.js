@@ -16,7 +16,7 @@ describe("NFT contract", function () {
 
 
 	it("Create NFT", async function () {
-		await contract.mintNFT("The first NFT","The Address");
+		await contract.mint("The first NFT");
 		expect(await contract.totalSupply()).to.equal(1);
 	});
 
@@ -26,7 +26,7 @@ describe("NFT contract", function () {
 
 
 	it("Create NFT", async function () {
-		await contract.mintNFT("The2NFT","The2Address");
+		await contract.mint("The2NFT");
 		expect(await contract.totalSupply()).to.equal(2);
 		expect(await contract.itemInfo(2)).to.include("The2NFT");
 	});

@@ -4,7 +4,7 @@ pragma solidity 0.8.15;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "../IERC20.sol";
+import "../interface/IERC20.sol";
 import "./LaunchPadLib.sol";
 
 
@@ -190,7 +190,7 @@ contract LaunchPad is Ownable{
      *Set Lp Locking Period in days
      */
     function setLpLock(uint32 _time) public onlyOwner{
-        require(_time >= 30,"Days must be greater 30 or above");
+        require(_time >= 0,"Days must be greater 30 or above");
         LpTokenLockPeriod = _time;
     }
 

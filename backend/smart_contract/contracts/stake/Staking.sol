@@ -7,8 +7,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import "./IWBNB.sol";
-import "./IBEP20.sol";
+import "../interface/IWBNB.sol";
+import "../interface/IBEP20.sol";
+
 
 contract Staking is Ownable{
     using SafeMath for uint256;
