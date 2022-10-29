@@ -1,5 +1,13 @@
 [
     {
+      "name":"ShieldCoin",
+      "symbol":"SHC",
+      "address":"0x4E6345e00B8DA9b12dcF81D585D15Ea9924B3E80",
+      "chainId":56,
+      "decimals":18,
+      "logoURI":"https://bscscan.com/token/images/shieldcoin_32.png"
+    },
+    {
     "name": "WBNB Token",
     "symbol": "WBNB",
     "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",

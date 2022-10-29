@@ -57,6 +57,8 @@ export const tokenFactoryABI= [
 
 
 export const launchFactoryABI = [
+  "function getRecievedFee() public view returns (uint256)",
+  "function withdrawFee() public",
   "function allPads(uint256) public view returns(address)",
   "function fee() public view returns(uint256)",
   "function owner() public view returns(address)",
