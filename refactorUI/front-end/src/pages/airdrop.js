@@ -35,17 +35,19 @@ const Container = ()=>{
 		
 		const cleanData = {};
 
-		cleanData.tokenAddress = db.get('tokenAddress');
+		cleanData.token = db.get('tokenAddress');
 		cleanData.rate = db.get("rate");
 		cleanData.amount = db.get("amount");
-		cleanData.startTime = db.get("startTime");
-		cleanData.endTime = db.get("endTime");
+		if(+cleanData.rate>+cleanData.amount)
+			return actionUpdateList.failed("Rate > Total");
+		console.log(db.get("starttime"));
+		cleanData.starttime = Math.floor(Date.parse(db.get("starttime"))/1000);
+		cleanData.endtime = Math.floor(Date.parse(db.get("endtime"))/1000);
 
 		const info = {}
 		info.logo = db.get("logo");
 		info.desc = db.get("desc");
 		info.website = db.get("web");
-		info.twitter = db.get("twitter");
 		info.social = db.get("social");
 		actionUpdateList.process("Uploading details to ipfs");
 		try{
@@ -102,7 +104,7 @@ const AirForm = ({onSubmit})=>{
       </label>
 
       <div className="launchpadInfoContainer">
-      <h1>LaunchPad Additional Info</h1>
+      <h1>AirDrop Additional Info</h1>
       <label htmlFor="logo">
         Logo Url
         <input

@@ -10,16 +10,20 @@ const plug = {};
 const createDrop =async (signer, data, _handler)=>{
   helper.needSigner(signer);
   _handler.process("Preparaing");
-  const tk  = await helper.fetchToken(data.token);
+  const tk  = await helper.fetchToken(data.token, signer);
   const _data = {...data};
   _data.amount = tk.parse(_data.amount);
-  _data.total = tk.parse(_data.total);
-  _handler.process(`Request approval of ${data.amount}{tk.symbol}`);
-  tk._token.approve(airDropAddress, _data.amount);
+  _data.rate = tk.parse(_data.rate);
+  console.log(_data);
+  if(Number(await tk._token.allowance(await signer.getAddress(), airDropAddress))<Number(_data.amount)){
+    _handler.process(`Request approval of ${data.amount}${tk.symbol}`);
+    let res = await tk._token.approve(airDropAddress, _data.amount);
+    await res.wait();
+  }
   const air = getAirDrop(signer);
   const fee = await air.fee();
   _handler.process(`Creating AirDrop with fee ${helper.formatEther(fee)} BNB`);
-  let result = air.createDrop(_data.token, _data.amount, _data.total, _data.start, _data.end, {value:fee});
+  let result = await air.createDrops(_data.token, _data.rate, _data.amount, _data.starttime, _data.endtime, _data.cid, {value:fee});
   return (await result.wait()).transactionHash;
 }
 
