@@ -1,4 +1,7 @@
+pragma solidity 0.8.15;
+//SPDX-License-Identifier: UNLICENSED
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 interface Router {
     
@@ -11,28 +14,29 @@ interface Router {
         address to,
         uint deadline
     ) external
-        virtual
-        override
         returns (uint[] memory amounts);
     
     function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline)
         external
-        virtual
-        override
         payable
         returns (uint[] memory amounts);
         
    function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
         external
-        virtual
-        override
         returns (uint[] memory amounts);
 }
 
 contract Swap is Ownable{
 
     uint256 public fee;
-    address router;
+    Router router;
+
+
+    modifier paidFee(){
+        require(msg.value>=fee,"fee required");
+        _;
+    }
+
     constructor(address router_, uint256 fee_){
         setRouter(router_);
         setFee(fee_);
@@ -43,17 +47,43 @@ contract Swap is Ownable{
     }
     
     function setRouter(address router_) public onlyOwner{
-        router = router_;
+       router = Router(router_);
     }
     
     function swapExactTokensForTokens(
         uint amountIn,
         uint amountOutMin,
         address[] calldata path,
-        address to,
         uint deadline
-    ) public payable return {
-        
+    ) public payable paidFee returns (uint[] memory amounts){
+
+        return router.swapExactTokensForTokens(amountIn, amountOutMin, path, msg.sender, deadline);
     }
-    
+
+    function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, uint deadline)
+        external
+        payable
+        paidFee
+        returns (uint[] memory amounts){
+        return router.swapExactTokensForETH(amountIn, amountOutMin, path, msg.sender, deadline);
+    }
+
+    function swapExactETHForTokens(uint amountOutMin, address[] calldata path, uint deadline)
+        external
+        payable
+        paidFee
+        returns (uint[] memory amounts){
+            uint256 _amount = msg.value - fee; 
+            return router.swapExactETHForTokens{value:_amount}(amountOutMin, path, msg.sender, deadline);
+    }
+
+    function withdrawFee() public onlyOwner{
+        require(address(this).balance>0,"No Withdraw");
+        (bool sent,) = payable(msg.sender).call{value:address(this).balance}("");
+        require(sent,"Transaction failed");
+    }
+
+    function getRecievedFee() public view onlyOwner returns(uint256){
+        return address(this).balance;
+    }
 }
