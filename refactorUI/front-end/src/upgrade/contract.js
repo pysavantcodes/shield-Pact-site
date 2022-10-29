@@ -170,3 +170,14 @@ export const airDropABI = [
   "function totalParticipant(uint256) public view returns (uint256)",
   "function hasCollected(uint256 id) public view returns (bool)" 
 ]
+
+
+export const swapABI = [
+  "function swapExactETHForTokens(uint amountOutMin, address[] calldata path,  uint deadline) external payable returns (uint[] memory amounts)",
+  "function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path,  uint deadline) external payable returns (uint[] memory amounts)",
+  "function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, uint deadline) external payable returns (uint[] memory amounts)",
+  "function router() public returns(address)",
+  "function fee() public view returns (uint256)",
+  "function getRecievedFee() public view returns (uint256)",
+  "function withdrawFee() public",
+  ];

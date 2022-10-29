@@ -1,15 +1,14 @@
 import React,{useState, useEffect, useReducer, useCallback, useMemo} from 'react';
 import {ethers} from 'ethers';
 import {useSigner} from '@web3modal/react';
-import styled from 'styled-components';
+
 import Swap from '../components/swap-modal/swap';
-import SwapError from '../components/swap-modal/swapError';
-import SwapSuccess from '../components/swap-modal/swapSuccess';
-import {exTrade, getToken, getPairs, makeTrade, exchangeNetwork} from '../upgrade/swap/main';
+import {exTrade, getToken, getPairs, makeTrade, swapExchangeNetwork} from '../upgrade/swap/main';
 import defaultController,{statusCreate} from '../components/customModal/controller';
 import useModal from '../components/customModal/useModal';
 import {Base} from '../components/customModal/model';
 
+const exchangeNetwork = swapExchangeNetwork;
 
 const TICKER = 10000;//every 10 seconds
 
@@ -47,7 +46,7 @@ const SwapContainer  = ()=>{
 
     async function run(){
       let pairs = await getPairs(_tokens);
-      if(pairs.length !=0 || initialToken !== _tokens){
+      if(pairs.length !==0 || initialToken !== _tokens){
         setPairs(pairs);
       }
       else{
@@ -77,7 +76,7 @@ const SwapContainer  = ()=>{
       [_tokens, inputAmountMax, pairs, slip]);
 
   const _setIv = useCallback((d)=>{
-      if(d.length == 0){
+      if(d.length === 0){
         setOv();
         setIv();
         setPrice();

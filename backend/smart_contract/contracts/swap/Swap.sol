@@ -2,6 +2,7 @@ pragma solidity 0.8.15;
 //SPDX-License-Identifier: UNLICENSED
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "../interface/IERC20.sol";
 
 interface Router {
     
@@ -29,7 +30,7 @@ interface Router {
 contract Swap is Ownable{
 
     uint256 public fee;
-    Router router;
+    Router public router;
 
 
     modifier paidFee(){
@@ -56,6 +57,12 @@ contract Swap is Ownable{
         address[] calldata path,
         uint deadline
     ) public payable paidFee returns (uint[] memory amounts){
+        
+        IERC20(path[0]).transferFrom(msg.sender, address(this), amountIn);
+        IERC20(path[0]).approve(address(router), amountIn);
+
+        (bool sent, ) = payable(owner()).call{value:fee}("");
+        require(sent,"Could not pay fee");
 
         return router.swapExactTokensForTokens(amountIn, amountOutMin, path, msg.sender, deadline);
     }
@@ -65,6 +72,13 @@ contract Swap is Ownable{
         payable
         paidFee
         returns (uint[] memory amounts){
+        
+        IERC20(path[0]).transferFrom(msg.sender, address(this), amountIn);
+        IERC20(path[0]).approve(address(router), amountIn);
+
+        (bool sent, ) = payable(owner()).call{value:fee}("");
+        require(sent,"Could not pay fee");
+
         return router.swapExactTokensForETH(amountIn, amountOutMin, path, msg.sender, deadline);
     }
 
@@ -73,7 +87,11 @@ contract Swap is Ownable{
         payable
         paidFee
         returns (uint[] memory amounts){
-            uint256 _amount = msg.value - fee; 
+            uint256 _amount = msg.value - fee;
+
+            (bool sent, ) = payable(owner()).call{value:fee}("");
+            require(sent,"Could not pay fee");
+
             return router.swapExactETHForTokens{value:_amount}(amountOutMin, path, msg.sender, deadline);
     }
 

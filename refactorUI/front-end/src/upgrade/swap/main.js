@@ -2,14 +2,19 @@ import {ethers} from 'ethers';
 
 import {Token, TokenAmount, Fetcher, Trade, Percent} from '@pancakeswap-libs/sdk-v2';
 
-import * as helper from '../web3Helper';
 //BNB BUSD CAKE BTCB => common bases first five
 import token_list from './token_list';
+
+
+import * as helper from '../web3Helper';
+
+import {swapABI} from '../contract';
+
 
 //MAINNET CHAINID USED
 const allToken = token_list.map(d=>new Token(d.chainId, d.address, d.decimals, d.symbol, d.name));
 
-const provider = new ethers.providers.JsonRpcProvider(
+const provider = /*helper.defaultProvider*/ new ethers.providers.JsonRpcProvider(
   "https://bsc-dataseed.binance.org/",
   { name: "binance", chainId: 56 }
 );
@@ -229,4 +234,79 @@ const exchangeNetwork = async(signer, inputToken, outputToken, _inputValue, _out
 }
 
 
-export {exTrade, getToken, getPairsCache, getPairs, makeTrade, exchangeNetwork};
+const swapAddress = "0xd2c95dD3709BB4531cEE0C8C3EDE3819f6505974";
+
+const getSwap = (signer)=>helper.getContract(swapAddress, swapABI, signer);
+
+const swapExchangeNetwork = async(signer, inputToken, outputToken, _inputValue, _outputValue, deadlineInMinute, path, handler)=>{
+  
+  try{
+    const deadline = Math.floor(Date.now()/1000) + deadlineInMinute*60;
+    let inputValue = ethers.utils.parseEther(_inputValue);
+    let outputValue = ethers.utils.parseEther(_outputValue);
+    handler.process("Connecting to Swap");
+    
+    const router= getSwap(signer);
+    
+    const fee = await router.fee();
+    console.log(fee);
+    
+    let result;
+    let reciept;
+    
+    if(inputToken.symbol === "WBNB"){
+      //swapExactETHForTokens
+      let acc_balance = await signer.getBalance();
+
+      if(acc_balance<inputValue)
+          throw Error("Not Sufficient Acc. Balance");
+      handler.process(`Swapping BNB for Token : charges ${helper.formatEther(fee)}`);
+      result = await router.swapExactETHForTokens(outputValue, path,  deadline, {value:(inputValue + fee)});
+    }
+    else{
+      handler.process("Connecting to Token Contract");
+      
+      const tokenContract = helper.getToken(inputToken.address, signer);
+      /*const tokenContract = await tokenContractBase.connect(signer);*/
+      handler.process("Checking Allowance");
+      const myAddress = await signer.getAddress();
+      let acc_balance = await tokenContract.balanceOf(myAddress);
+      
+      if(acc_balance<inputValue)
+          throw Error("Not Sufficient Acc. Balance");
+      
+      let allowance  = await tokenContract.allowance(myAddress, router.address);
+      
+      if(allowance<inputValue){
+        handler.process("Router requesting approval");
+        let approveResult = await tokenContract.approve(router.address, inputValue);
+        let approveReciept = await approveResult.wait();
+      }
+
+      let _func;
+      
+      if (outputToken.symbol === "WBNB"){
+        //swapExactTokensForETH
+        handler.process(`Swapping Token for BNB  :charges ${helper.formatEther(fee)}`);
+        _func = router.swapExactTokensForETH;
+      }
+      else{
+        //swapExactTokensForTokens
+        handler.process(`Swapping Token for Token : charges ${helper.formatEther(fee)}`);
+        _func = router.swapExactTokensForTokens;
+      }
+
+      result = await _func(inputValue, outputValue, path, deadline, {value:fee});
+    }
+    reciept = await result.wait();
+    handler.success("Successful",()=>helper.explorerWindow(reciept.transactionHash));
+    return reciept;
+  }catch(e){
+
+    handler?.failed(e?.data?.message ?? e.message ?? e?.reason ?? "Error Occured");
+    console.log(e);
+  }
+}
+
+
+export {exTrade, getToken, getPairsCache, getPairs, makeTrade, exchangeNetwork, swapExchangeNetwork};
