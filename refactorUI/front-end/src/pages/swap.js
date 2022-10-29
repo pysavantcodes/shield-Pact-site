@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Swap from '../components/swap-modal/swap';
 import SwapError from '../components/swap-modal/swapError';
 import SwapSuccess from '../components/swap-modal/swapSuccess';
-import {exTrade, getToken, getPairs, makeTrade, exchangeNetwork} from '../swap/main';
+import {exTrade, getToken, getPairs, makeTrade, exchangeNetwork} from '../upgrade/swap/main';
 import defaultController,{statusCreate} from '../components/customModal/controller';
 import useModal from '../components/customModal/useModal';
 import {Base} from '../components/customModal/model';
