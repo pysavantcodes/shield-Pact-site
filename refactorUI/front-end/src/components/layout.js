@@ -225,6 +225,7 @@ const Header = () => {
           {/*<NavLink to="/staking">Staking</NavLink>*/}
           <NavLink activeClassName="active" to="/swap">Swap</NavLink>
           <NavLink activeClassName="active" to="/nft">NFT</NavLink>
+          <NavLink activeClassName="active" to="/airdrop">AirDrop</NavLink>
         </div>
         <GiHamburgerMenu onClick={()=>dropDown()} className="hamburger" />
       </div>
