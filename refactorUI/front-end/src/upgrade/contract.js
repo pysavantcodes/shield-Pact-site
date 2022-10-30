@@ -154,23 +154,21 @@ export const airDropABI = [
   "event DropCollected(address indexed token, uint256 amount)",
   `function createDrops(address token_, uint256 amount_, uint256 total_, uint256 start_, uint256 end_, string memory hash_) public payable`,
   `function collect(uint256 id) public`,
-  "function getCreatedDrop() public view returns (unit256[])",
+  "function getCreatedDrop() public view returns (uint256[])",
+  "function hashes(uint256) public view returns (string)",
   "function fee() public view returns (uint256)",
   "function dropCount() public view returns (uint256)",
-  `function drops(uint256) public view returns (
-    tuple (
-      address token,
+  `function drops(uint256) public view returns (tuple(
+        address token,
         uint256 amount,
         uint256 startTime,
-        uint256 endTime,
-        string hash
-      )
-    )`,
+        uint256 endTime
+      ))`,
   "function balanceOf(uint256) public view returns (uint256)",
   "function given(uint256) public view returns (uint256)",
   "function totalParticipant(uint256) public view returns (uint256)",
   "function hasCollected(uint256 id) public view returns (bool)",
-  "function empty(uint256 id) public" 
+  "function empty(uint256 id) public",
 ]
 
 

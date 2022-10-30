@@ -18,8 +18,9 @@ contract AirDrop is Ownable{
         uint256 amount;
         uint256 startTime;
         uint256 endTime;
-        string hash;
     }
+
+    mapping(uint256=>string) public hashes;
     
     //id to tokenAddress
     mapping(uint256=>Drop) public drops;
@@ -62,12 +63,12 @@ contract AirDrop is Ownable{
     require(sent, "Fee Payment Failure");
     dropCount += 1;
     uint256 id = dropCount;
-    Drop memory newDrop = Drop(token_, amount_, start_, end_, hash_);
-   
+    Drop memory newDrop = Drop(token_, amount_, start_, end_);
+
     balanceOf[id] = total_;
     
     drops[id] = newDrop;
-    
+    hashes[id] = hash_;
     ownedDrop[msg.sender].push(id);
     
     emit DropCreated(id);

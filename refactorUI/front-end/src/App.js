@@ -16,7 +16,8 @@ import Web3Container from './context/_web3_container';
 import CreateToken from './pages/create_token';
 import CreateLaunchPad from './pages/create_launchpad';
 import LaunchDetails from './pages/launchdetails'; 
-import AirDropSection from './pages/airdrop'; 
+import AirDropSection from './pages/airdrop';
+import AirDropHome from './pages/alldrops'; 
 const router = createBrowserRouter([
 			{	
 				path:'/',
@@ -51,8 +52,12 @@ const router = createBrowserRouter([
 						element:<SwapSection/>
 					},
 					{
-						path:'airdrop',
+						path:'createAirdrop',
 						element:<AirDropSection/>
+					},
+					{
+						path:'airdrop',
+						element:<AirDropHome/>
 					}
 				]
 			},
