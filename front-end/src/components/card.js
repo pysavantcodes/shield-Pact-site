@@ -1,12 +1,15 @@
 import React from "react";
+import {FaEllipsisV} from "react-icons/fa";
 import "../pages/nft/style.css";
 
-const Card = () => {
+const Card = ({itemId, name, description, image, forSale, price, owner, isBNB, userAddress, onClick}) => {
+  const isOwner = owner && owner === userAddress;
+  
   return (
     <div className="product-style-one">
       <div className="card-thumbnail">
         
-          <img src="https://www.nftinvesting.io/content/images/2021/05/nft-projects.png" alt="NFT_portfolio" />
+          <img style={{height:"280px"}} src={image} alt="NFT_portfolio" />
       
       </div>
       <div className="product-share-wrapper">
@@ -16,22 +19,23 @@ const Card = () => {
           <div className="share-btn-setting dropdown-menu dropdown-menu-end">
             <button
               type="button"
-              className="btn-setting-text share-text"
+              style={{padding:'0.25rem'}}
+              className="btn-setting-text"
               data-bs-toggle="modal"
               data-bs-target="#shareModal"
-            >
-              Share
+             onClick={onClick({isOwner,itemId, forSale, price, isBNB, name, description})}>
+              <FaEllipsisV style={{fontSize:'1.5rem'}}/>
             </button>
             
           </div>
         </div>
       </div>
-      <a href="product-details.html">
-        <span className="product-name">Preatent</span>
+      <a href="javascript:viod(0)">
+        <span className="product-name">{name}</span>
       </a>
-      <span className="latest-bid">Highest bid 1/20</span>
+      <span className="latest-bid">{forSale?"For Sale":'Not For Sale'}</span>
       <div className="bid-react-area">
-        <div className="last-bid">0.244ShieldPact</div>
+        <div className="last-bid">{price||'??.??'}{isBNB?'BNB':'BUSD'}</div>
         <div className="react-area">
           <svg
             viewBox="0 0 17 16"
@@ -43,10 +47,10 @@ const Card = () => {
             <path
               d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
               stroke="currentColor"
-              stroke-width="2"
+              strokeWidth="2"
             ></path>
           </svg>
-          <span className="number">322</span>
+          <span className="number">{isOwner&&"Owned"}</span>
         </div>
       </div>
     </div>

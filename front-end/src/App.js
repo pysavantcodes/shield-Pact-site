@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBrowserRouter, RouterProvider, Navigate} from "react-router-dom";
+import {createBrowserRouter, RouterProvider, Navigate, Redirect} from "react-router-dom";
 import DefaultLayout from "./components/layout";
 import StackingSection from "./pages/staking";
 import SwapSection from "./pages/swap";
@@ -13,15 +13,31 @@ import NFTHome from "./pages/nft/home";
 import NFTCreate from "./pages/nft/create";
 import NFTExplore from './pages/nft/explore';
 import Web3Container from './context/_web3_container';
-
+import CreateToken from './pages/create_token';
+import CreateLaunchPad from './pages/create_launchpad';
+import LaunchDetails from './pages/launchdetails'; 
+import AirDropSection from './pages/airdrop';
+import AirDropHome from './pages/alldrops'; 
 const router = createBrowserRouter([
 			{	
 				path:'/',
 				element:<DefaultLayout/>,
 				children:[
 					{
+						path:'createtoken',//default
+						element:<CreateToken/>,
+					},
+					{
+						path:'createlaunchpad',//default
+						element:<CreateLaunchPad/>,
+					},
+					{
+						path:'launchDetails/:addr',//default
+						element:<LaunchDetails/>,
+					},
+					{
 						path:'',//default
-						element:<Navigate to='launchpad'/>
+						element:<Navigate to='launchpad'/>,
 					},
 					{
 						path:'staking',
@@ -34,6 +50,14 @@ const router = createBrowserRouter([
 					{
 						path:'swap',
 						element:<SwapSection/>
+					},
+					{
+						path:'createAirdrop',
+						element:<AirDropSection/>
+					},
+					{
+						path:'airdrop',
+						element:<AirDropHome/>
 					}
 				]
 			},
@@ -63,7 +87,7 @@ const router = createBrowserRouter([
 				element:<NFTLayout/>,
 				children:[
 					{	path:'',//default to client
-						element:<Navigate to="home"/>
+						element:<Navigate to="/nft/home"/>
 					},
 					{
 						path:'home',
@@ -75,7 +99,7 @@ const router = createBrowserRouter([
 					},
 					{
 						path:'explore',
-						element:<NFTExplore/>
+						element:<Navigate to="/nft/home"/>//<NFTExplore/>
 					}
 				]
 			}
