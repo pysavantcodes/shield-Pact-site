@@ -1,21 +1,21 @@
-import React from "react";
+import React,{useRef} from "react";
 import styled from 'styled-components';
 import "./swap.css";
 import { MdSwapVert } from "react-icons/md";
-import rawToken from '../../swap/token_list';
 
-const Swap = ({iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline, setDeadline, price, status, submit}) => {
-
+const Swap = ({addToken, rawToken, iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline, setDeadline, price, status, submit}) => {
+ 
   return (
     <div className="modal-bg">
       <div className="modal">
         <h3>Swap</h3>
+        <AddAddress _click={addToken}/>
         <div className="swap-top">
           <div className="text">
             <input type="number" defaultValue={iV} onKeyUp={(e)=>setIv(e.target.value)} placeholder="0.0"/>
             <p></p>
           </div>
-          <Token prev={tokens.second} value={tokens.first} setValue={e=>setTokens({first:+e.target.value})}/>
+          <Token rawToken={rawToken} prev={tokens.second} value={tokens.first} setValue={e=>setTokens({first:+e.target.value})}/>
         </div>
         <div className="swap-icon">
           <div onClick={()=>setTokens({first:tokens.second,second:tokens.first})}>
@@ -29,7 +29,7 @@ const Swap = ({iV, oV, setOv, tokens, setTokens, setIv, slip, setSlip, deadline,
               <input type="number" value={oV} disabled={true} placeholder="0.0"/>
               <p></p>
             </div>
-            <Token prev={tokens.first} value={tokens.second} setValue={e=>setTokens({second:+e.target.value})}/>
+            <Token rawToken={rawToken} prev={tokens.first} value={tokens.second} setValue={e=>setTokens({second:+e.target.value})}/>
           </div>
           <br />
           <p id="price" style={{fontSize:"1.25rem"}}>{price??'---'}</p>
@@ -88,14 +88,29 @@ const SelectBox = styled.div`
   }
 `;
 
-const Token = ({prev, value, setValue})=>{
+const Token = ({rawToken, prev, value, setValue})=>{
+ 
   return (
     <SelectBox className="token">
-      <img src={rawToken[value].logoURI}/>
+      <img src={rawToken[value]?.logoURI||"hello.png"}/>
       <select onChange={setValue}>
-        {rawToken.map((v,i)=>i !== prev && <option key={v.name} value={i} selected={i === value}>{v.name}</option>)}
+        {rawToken?.map((v,i)=>i !== prev && <option key={v.name??"--"} value={i} selected={i === value}>{v.name??"--"}</option>)}
       </select>
     </SelectBox>
+  );
+}
+
+
+const AddAddress = ({_click})=>{
+  const _input = useRef();
+  const _logo = useRef();
+
+  return (
+    <div style={{display:"flex",gap:"1rem"}}>
+      <input ref={_input} type="text" placeholder="Token address"/>
+      <input ref={_logo} type="text" placeholder="logo"/>
+      <button style={{padding:"0.25rem",width:"auto"}}onClick={()=>_click(_input.current.value, _logo.current.value)}>add</button>
+    </div>
   );
 }
 

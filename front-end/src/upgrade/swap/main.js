@@ -1,4 +1,5 @@
 import {ethers} from 'ethers';
+import axios from 'axios';
 
 import {Token, TokenAmount, Fetcher, Trade, Percent} from '@pancakeswap-libs/sdk-v2';
 
@@ -12,17 +13,52 @@ import {swapABI} from '../contract';
 
 
 //MAINNET CHAINID USED
-const allToken = token_list.map(d=>new Token(d.chainId, d.address, d.decimals, d.symbol, d.name));
+//const allToken = token_list.map(d=>new Token(d.chainId, d.address, d.decimals, d.symbol, d.name));
+
 
 const provider = /*helper.defaultProvider*/ new ethers.providers.JsonRpcProvider(
   "https://bsc-dataseed.binance.org/",
   { name: "binance", chainId: 56 }
 );
 
-const getRawTokenById  = (id)=>token_list[id];
-const getToken = (id)=>allToken[id];
+
+/**Addres ro deployed **/
+const __tokenServerAddr = "http://localhost:4000";
+/**address to deployd*/
+
+
+let __tokenList = [...token_list];
+
+let fetched = false;
+
+const getTokenList = async ()=>{
+	if(token_list.length === __tokenList.length){
+		try{
+			const {data} = await axios.get(__tokenServerAddr);
+			if(data[data.length-1].address !== __tokenList[__tokenList.length-1].address){
+				__tokenList = [...__tokenList, ...data];
+			}
+		}catch(e){
+			console.log("Network=>", e)
+		}
+	}
+	return __tokenList;
+}
+
+getTokenList();
+
+
+const __token = (d)=>new Token(d.chainId??56, d.address, d.decimals, d.symbol, d.name);
+
+const _getWrapToken = (id)=>__token(__tokenList[id]);
+
+
+const getRawTokenById  = (id)=>__tokenList[id];
+
+const getToken = (id)=>_getWrapToken(id);
 
 let pairDB = {};
+
 const setPair = (_pair)=>{
 	pairDB = {...pairDB,..._pair};
 };
@@ -45,8 +81,7 @@ const getPairs = async (tokens)=>{
     return pair;
 }
 
-
-const baseToken = allToken.slice(1,5);
+const baseToken = Array(4).fill(0).map((x,i)=>_getWrapToken(i+1));//slice(1,5).map();
 
 const fetchPair = async (tokens)=>{
 	let pair = await Fetcher.fetchPairData(tokens[0], tokens[1], provider);
@@ -308,5 +343,42 @@ const swapExchangeNetwork = async(signer, inputToken, outputToken, _inputValue, 
   }
 }
 
+const addToken = (addr,logo, _handler)=>{
+	addr = addr.trim();
+	helper.executeTask(
+		async ()=>{
+			if(addr=="" || logo=="")
+				throw Error("Correct Input");
+			if(__tokenList.filter(x=>x.address===addr.trim()).length!=0)
+				throw Error("Already Exist")
+			_handler.process("Fetching Token info");
+			let tk;
+			try{
+				tk = await helper.fetchToken(addr,provider);
+			}catch(e){
+				console.log(e);
+				throw Error("Token Does not exist");	
+			}
+			_handler.process(`Checking for pair on ${tk.name}`)
+			const list = await makePair([__token({address:addr,...tk}),...baseToken]);
+			console.log(list)
+			if(list.length===0)
+				throw Error("Pair does notn exist");
 
-export {exTrade, getToken, getPairsCache, getPairs, makeTrade, exchangeNetwork, swapExchangeNetwork};
+			_handler.process(`Adding`);
+			let {name, decimals, symbol} = tk;
+			try{
+				const result = await axios.post(__tokenServerAddr,{name, decimals, symbol, address:addr, logoURI:logo});
+				return result;
+			}catch(e){
+				throw Error(e.response.data.msg);
+			}
+		},
+		({data})=>{_handler.success(`Added ${data.name}`); setTimeout(window.location.reload, 5000);},
+		_handler.failed
+	)
+	
+
+}
+
+export {exTrade, getToken, getPairsCache, getPairs, makeTrade, exchangeNetwork, swapExchangeNetwork, getTokenList, addToken};

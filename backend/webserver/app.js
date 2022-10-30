@@ -11,7 +11,7 @@ const { Schema } = mongoose;
 
 const tokenSchema = new Schema({
 	address: { type: String, required:true, index: true },
-	logo:  {type:String, required:true},
+	logoURL:  {type:String, required:true},
 	decimals: {type: Number, required:true}, // String is shorthand for {type: String}
 	name: {type: String, required:true},
 	symbol: {type: String, required:true},
@@ -37,10 +37,10 @@ app.get("/",async (req, res)=>{
 });
 
 app.post("/",async (req, res, next)=>{
-	console.log(req.body);
-	const {address, name,symbol,decimals,logo} = req.body;
+	//console.log(req.body);
+	const {address, name,symbol,decimals,logoURI} = req.body;
 	try{
-		const tk = Token({address, name,symbol,decimals,logo});
+		const tk = Token({address, name,symbol,decimals,logoURI});
 		await tk.save();
 	}catch(e){
 		return next(e);

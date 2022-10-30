@@ -1,9 +1,8 @@
 import React,{useState, useEffect, useReducer, useCallback, useMemo} from 'react';
 import {ethers} from 'ethers';
 import {useSigner} from '@web3modal/react';
-
 import Swap from '../components/swap-modal/swap';
-import {exTrade, getToken, getPairs, makeTrade, swapExchangeNetwork} from '../upgrade/swap/main';
+import {exTrade, getToken, getPairs, makeTrade, swapExchangeNetwork, getTokenList, addToken} from '../upgrade/swap/main';
 import defaultController,{statusCreate} from '../components/customModal/controller';
 import useModal from '../components/customModal/useModal';
 import {Base} from '../components/customModal/model';
@@ -12,8 +11,18 @@ const exchangeNetwork = swapExchangeNetwork;
 
 const TICKER = 10000;//every 10 seconds
 
-const SwapContainer  = ()=>{
+const useGetTokenList = ()=>{
+  const [db, setDB] = useState([]);
 
+  useEffect(()=>{
+    getTokenList().then(setDB);
+  },[]);
+
+  return db;
+}
+
+const SwapContainer  = ()=>{
+  const rawToken = useGetTokenList();
 	const {data:signer} = useSigner();
 
 	//output display
@@ -38,6 +47,7 @@ const SwapContainer  = ()=>{
   //console.log(_tokens);
   //Pairs update
   //every 20sec
+
   useEffect(()=>{
     let ktimeout;
     let initialToken = _tokens;
@@ -98,6 +108,10 @@ const SwapContainer  = ()=>{
     statusCreate.reset(update);
   }
 
+  const _addToken = useCallback((addr, logo)=>{
+    addToken(addr,logo, actionUpdateList);
+  },[actionUpdateList]);
+
   const _swap = useCallback(async()=>{
   setActive(false);
   if(!trade){
@@ -118,7 +132,7 @@ const SwapContainer  = ()=>{
   
 	return (
 		<>
-    {!active && <Swap {...{iV, oV, setOv, tokens, setTokens, setIv:_setIv, slip, setSlip, deadline, setDeadline, price, status, submit:()=>setActive(true)}}/>}
+    {!active && <Swap {...{addToken:_addToken,rawToken, iV, oV, setOv, tokens, setTokens, setIv:_setIv, slip, setSlip, deadline, setDeadline, price, status, submit:()=>setActive(true)}}/>}
     {active && <Base content={`Ready To Swap\n${iV??0} ${_tokens[0].symbol} \nfor mininum of \n
     ${oV??0} ${_tokens[1].symbol} \n<=> \n Deadline: in next ${deadline}minute\n
     Slippage: ${slip}%`} handlers={{Cancel:_cancel,Proceed:_swap}}/>}
