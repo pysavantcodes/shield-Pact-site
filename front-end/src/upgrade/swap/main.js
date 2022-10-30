@@ -369,6 +369,7 @@ const addToken = (addr,logo, _handler)=>{
 			let {name, decimals, symbol} = tk;
 			try{
 				const result = await axios.post(__tokenServerAddr,{name, decimals, symbol, address:addr, logoURI:logo});
+        console.log(result);
 				return result;
 			}catch(e){
 				throw Error(e.response.data.msg);
