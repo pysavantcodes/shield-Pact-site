@@ -54,6 +54,7 @@ plug.dropInfo = async (id, signer)=>{
   result.tk = await helper.fetchToken(result.token);
   result.balance = result.tk.format(_d[1]);
   result.given = result.tk.format(_d[2]);
+  result.cid = _d[3];
   result.amount = result.tk.format(result.amount);
   result.startTime = (new Date(result.startTime*1000)).toLocaleString();
   result.endTime = (new Date(result.endTime*1000)).toLocaleString();
