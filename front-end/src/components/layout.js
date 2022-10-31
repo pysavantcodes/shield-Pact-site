@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { Outlet, NavLink, useLocation} from "react-router-dom";
 import styled, { css } from "styled-components";
-import { FaWallet } from "react-icons/fa";
+import { FaWallet, FaTimes, FaBars} from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "./buttons";
 import logo from "./nft/logo.png";
@@ -16,18 +16,9 @@ import {
 const fgColor = "#acacac";
 const bgColor = "#1d1d1d";
 
-const LayoutWrapper = styled.section`
+const LayoutWrapper = styled.div`
   background-color: ${bgColor};
   color: ${fgColor};
-  z-index:999999999999999;
-
-  a {
-    color: ${fgColor};
-
-    &:hover {
-      color: #fff;
-    }
-  }
 `;
 
 const flex = css`
@@ -35,10 +26,9 @@ const flex = css`
   align-items: center;
 `;
 
-const HeaderWrapper = styled.header`
+const _HeaderWrapper = styled.header`
   justify-content: space-between;
   padding: 1rem 5rem;
-  font-size: 1.25rem;
   position: sticky;
   top: 0;
   border-bottom: 1px solid #ffffff14;
@@ -121,7 +111,7 @@ const HeaderWrapper = styled.header`
 
 const TitleWrapper = styled.div`
 
-    display:flex;
+  display:flex;
 
 	justify-content:space-between;
 	padding:1.5rem 5rem;
@@ -229,7 +219,7 @@ const Header = () => {
         </div>
         <GiHamburgerMenu onClick={()=>dropDown()} className="hamburger" />
       </div>
-      <ConnectSection {...{ address, connect, isConnected, disconnect }} />
+      <ConnectSection/>
     </HeaderWrapper>
   );
 };
@@ -238,24 +228,16 @@ const toggleDisplay = () => {
   document.getElementById("small").classList.toggle("small");
 };
 
-const ConnectSection = ({ address, connect, isConnected, disconnect }) => {
+const ConnectSection = () => {
+  const { open: connect } = useConnectModal();
+  const { address, isConnected } = useAccount();
+  const disconnect = useDisconnect();
+
   return (
     <ConnectWrapper className="dropBtn">
       <Button onClick={isConnected ? disconnect : connect}>
-        {isConnected ? "Disconnect" : "Connect"} Wallet
+        {isConnected ? "Disconnect" : "Connect"}
       </Button>
-      {address && <Button onClick={()=>window.open(`https://buy.ramp.network/?userAddress=${address}`,'_blank')}>Ramp Network</Button>}
-      {/*<br/><small>{address}</small>*/}
-      {isConnected && (
-        <div class="walletDrop">
-          <div onClick={() => toggleDisplay()} className="wallt">
-            <FaWallet id="wallet" />
-            <span>&#9660;</span>
-          </div>
-
-          <small id="small">{address}</small>
-        </div>
-      )}
     </ConnectWrapper>
   );
 };
@@ -265,71 +247,139 @@ const ConnectWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /*small{
-		color:#fff;
-		text-decoration:underline;
-		position:absolute;
-		right:0;
-		top:100%;
-	}*/
-  .walletDrop {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  small {
-    display: block;
-    color: #fff;
-    font-size: 10px;
-    background: #111;
-    border-radius: 5px;
-    margin-top: 2px;
-    width: 0px;
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .small {
-    padding: 3px;
-    width: 100%;
-  }
-
-  .wallt {
-    color: white;
-    font-size: 15px;
-    border: 1px solid white;
-    padding: 8px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    margin-right: 0.3rem;
-  }
-
-  .wallt span {
-    font-size: 10px;
-    margin-left: 0.3rem;
-    opacity: 0.7;
-  }
-
-  @media (max-width: 1200px) {
-    flex-direction: column;
-    .walletDrop {
-      margin-top: 0.5rem;
-    }
-  }
-
-  @media (max-width: 317px) {
-    .walletDrop {
-      flex-direction: column;
-    }
-  }
 `;
+
+
+const HeaderWrapper = styled.header`
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid #ffffff14;
+  z-index: 2;
+  padding: 0.5rem;
+  height:5rem;
+  backdrop-filter: blur(10px);
+  background-color: #1515218c;
+
+  &,
+  #title,
+  #menu {
+    ${flex}
+  }
+
+
+  #title {
+    font-weight: bold;
+    border-right: solid 1px #ffffff14;
+    padding-right: 1rem;
+    color: #fff;
+
+    font-size: 20px;
+
+    img {
+      width: 3rem;
+      height: auto;
+    }
+
+    span{
+      text-transform:capitalize;
+    }
+  }
+
+  #menu {
+    gap: 2rem;
+    
+    a{
+      color:#fff;
+      font-weight:bold;
+
+      &:hover, &.active{
+        color:#151521;
+      }
+
+       &.active{
+        color:#9404d8;
+       }
+    }
+  }
+  
+  #__signal{
+    display:none;
+  }
+
+  label[for="__signal"]{
+    display:none;
+  }
+  
+
+  @media screen and (max-width:896px){
+    
+    label[for="__signal"]{
+      display:grid;
+    }
+
+    #menu{
+      position:fixed;
+      top:5rem;
+      left:0;
+      height:calc(100vh - 5rem);
+      flex-direction:column;
+      padding:3rem 0rem 1rem 1rem;
+      background-color: #151521;
+
+      a{
+        display:block;
+        width:100%;
+        padding:1rem 4rem;
+        border-radius:0.75rem 0rem 0rem 0.75rem;
+
+        &:hover, &.active{
+          padding:1rem 2rem 1rem 6rem
+        }
+
+        &:hover, &.active{
+          background-color:#fff;
+        }
+      }
+    }
+
+    #__signal:checked ~ #menu{
+      display:none;
+    }
+  }
+
+`;
+
+const Menu = ()=>{
+  const loc = useLocation();
+  console.log(loc);
+  return(
+    <HeaderWrapper>
+      <div id="title">
+          <label for="__signal">
+            <FaBars size="2rem" weight="800" color="#fff"/>
+          </label>
+          <img src={logo} alt="nft-logo" />
+          Shield <span>{loc.pathname.split('/')[1]}</span>
+      </div>
+      <input id="__signal" type="checkbox" defaultChecked/>
+      <div id="menu">
+          <NavLink to="/launchpad">LaunchPad</NavLink>
+          <NavLink to="/staking">Staking</NavLink>
+          <NavLink to="/swap">Swap</NavLink>
+          <NavLink to="/nft">NFT</NavLink>
+          <NavLink to="/airdrop">AirDrop</NavLink>
+      </div>
+      <ConnectSection/>
+    </HeaderWrapper>
+  );
+}
+
 
 const Layout = () => {
   return (
     <LayoutWrapper>
-      <Header />
+      <Menu/>
       <Outlet />
     </LayoutWrapper>
   );

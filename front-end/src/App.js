@@ -1,5 +1,6 @@
 import React from 'react';
 import {createBrowserRouter, RouterProvider, Navigate, Redirect} from "react-router-dom";
+import Web3Container from './upgrade/web3Wrapper';
 import DefaultLayout from "./components/layout";
 import StackingSection from "./pages/staking";
 import SwapSection from "./pages/swap";
@@ -12,12 +13,12 @@ import NFTLayout from "./components/nft/layout";
 import NFTHome from "./pages/nft/home";
 import NFTCreate from "./pages/nft/create";
 import NFTExplore from './pages/nft/explore';
-import Web3Container from './context/_web3_container';
 import CreateToken from './pages/create_token';
 import CreateLaunchPad from './pages/create_launchpad';
 import LaunchDetails from './pages/launchdetails'; 
 import AirDropSection from './pages/airdrop';
 import AirDropHome from './pages/alldrops'; 
+
 const router = createBrowserRouter([
 			{	
 				path:'/',
