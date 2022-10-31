@@ -23,7 +23,7 @@ const provider = /*helper.defaultProvider*/ new ethers.providers.JsonRpcProvider
 
 
 /**Addres ro deployed **/
-const __tokenServerAddr = "http://localhost:4000";
+const __tokenServerAddr = "mongodb+srv://vercel-admin-user-635ee1e3e235a91a3d660413:ZJaGIUSF7B7nZJKL@cluster0.omvgq48.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 /**address to deployd*/
 
 
