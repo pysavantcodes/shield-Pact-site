@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, NavLink, useLocation} from "react-router-dom";
 import styled, { css } from "styled-components";
 import { FaWallet, FaTimes, FaBars} from "react-icons/fa";
+import {AiOutlineMenu} from 'react-icons/ai';
+import {VscVmConnect} from "react-icons/vsc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "./buttons";
 import logo from "./nft/logo.png";
@@ -11,6 +13,7 @@ import {
   useDisconnect,
   useAccount,
   useNetwork,
+  useProvider
 } from "@web3modal/react";
 
 const fgColor = "#acacac";
@@ -24,89 +27,6 @@ const LayoutWrapper = styled.div`
 const flex = css`
   display: flex;
   align-items: center;
-`;
-
-const _HeaderWrapper = styled.header`
-  justify-content: space-between;
-  padding: 1rem 5rem;
-  position: sticky;
-  top: 0;
-  border-bottom: 1px solid #ffffff14;
-  background-color: #1515218c;
-  backdrop-filter: blur(10px);
-  z-index: 2;
-  overflow: hidden;
-
-  &,
-  .title_menu_container,
-  .title,
-  .menu {
-    ${flex}
-  }
-
-  .title_menu_container {
-    gap: 1rem;
-  }
-
-  .title {
-    font-weight: bold;
-    border-right: solid 1px #ffffff14;
-    padding-right: 1rem;
-    color: #fff;
-
-    font-size: 20px;
-
-    img {
-      width: 3rem;
-      height: auto;
-    }
-  }
-
-  .menu {
-    gap: 1.4rem;
-
-    font-size: 17px;
-  }
-
-  button {
-    margin-right: 0.5rem;
-  }
-  
-
-  .hamburger {
-    display: none;
-  }
-
-  .drop {
-      display: none;
-    }
-
-  @media (max-width: 1200px) {
-    flex-direction: column;
-    padding: 1rem 2rem;
-    .title_menu_container {
-      flex-direction: column;
-    }
-    .btn {
-      margin-right: 0rem;
-    }
-
-    .menu {
-      margin-bottom: 1rem;
-      font-size: 15px;
-    }
-    .title {
-      border-right: none;
-    }
-    
-    .hamburger {
-      display: block;
-      position: absolute;
-      right: 30px;
-      top: 30px;
-      cursor: pointer;
-    }
-  }
 `;
 
 const TitleWrapper = styled.div`
@@ -161,82 +81,38 @@ const TitleWrapper = styled.div`
 		padding:1.5rem 2rem;
 	}
 
-  
-
 `;
-const Header = () => {
-  const { open: connect } = useConnectModal();
-  const { address, isConnected } = useAccount();
-  const disconnect = useDisconnect();
-  const chains = useNetwork();
-  console.log(chains);
-
-  // const [drop, setDrop] = useState(false);
-  // console.log(window.screen.width)
-  // const dropDown = ()=>{
-  //   if (drop == false){
-  //     setDrop(true)
-  //   }else{
-  //     setDrop(false)
-  //   }
-  // }
-  // if(window.screen.width < 1200){
-  //   console.log("yess")
-  //   if (drop == false) {
-  //     document.querySelector(".drop").style.display = "none";
-  //     document.querySelector(".dropBtn").style.display = "none";
-  //   } else {
-  //     document.querySelector(".drop").style.display = "flex";
-  //     document.querySelector(".dropBtn").style.display = "block";
-  //   }
-    
-  // }else{
-  //   document.querySelector(".drop").style.display = "flex";
-  //     document.querySelector(".dropBtn").style.display = "block";
-  // }
-
-  const dropDown = ()=>{
-      document.querySelector(".menu").classList.toggle("drop")
-      document.querySelector(".dropBtn").classList.toggle("drop");
-    }
-
-  
-  const location = useLocation();
-  return (
-    <HeaderWrapper>
-      <div className="title_menu_container">
-        <div className="title">
-          <img src={logo} alt="nft-logo" />
-          Shield <span style={{textTransform:"capitalize"}}> {(location.pathname).split("/")[1]}</span>
-        </div>
-        <div className="menu">
-	{/*<NavLink to="/">Home</NavLink>*/}
-          <NavLink activeClassName="active" to="/launchpad">LaunchPad</NavLink>
-          {/*<NavLink to="/staking">Staking</NavLink>*/}
-          <NavLink activeClassName="active" to="/swap">Swap</NavLink>
-          <NavLink activeClassName="active" to="/nft">NFT</NavLink>
-          <NavLink activeClassName="active" to="/airdrop">AirDrop</NavLink>
-        </div>
-        <GiHamburgerMenu onClick={()=>dropDown()} className="hamburger" />
-      </div>
-      <ConnectSection/>
-    </HeaderWrapper>
-  );
-};
-
-const toggleDisplay = () => {
-  document.getElementById("small").classList.toggle("small");
-};
 
 const ConnectSection = () => {
   const { open: connect } = useConnectModal();
-  const { address, isConnected } = useAccount();
+  const { status, isConnected } = useAccount();
   const disconnect = useDisconnect();
+  const provider = useProvider();
+
+  useEffect(() => {
+    provider?.on("network",(_new, _old)=>{
+      if(_old){
+        window.location.reload();
+      }
+    });
+
+    provider?.on("changed",(_new, _old)=>{
+      console.log("changed");
+      console.log(_new, _old);
+      window.location.reload();
+     
+    });
+
+    return () => {
+      provider?.off("network");
+      provider?.off("chainChanged");
+    };
+  }, [provider])
 
   return (
     <ConnectWrapper className="dropBtn">
       <Button onClick={isConnected ? disconnect : connect}>
-        {isConnected ? "Disconnect" : "Connect"}
+        {status}
       </Button>
     </ConnectWrapper>
   );
@@ -270,11 +146,8 @@ const HeaderWrapper = styled.header`
 
   #title {
     font-weight: bold;
-    border-right: solid 1px #ffffff14;
-    padding-right: 1rem;
     color: #fff;
-
-    font-size: 20px;
+    font-size: 1.15rem;
 
     img {
       width: 3rem;
@@ -288,13 +161,14 @@ const HeaderWrapper = styled.header`
 
   #menu {
     gap: 2rem;
-    
+    font-size:1.1rem;
+
     a{
       color:#fff;
       font-weight:bold;
 
       &:hover, &.active{
-        color:#151521;
+        color:#9404d8;
       }
 
        &.active{
@@ -312,32 +186,58 @@ const HeaderWrapper = styled.header`
   }
   
 
+   .extra{
+    .submenu{
+      display:grid;
+      visibility:hidden;
+      gap:1.5rem;
+      position:absolute;
+      top:5rem;
+      transform:translateX(-25%);
+      background-color:#1515218c;
+      padding:2rem;
+    }
+
+    &:hover .submenu{
+      visibility:visible;
+    }
+  }
+
   @media screen and (max-width:896px){
-    
+    #logo_title{
+      display:none;
+    }
+
     label[for="__signal"]{
       display:grid;
     }
 
     #menu{
+      gap:1rem;
+      justify-content:space-between;
       position:fixed;
       top:5rem;
       left:0;
       height:calc(100vh - 5rem);
       flex-direction:column;
-      padding:3rem 0rem 1rem 1rem;
+      padding:2rem 0rem 2rem 1rem;
       background-color: #151521;
+      overflow:hidden;
+      overflow-y:auto;
+
 
       a{
         display:block;
         width:100%;
-        padding:1rem 4rem;
-        border-radius:0.75rem 0rem 0rem 0.75rem;
+        padding:1rem 3rem;
+        border-radius:1rem 0rem 0rem 1rem;
 
         &:hover, &.active{
-          padding:1rem 2rem 1rem 6rem
+          padding:0.75rem 2rem 0.75rem 4rem;
         }
 
         &:hover, &.active{
+          color:#151521;
           background-color:#fff;
         }
       }
@@ -346,32 +246,59 @@ const HeaderWrapper = styled.header`
     #__signal:checked ~ #menu{
       display:none;
     }
-  }
 
+    .extra{
+      & div:first-child{
+        display:none;
+      }
+
+      .submenu{
+        display:grid;
+        visibility:visible;
+        gap:1rem;
+        justify-content:space-between;
+        position: relative;
+        top:0rem;
+        transform:none;
+        background-color:transparent;
+        padding:0rem;
+      }
+    }
+
+  }
 `;
 
-const Menu = ()=>{
+const Menu = ({children})=>{
   const loc = useLocation();
-  console.log(loc);
+
   return(
-    <HeaderWrapper>
-      <div id="title">
-          <label for="__signal">
-            <FaBars size="2rem" weight="800" color="#fff"/>
-          </label>
-          <img src={logo} alt="nft-logo" />
-          Shield <span>{loc.pathname.split('/')[1]}</span>
-      </div>
-      <input id="__signal" type="checkbox" defaultChecked/>
-      <div id="menu">
-          <NavLink to="/launchpad">LaunchPad</NavLink>
-          <NavLink to="/staking">Staking</NavLink>
-          <NavLink to="/swap">Swap</NavLink>
-          <NavLink to="/nft">NFT</NavLink>
-          <NavLink to="/airdrop">AirDrop</NavLink>
-      </div>
-      <ConnectSection/>
-    </HeaderWrapper>
+      <HeaderWrapper>
+        <label htmlFor="__signal">
+          <AiOutlineMenu size="2rem" weight="800" color="#fff"/>
+        </label>
+        <div id="title">
+            <img src={logo} alt="nft-logo" />
+            <span id="logo_title">Shield {loc.pathname.split('/')[1]}</span>
+        </div>
+        <input id="__signal" type="checkbox" defaultChecked/>
+        <div id="menu">
+            <NavLink to="/nft">Explore NFT</NavLink>
+            <NavLink to="/launchpad">LaunchPad</NavLink>
+            <NavLink to="/staking">Staking</NavLink>
+            <NavLink to="/swap">Swap</NavLink>
+            <NavLink to="/airdrop">AirDrop</NavLink>
+
+            <div className="extra">
+              <div to="#">Create</div>
+              <div className="submenu">
+                <NavLink to="/createtoken">Create Token</NavLink>
+                <NavLink to="/createlaunchpad">Create Launch</NavLink>
+                <NavLink to="/createAirdrop">Create AirDrop</NavLink>
+              </div>
+            </div>
+        </div>
+        <ConnectSection/>
+      </HeaderWrapper>
   );
 }
 

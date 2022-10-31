@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Button = styled.button`
 	background-image:linear-gradient(135deg, #bc82d6, #9404d8);
 	color:white;
-	padding:0.75rem;
+	padding:0.65rem;
 	border-radius:10px;
 	font-weight:bold;
 	font-size:1rem;

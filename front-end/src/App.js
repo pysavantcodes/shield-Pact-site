@@ -85,7 +85,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path:'/nft',
-				element:<NFTLayout/>,
+				element:<DefaultLayout/>,
 				children:[
 					{	path:'',//default to client
 						element:<Navigate to="/nft/home"/>
