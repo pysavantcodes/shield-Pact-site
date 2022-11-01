@@ -9,7 +9,7 @@ import ChatSection from './pages/chat';
 import DashBoardLayout from "./components/dashboard/layout";
 import ClientSection from "./pages/dashboard/client";
 import CustomerSection from "./pages/dashboard/customer";
-import NFTLayout from "./components/nft/layout";
+// import NFTLayout from "./components/nft/layout";
 import NFTHome from "./pages/nft/home";
 import NFTCreate from "./pages/nft/create";
 import NFTExplore from './pages/nft/explore';

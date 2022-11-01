@@ -11,6 +11,8 @@ const fee = ethers.utils.parseEther(config.production?"1":"0.0001");
 const router = config.routerAddress;
 const busdAddress = config.busdAddress;
 
+console.log(config);
+
 async function main() {
   const [deployer] = await ethers.getSigners();
 

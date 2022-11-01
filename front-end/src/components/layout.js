@@ -17,6 +17,9 @@ import {
   useProvider
 } from "@web3modal/react";
 
+import withdraw from './_withdraw';
+
+
 const fgColor = "#acacac";
 const bgColor = "#1d1d1d";
 
@@ -273,37 +276,44 @@ const HeaderWrapper = styled.header`
   }
 `;
 
+
 const Menu = ({children})=>{
   const loc = useLocation();
+  const {Button:WithdrawBTN, View:WithdrawView} = withdraw();
 
   return(
-      <HeaderWrapper>
-        <label htmlFor="__signal">
-          <AiOutlineMenu size="2rem" weight="800" color="#fff"/>
-        </label>
-        <div id="title">
-            <img src={logo} alt="nft-logo" />
-            <span id="logo_title">Shield {loc.pathname.split('/')[1]}</span>
-        </div>
-        <input id="__signal" type="checkbox" defaultChecked/>
-        <div id="menu">
-            <NavLink to="/nft">Explore NFT</NavLink>
-            <NavLink to="/launchpad">LaunchPad</NavLink>
-            <NavLink to="/staking">Staking</NavLink>
-            <NavLink to="/swap">Swap</NavLink>
-            <NavLink to="/airdrop">AirDrop</NavLink>
+      <>
+        <HeaderWrapper>
+          <label htmlFor="__signal">
+            <AiOutlineMenu size="2rem" weight="800" color="#fff"/>
+          </label>
+          <div id="title">
+              <img src={logo} alt="nft-logo" />
+              <span id="logo_title">Shield {loc.pathname.split('/')[1]}</span>
+          </div>
+          <input id="__signal" type="checkbox" defaultChecked/>
+          <div id="menu">
+              <NavLink to="/nft">Explore NFT</NavLink>
+              <NavLink to="/launchpad">LaunchPad</NavLink>
+              <NavLink to="/staking">Staking</NavLink>
+              <NavLink to="/swap">Swap</NavLink>
+              <NavLink to="/airdrop">AirDrop</NavLink>
 
-            <div className="extra">
-              <div to="#">Create</div>
-              <div className="submenu">
-                <NavLink to="/createtoken">Create Token</NavLink>
-                <NavLink to="/createlaunchpad">Create Launch</NavLink>
-                <NavLink to="/createAirdrop">Create AirDrop</NavLink>
+              <div className="extra">
+                <div to="#">Create</div>
+                <div className="submenu">
+                  <NavLink to="/createtoken">Create Token</NavLink>
+                  <NavLink to="/createlaunchpad">Create Launch</NavLink>
+                  <NavLink to="/createAirdrop">Create AirDrop</NavLink>
+                </div>
               </div>
-            </div>
-        </div>
-        <ConnectSection/>
-      </HeaderWrapper>
+
+              <WithdrawBTN/>
+          </div>
+          <ConnectSection/>
+        </HeaderWrapper>
+        <WithdrawView/>
+      </>
   );
 }
 
@@ -324,6 +334,11 @@ const LoadingWrapper = styled.div`
   	height:30vmin;
   }
 
+  p{
+    text-align:center;
+    color:#000 !important;
+    font-size:20px;
+  }
 `;
 
 const LoadingPage  = ()=>{
@@ -333,8 +348,10 @@ const LoadingPage  = ()=>{
   status?.indexOf("connecting") === -1 && window.navigator.onLine?
   "":
   <LoadingWrapper>
-    <img src={loadingGif}/>
-    <p>{window.navigator.onLine?"Loading...":"You are Offline waiting for connection"}</p>
+    <div>
+      <img src={loadingGif}/>
+      <p><b>{window.navigator.onLine?"Loading...":"You are Offline waiting for connection"}</b></p>
+    </div>
    </LoadingWrapper>
   )
 }

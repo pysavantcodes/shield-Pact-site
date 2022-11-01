@@ -9,6 +9,7 @@ import logo from './logo.png';
 
 import { useConnectModal, useDisconnect, useAccount, useSigner} from '@web3modal/react';
 import nftLib from '../../upgrade/nft';
+import helper from '../../upgrade/web3Helper';
 import OptionController,{optionAt} from '../../components/cardOption';
 import useOptionModal from '../../components/customModal/useModal';
 
@@ -180,7 +181,11 @@ const TitleWrapper = styled.div`
 
   
 
+
 `;
+
+
+
 const Header = ()=>{
 	const {open:connect} = useConnectModal();
 	const { address, isConnected } = useAccount();
@@ -202,7 +207,7 @@ const Header = ()=>{
     const _withdrawBUSD = useCallback(async()=>withdrawBUSD(signer, actionUpdateList),[signer]);
 
   	const withdraw = useCallback(()=>optionAt.info(optionUpdate, "Withdraw Interest", 
-  										{withdrawBNB:_withdrawBNB, withdrawBUSD:_withdrawBUSD}),
+  										{withdrawNFTBNB:_withdrawBNB, withdrawNFTBUSD:_withdrawBUSD}),
   															[optionUpdate, _withdrawBNB, _withdrawBUSD]);
 
 	const dropDown = ()=>{
