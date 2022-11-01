@@ -5,7 +5,7 @@
 //yarn hardhat run --network localhost ./scripts/deploy_nft.js
 
 
-import config from '../config';
+const config = require('../config');
 
 const symbol = config.NFT_SYMBOL;
 const name = config.NFT_NAME;

@@ -8,7 +8,7 @@ const extraOption = {
   /**Admin address*/
   admin:'0x712196554d705f00396b9cB7D8384D225E92DF1b',
   /**launchpad Factory Address*/
-  launchFactoryAddress:"0xf9e6E7E11514e3BEA47873EE6202598D2cB47fcB",
+  launchFactoryAddress:"0x8549607307A2D3082D17Df4846BF90C7f116f2a6",
   /**Nft Address**/
   nftAddress:"0x9df5A067273096A4fa38CFF9dB33161355Cb6154",
   /**MarketPlace Address**/

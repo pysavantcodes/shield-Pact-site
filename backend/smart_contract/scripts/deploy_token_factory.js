@@ -5,7 +5,7 @@
 //yarn hardhat run --network localhost ./scripts/deploy_token_factory.js
 
 
-import config from '../config';
+const config = require('../config');
 
 const mainAccountAddress = config.admin;
 const dexRouterAddress = config.routerAddress;

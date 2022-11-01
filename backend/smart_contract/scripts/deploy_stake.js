@@ -4,7 +4,7 @@
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_chat.js
 
-import config from '../config';
+const config = require('../config');
 
 const mainAccountAddress = config.admin;
 const BonusAddress = config.adminToken; 

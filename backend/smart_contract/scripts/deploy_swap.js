@@ -3,7 +3,7 @@
 
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_token_factory.js
-
+const config = require('../config');
 
 const mainAccountAddress = config.admin;
 const _fee = ethers.utils.parseEther(config.production?"0.03":"0.0001");
