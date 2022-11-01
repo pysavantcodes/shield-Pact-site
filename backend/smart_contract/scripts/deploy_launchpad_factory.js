@@ -5,13 +5,15 @@
 //yarn hardhat run --network localhost ./scripts/deploy_token_factory.js
 
 const config = require('../config');
+const save = require("./_save");
+
 
 const mainAccountAddress = config.admin;
 const fee = ethers.utils.parseEther(config.production?"1":"0.0001");
 const router = config.routerAddress;
 const busdAddress = config.busdAddress;
 
-console.log(config);
+
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -27,9 +29,11 @@ async function main() {
   await launchPadfactory.deployed();
 
   if(mainAccountAddress && deployer.address != mainAccountAddress){
-    const result =  contract.transferOwnership(mainAccountAddress);
+    const result =  await contract.transferOwnership(mainAccountAddress);
     await result.wait();
   }
+
+  save("LAUNCHPADFACTORY",launchPadfactory.address);
 }
 
 main()

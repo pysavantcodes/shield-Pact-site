@@ -6,6 +6,8 @@
 
 
 const config = require('../config');
+const save = require("./_save");
+
 
 const symbol = config.NFT_SYMBOL;
 const name = config.NFT_NAME;
@@ -41,6 +43,9 @@ async function main() {
       await result.wait();
     }
   }
+
+  save("NFT",nftContract.address);
+  save("MARKET",marketContract.address);
 }
 
 main()

@@ -2,6 +2,8 @@
 
 require("@nomicfoundation/hardhat-toolbox");
 
+require('dotenv').config();
+
 module.exports = {
   networks: {
     hardhat: {
@@ -13,13 +15,13 @@ module.exports = {
     testnet: {
       url: "https://bsc-testnet.nodereal.io/v1/e9a36765eb8a40b9bd12e680a1fd2bc5",
       chainId:97,
-      accounts:["81ad5e3ad7463b3f356d9a1e13bd8487e7855cdc14c65971bdb3651f548a407a"]
+      accounts:[process.env.WALLET_KEY]
     },
 
     mainnet: {
       url: "https://bsc-dataseed1.binance.org",
       chainId:56,
-      accounts:["81ad5e3ad7463b3f356d9a1e13bd8487e7855cdc14c65971bdb3651f548a407a"]
+      accounts:[process.env.WALLET_KEY]
       //specify wallet private key
       //specify production=true at .env
     },

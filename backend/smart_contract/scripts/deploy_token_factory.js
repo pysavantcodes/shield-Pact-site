@@ -6,6 +6,8 @@
 
 
 const config = require('../config');
+const save = require("./_save");
+
 
 const mainAccountAddress = config.admin;
 const dexRouterAddress = config.routerAddress;
@@ -34,9 +36,11 @@ async function main() {
   await contract.deployed();
 
   if(mainAccountAddress && deployer.address != mainAccountAddress){
-    const result = contract.transferOwnership(mainAccountAddress);
+    const result = await contract.transferOwnership(mainAccountAddress);
     await result.wait();
   }
+
+  save("TOKENFACTORY",contract.address);
 }
 
 main()

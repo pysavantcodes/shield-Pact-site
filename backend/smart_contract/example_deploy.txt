@@ -1,0 +1,97 @@
+//example test of deployment to testnet
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract> yarn hardhat compile
+yarn run v1.22.11
+warning package.json: No license field
+$ C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat compile
+Nothing to compile
+Done in 1.64s.
+
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract> yarn hardhat run ./scripts/deploy_nft.js --network testnet
+yarn run v1.22.11
+warning package.json: No license field
+$ C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat run ./scripts/deploy_nft.js --network testnet
+Deployment MODE =>  DEVELOPMENT
+(node:14952) ExperimentalWarning: stream/web is an experimental feature. This feature could change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Deploying contracts with the account: 0x712196554d705f00396b9cB7D8384D225E92DF1b
+Account balance: 337922641000000000
+Deploying NFT
+NFT Contract address: 0x62D3BA4E5CAcae23c66ED1245C8753c3e929FB5D
+Deploying MarketPlace
+marketContract address: 0x8e93a40d14845AB8Ed355F36D02D03645B7808F5
+Done in 21.66s.
+
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract> yarn hardhat run ./scripts/deploy_airdrop.js --network testnet
+yarn run v1.22.11
+warning package.json: No license field
+$ C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat run ./scripts/deploy_airdrop.js --network testnet
+Deployment MODE =>  DEVELOPMENT
+(node:12780) ExperimentalWarning: stream/web is an experimental feature. This feature could change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Deploying contracts with the account: 0x712196554d705f00396b9cB7D8384D225E92DF1b
+Account balance: 281963333000000000
+Deploying AirDrop
+AirDrop Contarct Address=> 0xB132B298B3BDb0F0889453e9cFF012edbEd3D212
+Done in 21.41s.
+
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract> yarn hardhat run ./scripts/deploy_stake.js --network testnet
+yarn run v1.22.11
+warning package.json: No license field
+$ C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat run ./scripts/deploy_stake.js --network testnet
+Deployment MODE =>  DEVELOPMENT
+(node:5168) ExperimentalWarning: stream/web is an experimental feature. This feature could change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Deploying contracts with the account: 0x712196554d705f00396b9cB7D8384D225E92DF1b
+Account balance: 259632915000000000
+Deploying Staking
+ReferenceError: bnb is not defined
+    at main (C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\scripts\deploy_stake.js:37:34)
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract> yarn hardhat run ./scripts/deploy_swap.js --network testnet
+yarn run v1.22.11
+warning package.json: No license field
+$ C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat run ./scripts/deploy_swap.js --network testnet
+Deployment MODE =>  DEVELOPMENT
+(node:10768) ExperimentalWarning: stream/web is an experimental feature. This feature could change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Deploying contracts with the account: 0x712196554d705f00396b9cB7D8384D225E92DF1b
+Account balance: 259632915000000000
+Deploying Swap
+Swap Contarct Address=> 0x83D68AA798b6f32fC28eCBade60F1c03faa570B1
+Done in 14.91s.
+
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract> yarn hardhat run ./scripts/deploy_launchpad_factory.js --network testnet
+yarn run v1.22.11
+warning package.json: No license field
+$ C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat run ./scripts/deploy_launchpad_factory.js --network testnet
+Deployment MODE =>  DEVELOPMENT
+(node:10552) ExperimentalWarning: stream/web is an experimental feature. This feature could change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Deploying contracts with the account: 0x712196554d705f00396b9cB7D8384D225E92DF1b
+Account balance: 244035772000000000
+Deploying LaunchPadFactory
+LaunchPadFactory => 0xdBA69a7a23C21735D3dB39AeE9F6Af36b4030907
+Done in 19.36s.
+
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract> yarn hardhat run ./scripts/deploy_token_factory.js --network testnet
+yarn run v1.22.11
+warning package.json: No license field
+$ C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat run ./scripts/deploy_token_factory.js --network testnet
+Deployment MODE =>  DEVELOPMENT
+(node:14932) ExperimentalWarning: stream/web is an experimental feature. This feature could change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Deploying contracts with the account: 0x712196554d705f00396b9cB7D8384D225E92DF1b
+Account balance: 164831820000000000
+Deploying StandardTokenCreator Contract...
+StandardTokenCreator Contract Address: 0x4A65B1bB6F8A11DB2ca5592c9df29513753631E5
+Deploying ReflectionTokenCreator Contract...
+ReflectionTokenCreator Contract Address: 0xb80f61fFE83ef9C96b53Fd1c6516FF16b9434E5e
+Deploying LiquidTokenCreator Contract...
+LiquidTokenCreator Contract Address: 0x70Bbc495fbA3f220004E2Dd046B90f8b0920001b
+Deploying Token Factory...
+Token Factory Contarct Address=> 0x19D5CbFE33b6c51bEde19c98878c07047D09C683
+Done in 44.58s.
+
+C:\Users\User\Desktop\shield\shield-Pact-site\backend\smart_contract>

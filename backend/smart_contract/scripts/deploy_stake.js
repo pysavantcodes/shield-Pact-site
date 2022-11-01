@@ -5,6 +5,7 @@
 //yarn hardhat run --network localhost ./scripts/deploy_chat.js
 
 const config = require('../config');
+const save = require("./_save");
 
 const mainAccountAddress = config.admin;
 const BonusAddress = config.adminToken; 
@@ -41,9 +42,11 @@ async function main() {
     //await result.wait();
 
     if(mainAccountAddress && deployer.address != mainAccountAddress){
-    const result = contract.transferOwnership(mainAccountAddress);
-    await result.wait();
-  }
+      const result = await contract.transferOwnership(mainAccountAddress);
+      await result.wait();
+    }
+
+    save("STAKE", stake.address);
 }
 
 main()
