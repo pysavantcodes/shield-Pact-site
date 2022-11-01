@@ -27,6 +27,9 @@ const config = {
   routerAddress:"0x10ED43C718714eb63d5aA57B78B54704E256024E",
   tokenServerAddress:"https://webserver-nine.vercel.app/",//deployed webserver address here
   production:false
+
 }*/
 
 
+ 
+export default config;
