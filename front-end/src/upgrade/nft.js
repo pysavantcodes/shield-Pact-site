@@ -182,7 +182,7 @@ plug.myNFT = async (_signer)=>{
   
   const nft = getNft(_signer);
  
-  const ownedItem = await nft.itemCreated().catch(e=>[]);
+  const ownedItem = await nft.itemCreated();
   
   const _address = await _signer.getAddress();
   

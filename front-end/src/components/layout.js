@@ -97,9 +97,8 @@ const ConnectSection = () => {
       }
     });
 
-    provider?.on("changed",(id)=>{
-      console.log("changed");
-      console.log(id);
+    provider?.on("chainChanged",(id)=>{
+      console.log("Chain Changed: ",id);
       window.location.reload();
     });
 
@@ -110,7 +109,8 @@ const ConnectSection = () => {
 
     return () => {
       provider?.off("network");
-      provider?.off("changed");
+      provider?.off("chainChanged");
+      provider?.off("error");
     };
   }, [provider])
 
@@ -318,20 +318,23 @@ const LoadingWrapper = styled.div`
   background:#fff;
   z-index:500;
 
+
   img{
-    width:50px;
-    height:50px;
+  	width:30vmin;
+  	height:30vmin;
   }
+
 `;
 
 const LoadingPage  = ()=>{
   const {status} = useAccount();
  
   return (
-  status?.indexOf("connecting") == -1?
+  status?.indexOf("connecting") === -1 && window.navigator.onLine?
   "":
   <LoadingWrapper>
     <img src={loadingGif}/>
+    <p>{window.navigator.onLine?"Loading...":"You are Offline waiting for connection"}</p>
    </LoadingWrapper>
   )
 }

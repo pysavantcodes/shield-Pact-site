@@ -115,10 +115,9 @@ const genFunc = (_funcFactory)=>async (_signer, setData)=>{
 const Generate = ({signer, address, funcFactory, onClick})=>{
   const [status, setStatus]= useState();
   const [data, setData] = useState([]);
-
+  const [error, setError] = useState();
   useEffect(()=>{
     if(!signer || status === "LOADING" || status === "COMPLETED"){
-      console.log(status);
       return;
     }
 
@@ -126,7 +125,7 @@ const Generate = ({signer, address, funcFactory, onClick})=>{
       setStatus("LOADING");
       genFunc(funcFactory)(signer, setData)
                           .then(()=>setStatus("COMPLETED"))
-                              .catch((e)=>{console.log(e); setStatus("ERROR")});
+                              .catch((e)=>{setError(e.reason.find("exception")===-1?e.reason:"Error Occured");setStatus("ERROR")});
     }
 
     const k_time = setTimeout(run, DELAY_SEC);//delay 15sec
@@ -140,7 +139,7 @@ const Generate = ({signer, address, funcFactory, onClick})=>{
       {data.map((d,i)=><Card {...d} userAddress={address} key={i} onClick={onClick}/>)}
     </div>
     {status==="LOADING" && <h2 style={{textAlign:'center'}}>Loading....</h2>}
-    {status==="ERROR" && <h2 style={{textAlign:'center'}} onClick={()=>window.location.reload()}>Reload</h2>}
+    {status==="ERROR" && <h2 style={{textAlign:'center'}} onClick={()=>window.location.reload()}>Reload{error?': '+error:""}</h2>}
   </>
   );
 }
