@@ -1,18 +1,19 @@
 import React from 'react';
 import { Web3Modal} from '@web3modal/react';
 import { chains, providers } from '@web3modal/ethereum';
+import config from './config';
 
-const PROJECTID = '5f0a0c1eda156a9eade6dfcf6dbc0cea'; //this would be remove later
-const NFT_STORAGE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDEyQjhiNzkxQzkxMDNlMUNEMDU0RWU0Nzc5MkQ2NDY3OTQ0YjFkYTUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NTA0MTIzNTQwMywibmFtZSI6IlNISUVMRENPSU4ifQ.bBacconKCT3IaZkLAUPpss7BIdZBjcU0QTIvqRHS9XQ';
 
-const config = {
-  projectId: PROJECTID,
+const _chain = config.production?chains.binanceSmartChain:chains.binanceSmartChainTestnet;
+
+const _config = {
+  projectId: config.PROJECTID,
   theme: 'dark',
   accentColor: 'default',
   ethereum: {
-    appName: 'web3Modal',
-    chains:[chains.binanceSmartChainTestnet],
-    providers:[providers.walletConnectProvider({ProjectId:PROJECTID})]
+    appName: 'Shield Pact',
+    chains:[_chain],
+    providers:[providers.walletConnectProvider({ProjectId:config.PROJECTID})]
   }
 }
 
@@ -21,7 +22,7 @@ const Web3Container = ({children})=>{
   return (
     <>
       {children}
-      <Web3Modal config={config} />
+      <Web3Modal config={_config} />
     </>
   )
 }

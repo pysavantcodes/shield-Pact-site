@@ -2,8 +2,8 @@ import * as helper from './web3Helper';
 import * as contract from './contract';
 import config from './config'
 
-const stakeAddr = "0x6f2326E0cB5def734Cee56fbFb9401D1F982447C";
-const bonusTokenAddr = "0xF570EFf7f847B09D1119B9a80590F10e6f458b96";
+const stakeAddr = config.stakeAddr;//"0x6f2326E0cB5def734Cee56fbFb9401D1F982447C";
+const bonusTokenAddr = config.bonusTokenAddr;//"0xF570EFf7f847B09D1119B9a80590F10e6f458b96";
 
 const getStake = (provider)=>helper.getContract(stakeAddr, contract.stakeABI, provider||helper.defaultProvider);
 
@@ -131,7 +131,7 @@ const setStakeBNB = async (_signer, _reward, _totalRewardAmount, _duration, _han
 	let stake = getStake(_signer);
 	_handler.process("Preparing");
 	const token =  await helper.fetchToken(bonusTokenAddr, _signer);
-	console.log(token);
+	//console.log(token);
 	_handler.process(`Requesting approval for ${_totalRewardAmount} ${token.symbol}`);
 	let result = await token._token.approve(stakeAddr, token.parse(_totalRewardAmount));
 	await result.wait();
@@ -162,7 +162,7 @@ const setStakeBUSD = async (_signer, _reward, _totalRewardAmount, _duration, _ha
 	let result = await token._token.approve(stakeAddr, token.parse(_totalRewardAmount));
 	await result.wait();
 	_handler.process("updating Staking...");
-	console.log("Reward+>", token.parse(_reward))
+	//console.log("Reward+>", token.parse(_reward))
 	result = await stake.setStakeable(config.busdAddress, bonusTokenAddr, helper.parseEther("1"),
 		token.parse(_reward), token.parse(_totalRewardAmount), _duration);
 	return (await result.wait()).transactionHash;

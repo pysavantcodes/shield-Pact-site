@@ -1,4 +1,5 @@
 import {ethers} from "ethers";
+import { chains } from '@web3modal/ethereum';
 import { NFTStorage} from 'nft.storage';
 import axios from "axios";
 
@@ -11,14 +12,17 @@ export const {parseEther, formatEther, parseUnits, formatUnits} = ethers.utils;
 export const getRPCProvider = ({rpc,attr})=>
   new ethers.providers.JsonRpcProvider(rpc ,attr);
 
-const BNB_TESTNET = {
-  rpc:"https://data-seed-prebsc-1-s1.binance.org:8545",
-  attr: { name: "binance", chainId: 97 }
+const _chain = config.production?chains.binanceSmartChain:chains.binanceSmartChainTestnet;
+
+const BNB_NET = {
+  rpc: _chain.rpcUrls.default,
+  attr: { name: _chain.name, chainId: _chain.id }
 }
 
-const testnetProvider = getRPCProvider(BNB_TESTNET);
 
-export const defaultProvider = testnetProvider;
+const netProvider = getRPCProvider(BNB_NET);
+
+export const defaultProvider = netProvider;
 
 const _nftstorage = new NFTStorage({ token: config.NFT_STORAGE_KEY});
 

@@ -1,7 +1,8 @@
 import * as helper from './web3Helper';
 import * as contract from './contract';
+import config from './config';
 
-const airDropAddress = "0x2F0dD0492B0D3d0dc694d7BbA491C7d9aBA8fE18";
+const airDropAddress = config.airDropAddress;//"0x2F0dD0492B0D3d0dc694d7BbA491C7d9aBA8fE18";
 
 const getAirDrop = (signer) => helper.getContract(airDropAddress, contract.airDropABI, signer || helper.defaultProvider);
 

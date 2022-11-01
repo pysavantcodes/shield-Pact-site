@@ -1,10 +1,10 @@
 import * as helper from './web3Helper';
 import * as contract from './contract';
-// import config from './config';
+import config from './config';
 
 //NFT deployed address
-const nftAddress = "0x9df5A067273096A4fa38CFF9dB33161355Cb6154";
-const marketAddress = "0x57EB5a1AcaC54071062aF2289945954cb12C8a84";
+const nftAddress = config.nftAddress;//"0x9df5A067273096A4fa38CFF9dB33161355Cb6154";
+const marketAddress = config.marketAddress;//"0x57EB5a1AcaC54071062aF2289945954cb12C8a84";
 
 const getNft = (_signer)=>helper.getContract(nftAddress, contract.nftABI, _signer);
 
@@ -179,11 +179,16 @@ plug.listNFT = async (_signer, _page=0)=>{
 }
 
 plug.myNFT = async (_signer)=>{
+  
   const nft = getNft(_signer);
-  const ownedItem = await nft.itemCreated();
+ 
+  const ownedItem = await nft.itemCreated().catch(e=>[]);
+  
   const _address = await _signer.getAddress();
+  
   async function* generate(){
     for(let i of ownedItem){
+      console.log("my nft");
       yield plug.itemInfo(i, _address);
     }
   }

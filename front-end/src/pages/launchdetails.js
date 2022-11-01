@@ -167,10 +167,10 @@ const TokenPreSale = ({provider, address})=>{
           <p>49</p>
           <p>22</p>
         </div>*/}
-        <progress value={(p.presaleAmount - p.remaining)/p.presale} max={p.presaleAmount/p.presale} />
+        <progress value={(p.presaleAmount - p.remaining)/p.presale || 0} max={p.presaleAmount/p.presale || 0} />
         <div className="progval">
-          <p>{(p.presaleAmount - p.remaining)/p.presale}{p.baseTk}</p>
-          <p>{p.presaleAmount/p.presale}{p.baseTk}</p>
+          <p>{(p.presaleAmount - p.remaining)/p.presale || 0}{p.baseTk}</p>
+          <p>{p.presaleAmount/p.presale || 0}{p.baseTk}</p>
         </div>
         <label htmlFor="amount">
           Amount(max: {p.maxbuy}{p.baseTk})

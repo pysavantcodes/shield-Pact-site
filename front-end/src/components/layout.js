@@ -7,6 +7,7 @@ import {VscVmConnect} from "react-icons/vsc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "./buttons";
 import logo from "./nft/logo.png";
+import loadingGif from "./loading.gif";
 
 import {
   useConnectModal,
@@ -96,16 +97,20 @@ const ConnectSection = () => {
       }
     });
 
-    provider?.on("changed",(_new, _old)=>{
+    provider?.on("changed",(id)=>{
       console.log("changed");
-      console.log(_new, _old);
+      console.log(id);
       window.location.reload();
-     
+    });
+
+    provider?.on("error",(id)=>{
+      console.log("error");
+      console.log(id);
     });
 
     return () => {
       provider?.off("network");
-      provider?.off("chainChanged");
+      provider?.off("changed");
     };
   }, [provider])
 
@@ -302,12 +307,42 @@ const Menu = ({children})=>{
   );
 }
 
+const LoadingWrapper = styled.div`
+  position:fixed;
+  top:0;
+  left:0;
+  height:100vh;
+  width:100vw;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  z-index:500;
+
+  img{
+    width:50px;
+    height:50px;
+  }
+`;
+
+const LoadingPage  = ()=>{
+  const {status} = useAccount();
+ 
+  return (
+  status?.indexOf("connecting") == -1?
+  "":
+  <LoadingWrapper>
+    <img src={loadingGif}/>
+   </LoadingWrapper>
+  )
+}
+
 
 const Layout = () => {
   return (
     <LayoutWrapper>
       <Menu/>
-      <Outlet />
+      <Outlet/>
+      <LoadingPage/>
     </LayoutWrapper>
   );
 };

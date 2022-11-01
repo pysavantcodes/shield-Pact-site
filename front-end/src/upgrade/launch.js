@@ -1,8 +1,8 @@
 import * as helper from './web3Helper';
 import * as contract from './contract';
 import tkLib from './create_token';
-
-const launchFactoryAddress = "0xf9e6E7E11514e3BEA47873EE6202598D2cB47fcB";//"0x00910c9cBe37dbC92462eE32E7C15621144AF206";
+import config from './config';
+const launchFactoryAddress = config.launchFactoryAddress;//"0xf9e6E7E11514e3BEA47873EE6202598D2cB47fcB";
 
 const getLaunchFactory = (signer)=>
 					helper.getContract(launchFactoryAddress, 

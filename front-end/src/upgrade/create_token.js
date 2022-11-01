@@ -1,8 +1,8 @@
 import * as helper from './web3Helper';
 import * as contract from './contract';
+import config from './config';
 
-
-const tokenFactoryAddress = "0x0AED08168aE1Aa0E363877D34BD7b094Bc7e4f0b";
+const tokenFactoryAddress = config.tokenFactoryAddress;//"0x0AED08168aE1Aa0E363877D34BD7b094Bc7e4f0b";
 
 const getTokenFactory = (signer)=>
 					helper.getContract(tokenFactoryAddress, 
@@ -52,7 +52,7 @@ const __createToken = async(factory, fee, __type, {name, symbol, decimals, total
       result = await factory.createStandardToken(name, symbol, decimals, totalSupply,{value:fee});
       break;
   }
-  console.log("Result ",result);
+  //console.log("Result ",result);
   const reciept = await result.wait();
   //return reciept.events[(reciept.events.length - 1)].args.token;//created token address
   return reciept.transactionHash;

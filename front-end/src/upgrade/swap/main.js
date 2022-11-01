@@ -6,24 +6,25 @@ import {Token, TokenAmount, Fetcher, Trade, Percent} from '@pancakeswap-libs/sdk
 //BNB BUSD CAKE BTCB => common bases first five
 import token_list from './token_list';
 
-
 import * as helper from '../web3Helper';
 
 import {swapABI} from '../contract';
 
 
+import config from '../config';
+
 //MAINNET CHAINID USED
 //const allToken = token_list.map(d=>new Token(d.chainId, d.address, d.decimals, d.symbol, d.name));
-
 
 const provider = /*helper.defaultProvider*/ new ethers.providers.JsonRpcProvider(
   "https://bsc-dataseed.binance.org/",
   { name: "binance", chainId: 56 }
 );
 
+//const provider = helper.defaultProvider;
 
 /**Addres ro deployed **/
-const __tokenServerAddr = "mongodb+srv://vercel-admin-user-635ee1e3e235a91a3d660413:ZJaGIUSF7B7nZJKL@cluster0.omvgq48.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const __tokenServerAddr = config.tokenServerAddress;
 /**address to deployd*/
 
 
@@ -198,7 +199,7 @@ const routerABI = [
   ];
 
 
-const routerAddress = '0x10ED43C718714eb63d5aA57B78B54704E256024E';
+const routerAddress = config.routerAddress;//'0x10ED43C718714eb63d5aA57B78B54704E256024E';
 const routerContract = new ethers.Contract(routerAddress, routerABI);
 
 const exchangeNetwork = async(signer, inputToken, outputToken, _inputValue, _outputValue, deadlineInMinute, path, handler)=>{
@@ -269,7 +270,7 @@ const exchangeNetwork = async(signer, inputToken, outputToken, _inputValue, _out
 }
 
 
-const swapAddress = "0xd2c95dD3709BB4531cEE0C8C3EDE3819f6505974";
+const swapAddress = config.swapAddress;//"0xd2c95dD3709BB4531cEE0C8C3EDE3819f6505974"
 
 const getSwap = (signer)=>helper.getContract(swapAddress, swapABI, signer);
 
