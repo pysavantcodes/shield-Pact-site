@@ -4,9 +4,12 @@
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_token_factory.js
 
-const mainAccountAddress = "";
-const dexRouterAddress = "0xdc4904b5f716Ff30d8495e35dC99c109bb5eCf81";
-const _fee = ethers.utils.parseEther("0.000002");
+
+import config from '../config';
+
+const mainAccountAddress = config.admin;
+const dexRouterAddress = config.routerAddress;
+const _fee = ethers.utils.parseEther(config.production?"0.2":"0.000002");
 
 async function main() {
   const [deployer] = await ethers.getSigners();

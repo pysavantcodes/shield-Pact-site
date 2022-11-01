@@ -5,7 +5,8 @@ const config = {
   baseURI:'https://nftstorage.link/ipfs/',
   explorer:(extraOption.production?'https://testnet.bscscan.com/tx/':'https://bscscan.com/tx/'),
   busdAddress:(extraOption.production?'0xe9e7cea3dedca5984780bafc599bd69add087d56':'0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee'),
-  routerAddress:(extraOption.production?"0x10ed43c718714eb63d5aa57b78b54704e256024e":"0x9ac64cc6e4415144c455bd8e4837fea55603e5c3"),
+  routerAddress:(extraOption.production?"0x10ed43c718714eb63d5aa57b78b54704e256024e":"0xD99D1c33F9fC3444f8101754aBC46c52416550D1"),
+  bonusTokenAddress:extraOption.bonusTokenAddress||(extraOption.production?"0x4E6345e00B8DA9b12dcF81D585D15Ea9924B3E80":"0x542eD1F83870a6Adcf484e9c9888f04D539e0A00"),
   ...extraOption
 }
 
@@ -31,5 +32,4 @@ const config = {
 }*/
 
 
- 
 export default config;

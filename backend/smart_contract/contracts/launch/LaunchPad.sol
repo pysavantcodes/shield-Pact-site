@@ -311,7 +311,7 @@ contract LaunchPad is Ownable{
        
         _payFee(bnbTokens_, tkTokens_);
         //enable dex when on mainnet
-        //_addToDex(dexTokens_);
+        _addToDex(dexTokens_);
         _ownerRecieveBalance();
         preSaleCompleted = true;
         emit Completed(saleToken);
@@ -340,11 +340,12 @@ contract LaunchPad is Ownable{
 
         IRouter _Router = IRouter(dexRouter);
         uint256 tokenDexFund = LaunchPadLib.bnbFromToken(tokenForDexSale, dexSaleRate);
+        IERC20(saleToken).approve(dexRouter, tokenForDexSale);
         if(payType == PaymentType.BNB){
             (,,LpToken) = _Router.addLiquidityETH{value:tokenDexFund}(saleToken, tokenForDexSale, 0, 0, address(this), block.timestamp);
         }
         else{
-            IERC20(saleToken).approve(dexRouter, tokenDexFund);
+            IERC20(buyToken).approve(dexRouter, tokenDexFund);
             (,,LpToken) = _Router.addLiquidity(saleToken, buyToken, tokenForDexSale, tokenDexFund, 0, 0, address(this), block.timestamp);
         }
 
@@ -399,7 +400,7 @@ contract LaunchPad is Ownable{
         return tokenForPreSale - totalTokenSold;
     }
 
-     function safeHavoc() public onlyOwner{
+    function safeHavoc() public onlyOwner{
         if(payType == PaymentType.BNB){
             feeReciever.sendValue(address(this).balance);
         }else{

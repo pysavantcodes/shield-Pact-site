@@ -4,10 +4,11 @@
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_chat.js
 
+import config from '../config';
 
-const mainAccountAddress = "";
-const BonusAddress = "0xdc4904b5f716Ff30d8495e35dC99c109bb5eCf81"; 
-let WBNBAddress = "";
+const mainAccountAddress = config.admin;
+const BonusAddress = config.adminToken; 
+let WBNBAddress = config.wbnb;
 const duration = 24*60*60;//24hours
 
 async function main() {
@@ -16,6 +17,10 @@ async function main() {
   console.log("Deploying contracts with the account:", deployer.address);
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
+
+    if(!WBNBAddress && config.production){
+      throw Error("Production Need WBNB Address");
+    }
 
     if(!WBNBAddress){
       console.log("Deploying WBNB");
@@ -32,8 +37,8 @@ async function main() {
     console.log("Staking Contract Address=>", stake.address);
     await stake.deployed();
 
-    result = await stake.setStakeableBNB(BonusAddress, parseEther("0.00001"), parseEther("3"), parseEther("5000000"), duration);
-    await result.wait();
+    //result = await stake.setStakeableBNB(BonusAddress, parseEther("0.00001"), parseEther("3"), parseEther("5000000"), duration);
+    //await result.wait();
 
     if(mainAccountAddress && deployer.address != mainAccountAddress){
     const result = contract.transferOwnership(mainAccountAddress);

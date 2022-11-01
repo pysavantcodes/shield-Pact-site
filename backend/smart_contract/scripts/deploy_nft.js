@@ -4,10 +4,15 @@
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_nft.js
 
-const symbol = 'BHC';
-const name = 'BAHNC NFT';
-const mainAccountAddress = "";
-const busdAddress = "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee";
+
+import config from '../config';
+
+const symbol = config.NFT_SYMBOL;
+const name = config.NFT_NAME;
+
+
+const mainAccountAddress = config.admin;
+const busdAddress = config.busdAddress;
 const feeBps = 200;//2%
 
 

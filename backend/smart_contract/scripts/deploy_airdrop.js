@@ -4,9 +4,11 @@
 //command to deploy
 //yarn hardhat run --network localhost ./scripts/deploy_token_factory.js
 
-const mainAccountAddress = "";
+import config from '../config';
+
+const mainAccountAddress = config.admin;
+const _fee = ethers.utils.parseEther(config.production?"0.5":"0.000005");
 const _feeBps = 100; //1%
-const _fee = ethers.utils.parseEther("0.000002");
 
 async function main() {
   const [deployer] = await ethers.getSigners();

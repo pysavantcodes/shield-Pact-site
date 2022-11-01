@@ -21,8 +21,8 @@ const extraOption = {
   tokenFactoryAddress:"0x0AED08168aE1Aa0E363877D34BD7b094Bc7e4f0b",
   /**Swap Factory Address**/
   swapAddress:"0xd2c95dD3709BB4531cEE0C8C3EDE3819f6505974",
-  /**SHC PACT ADDRESS**/
-  bonusTokenAddress:"0xF570EFf7f847B09D1119B9a80590F10e6f458b96",
+  /**SHC PACT ADDRESS MUST BE SPECIFIED HERE**/
+  bonusTokenAddress:false,
   /**Token Server Address for Webserver Directory**/
   tokenServerAddress:"localhost:4000",//deployed webserver address here
   /**ton be specified for production Evnvironment**/
