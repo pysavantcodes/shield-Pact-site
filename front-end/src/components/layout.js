@@ -220,10 +220,11 @@ const HeaderWrapper = styled.header`
     #menu{
       gap:1rem;
       justify-content:space-between;
-      position:fixed;
+      position:sticky;
       top:5rem;
       left:0;
-      height:calc(100vh - 5rem);
+      /*height:calc(100vh - 5rem);*/
+      height:100%;
       flex-direction:column;
       padding:2rem 0rem 2rem 1rem;
       background-color: #151521;
