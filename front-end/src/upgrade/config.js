@@ -15,7 +15,7 @@ const config = {
   tokenFactoryAddress:"0x0AED08168aE1Aa0E363877D34BD7b094Bc7e4f0b",
   swapAddress:"0xd2c95dD3709BB4531cEE0C8C3EDE3819f6505974",
   routerAddress:"0x10ED43C718714eb63d5aA57B78B54704E256024E",
-  tokenServerAddress:"localhost:4000",//deployed webserver address here
+  tokenServerAddress:"https://webserver-nine.vercel.app/",//deployed webserver address here
   production:false
 }
 
