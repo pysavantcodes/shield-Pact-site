@@ -24,7 +24,7 @@ const extraOption = {
   /**SHC PACT ADDRESS MUST BE SPECIFIED HERE**/
   bonusTokenAddress:false,
   /**Token Server Address for Webserver Directory**/
-  tokenServerAddress:"localhost:4000",//deployed webserver address here
+  tokenServerAddress:"https://glacial-peak-07030.herokuapp.com/",//deployed webserver address here
   /**ton be specified for production Evnvironment**/
   production:false
 }
