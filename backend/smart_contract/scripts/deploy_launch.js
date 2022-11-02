@@ -22,14 +22,15 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  console.log('Deploying LaunchPadFactory');
-  factory = await ethers.getContractFactory("LaunchPadFactory");
-  launchPadfactory = await factory.deploy(fee, busdAddress, router);
-  console.log("LaunchPadFactory =>", launchPadfactory.address);
-  await launchPadfactory.deployed();
-
+  // console.log('Deploying LaunchPadFactory');
+  // factory = await ethers.getContractFactory("LaunchPadFactory");
+  // launchPadfactory = await factory.deploy(fee, busdAddress, router);
+  // console.log("LaunchPadFactory =>", launchPadfactory.address);
+  // await launchPadfactory.deployed();
+  const launchPadfactory = await ethers.getContractAt("LaunchPadFactory", "0x4C90f5C6fADc7a2E6a79877818035c995c28D21b");//replace _address_ with the launchPadfactory address
+  console.log('TRansfer Ownership to '+mainAccountAddress);
   if(mainAccountAddress && deployer.address != mainAccountAddress){
-    const result =  await contract.transferOwnership(mainAccountAddress);
+    const result =  await launchPadfactory.transferOwnership(mainAccountAddress);
     await result.wait();
   }
 

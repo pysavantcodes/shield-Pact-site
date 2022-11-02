@@ -11,7 +11,7 @@ const mainAccountAddress = config.admin;
 const BonusAddress = config.adminToken; 
 let WBNBAddress = config.wbnb;
 const duration = 24*60*60;//24hours
-
+console.log(WBNBAddress);
 async function main() {
   const [deployer] = await ethers.getSigners();
   let {parseEther, formatEther} = ethers.utils;
@@ -34,7 +34,7 @@ async function main() {
 
     console.log('Deploying Staking')
     factory = await ethers.getContractFactory("Staking");
-    stake = await factory.deploy(bnb.address);
+    stake = await factory.deploy(WBNBAddress);
     console.log("Staking Contract Address=>", stake.address);
     await stake.deployed();
 
@@ -42,7 +42,7 @@ async function main() {
     //await result.wait();
 
     if(mainAccountAddress && deployer.address != mainAccountAddress){
-      const result = await contract.transferOwnership(mainAccountAddress);
+      const result = await stake.transferOwnership(mainAccountAddress);
       await result.wait();
     }
 

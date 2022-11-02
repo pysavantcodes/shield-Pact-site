@@ -1,0 +1,428 @@
+Microsoft Windows [Version 10.0.18362.1082]
+(c) 2019 Microsoft Corporation. All rights reserved.
+
+C:\Users\JOSHUA UWAK>npm install --global yarn
+
+added 1 package, and audited 2 packages in 9s
+
+found 0 vulnerabilities
+
+C:\Users\JOSHUA UWAK>git clone https://github.com/pysavantcodes/shield-Pact-site.git
+fatal: destination path 'shield-Pact-site' already exists and is not an empty directory.
+
+C:\Users\JOSHUA UWAK>git clone https://github.com/pysavantcodes/shield-Pact-site.git
+Cloning into 'shield-Pact-site'...
+remote: Enumerating objects: 2049, done.
+remote: Counting objects: 100% (695/695), done.
+remote: Compressing objects: 100% (419/419), done.
+remote: Total 2049 (delta 431), reused 413 (delta 228), pack-reused 1354                                                Receiving objects: 100% (2049/2049), 25.43 MiB | 504.00 KiB/s
+Receiving objects: 100% (2049/2049), 25.58 MiB | 386.00 KiB/s, done.
+Resolving deltas: 100% (1143/1143), done.
+
+C:\Users\JOSHUA UWAK>cd shield-Pact-site
+
+C:\Users\JOSHUA UWAK\shield-Pact-site>cd backend
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend>cd smart_contract
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>cd star
+The system cannot find the path specified.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add .
+yarn add v1.22.19
+warning package.json: No license field
+warning No license field
+[1/4] Resolving packages...
+error Received malformed response from registry for ".". The registry may be down.
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat compile
+yarn run v1.22.19
+warning package.json: No license field
+error Command "hardhat" not found.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn --version
+1.22.19
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add .
+yarn add v1.22.19
+warning package.json: No license field
+warning No license field
+[1/4] Resolving packages...
+error Received malformed response from registry for ".". The registry may be down.
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add
+yarn add v1.22.19
+warning package.json: No license field
+error Missing list of packages to add to your project.
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add
+yarn add v1.22.19
+warning package.json: No license field
+error Missing list of packages to add to your project.
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add .
+yarn add v1.22.19
+warning package.json: No license field
+warning No license field
+[1/4] Resolving packages...
+error Received malformed response from registry for ".". The registry may be down.
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>dir
+ Volume in drive C has no label.
+ Volume Serial Number is 44C8-A74B
+
+ Directory of C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract
+
+11/02/2022  08:00 PM    <DIR>          .
+11/02/2022  08:00 PM    <DIR>          ..
+11/02/2022  08:34 PM               396 .env
+11/02/2022  08:00 PM               787 config.js
+11/02/2022  08:00 PM    <DIR>          contracts
+11/02/2022  08:00 PM             5,802 example_deploy.txt
+11/02/2022  08:00 PM               946 hardhat.config.js
+11/02/2022  08:00 PM               746 package.json
+11/02/2022  08:00 PM             1,071 readme.md
+11/02/2022  08:00 PM    <DIR>          scripts
+11/02/2022  08:00 PM    <DIR>          test
+11/02/2022  08:00 PM           122,180 yarn-error.log
+11/02/2022  08:00 PM           214,782 yarn.lock
+               8 File(s)        346,710 bytes
+               5 Dir(s)  315,291,619,328 bytes free
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn install
+yarn install v1.22.19
+warning package.json: No license field
+warning No license field
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+info There appears to be trouble with your network connection. Retrying...
+info There appears to be trouble with your network connection. Retrying...
+info There appears to be trouble with your network connection. Retrying...
+[3/4] Linking dependencies...
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/chai@^4.2.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/mocha@^9.1.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/node@>=12.0.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "ts-node@>=8.0.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "typescript@>=4.5.0".
+warning " > @typechain/ethers-v5@10.1.0" has unmet peer dependency "@ethersproject/bytes@^5.0.0".
+warning " > @typechain/ethers-v5@10.1.0" has unmet peer dependency "typescript@>=4.3.0".
+warning "@typechain/ethers-v5 > ts-essentials@7.0.3" has unmet peer dependency "typescript@>=3.7.0".
+warning " > typechain@8.1.0" has unmet peer dependency "typescript@>=4.3.0".
+[4/4] Building fresh packages...
+Done in 537.69s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add .
+yarn add v1.22.19
+warning package.json: No license field
+warning No license field
+[1/4] Resolving packages...
+error Received malformed response from registry for ".". The registry may be down.
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add hardhat
+yarn add v1.22.19
+warning package.json: No license field
+warning No license field
+[1/4] Resolving packages...
+info There appears to be trouble with your network connection. Retrying...
+info There appears to be trouble with your network connection. Retrying...
+[2/4] Fetching packages...
+info There appears to be trouble with your network connection. Retrying...
+[3/4] Linking dependencies...
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/chai@^4.2.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/mocha@^9.1.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/node@>=12.0.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "ts-node@>=8.0.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "typescript@>=4.5.0".
+warning " > @typechain/ethers-v5@10.1.0" has unmet peer dependency "@ethersproject/bytes@^5.0.0".
+warning " > @typechain/ethers-v5@10.1.0" has unmet peer dependency "typescript@>=4.3.0".
+warning "@typechain/ethers-v5 > ts-essentials@7.0.3" has unmet peer dependency "typescript@>=3.7.0".
+warning " > typechain@8.1.0" has unmet peer dependency "typescript@>=4.3.0".
+[4/4] Building fresh packages...
+success Saved lockfile.
+warning No license field
+warning "hardhat" is already in "devDependencies". Please remove existing entry first before adding it to "dependencies".
+success Saved 3 new dependencies.
+info Direct dependencies
+└─ hardhat@2.12.2
+info All dependencies
+├─ @nomicfoundation/solidity-analyzer-win32-x64-msvc@0.1.0
+├─ @nomicfoundation/solidity-analyzer@0.1.0
+└─ hardhat@2.12.2
+Done in 119.72s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add
+yarn add v1.22.19
+warning package.json: No license field
+error Missing list of packages to add to your project.
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat compile
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" compile
+√ Help us improve Hardhat with anonymous crash reports & basic usage data? (Y/n) · y
+Downloading compiler 0.8.15
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add hardhat^L
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat compile
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" compile
+Downloading compiler 0.8.15
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> contracts/token/LiquidityGeneratorToken.sol
+
+
+Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+--> contracts/token/StandardToken.sol
+
+
+Compiled 36 Solidity files successfully
+Done in 35.76s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn add compile
+yarn add v1.22.19
+warning package.json: No license field
+warning No license field
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/chai@^4.2.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/mocha@^9.1.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "@types/node@>=12.0.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "ts-node@>=8.0.0".
+warning " > @nomicfoundation/hardhat-toolbox@2.0.0" has unmet peer dependency "typescript@>=4.5.0".
+warning " > @typechain/ethers-v5@10.1.0" has unmet peer dependency "@ethersproject/bytes@^5.0.0".
+warning " > @typechain/ethers-v5@10.1.0" has unmet peer dependency "typescript@>=4.3.0".
+warning "@typechain/ethers-v5 > ts-essentials@7.0.3" has unmet peer dependency "typescript@>=3.7.0".
+warning " > typechain@8.1.0" has unmet peer dependency "typescript@>=4.3.0".
+[4/4] Building fresh packages...
+success Saved lockfile.
+warning No license field
+success Saved 1 new dependency.
+info Direct dependencies
+└─ compile@0.0.2
+info All dependencies
+└─ compile@0.0.2
+Done in 10.63s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_nft.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_nft.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 35064000000000000
+Deploying NFT
+NFT Contract address: 0x1814045da619F8CD6d217bbe4e13f3dd842AD05c
+Deploying MarketPlace
+ConnectTimeoutError: Connect Timeout Error
+    at onConnectTimeout (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\undici\lib\core\connect.js:131:24)
+    at C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\undici\lib\core\connect.js:78:46
+    at Immediate._onImmediate (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\undici\lib\core\connect.js:117:33)
+    at processImmediate (node:internal/timers:466:21) {
+  code: 'UND_ERR_CONNECT_TIMEOUT',
+  transactionHash: '0xc03e8f4c4f726778347da41ab739926689807474a6e1af32b882607b991dceec'
+}
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_nft.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_nft.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 18605380000000000
+Deploying NFT
+NFT Contract address: 0xeB032426920182A3686B25Dc85a555Bf27b48C62
+Deploying MarketPlace
+marketContract address: 0x51dc5D90e2779fB2cFF9a95b579075A93a8a837C
+Done in 84.96s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_swap.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_swap.js --network mainnet
+Deployment MODE =>  PRODUCTION
+ConnectTimeoutError: Connect Timeout Error
+    at onConnectTimeout (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\undici\lib\core\connect.js:131:24)
+    at C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\undici\lib\core\connect.js:78:46
+    at Immediate._onImmediate (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\undici\lib\core\connect.js:117:33)
+    at processImmediate (node:internal/timers:466:21) {
+  code: 'UND_ERR_CONNECT_TIMEOUT'
+}
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_swap.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_swap.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 1841715000000000
+Deploying Swap
+Error: insufficient funds for intrinsic transaction cost [ See: https://links.ethers.org/v5-errors-INSUFFICIENT_FUNDS ] (error={"name":"ProviderError","_stack":"ProviderError: HttpProviderError\n    at HttpProvider.request (C:\\Users\\JOSHUA UWAK\\shield-Pact-site\\backend\\smart_contract\\node_modules\\hardhat\\src\\internal\\core\\providers\\http.ts:78:19)\n    at LocalAccountsProvider.request (C:\\Users\\JOSHUA UWAK\\shield-Pact-site\\backend\\smart_contract\\node_modules\\hardhat\\src\\internal\\core\\providers\\accounts.ts:181:36)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at EthersProviderWrapper.send (C:\\Users\\JOSHUA UWAK\\shield-Pact-site\\backend\\smart_contract\\node_modules\\@nomiclabs\\hardhat-ethers\\src\\internal\\ethers-provider-wrapper.ts:13:20)","code":-32000,"_isProviderError":true}, method="sendTransaction", transaction=undefined, code=INSUFFICIENT_FUNDS, version=providers/5.7.1)
+    at Logger.makeError (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\logger\src.ts\index.ts:269:28)
+    at Logger.throwError (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\logger\src.ts\index.ts:281:20)
+    at checkError (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\providers\src.ts\json-rpc-provider.ts:98:16)
+    at C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\providers\src.ts\json-rpc-provider.ts:265:24
+    at processTicksAndRejections (node:internal/process/task_queues:96:5) {
+  reason: 'insufficient funds for intrinsic transaction cost',
+  code: 'INSUFFICIENT_FUNDS',
+  error: ProviderError: HttpProviderError
+      at HttpProvider.request (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\hardhat\src\internal\core\providers\http.ts:78:19)
+      at LocalAccountsProvider.request (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\hardhat\src\internal\core\providers\accounts.ts:181:36)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+      at EthersProviderWrapper.send (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@nomiclabs\hardhat-ethers\src\internal\ethers-provider-wrapper.ts:13:20),
+  method: 'sendTransaction',
+  transaction: undefined
+}
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_swap.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_swap.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 100601715000000000
+Deploying Swap
+Swap Contarct Address=> 0xb9C31aF0030db6728097a2f450B6F11ec2602328
+Done in 22.52s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_launchpad_factory.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_launchpad_factory.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 95862780000000000
+Deploying LaunchPadFactory
+LaunchPadFactory => 0x4C90f5C6fADc7a2E6a79877818035c995c28D21b
+ReferenceError: contract is not defined
+    at main (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\scripts\deploy_launchpad_factory.js:32:21)
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_stake.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_stake.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 72567440000000000
+Deploying Staking
+ReferenceError: bnb is not defined
+    at main (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\scripts\deploy_stake.js:37:34)
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_stake.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_stake.js --network mainnet
+Deployment MODE =>  PRODUCTION
+0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 72567440000000000
+Deploying Staking
+Staking Contract Address=> 0x9cA286914F0A195000BE999E1384659Ef5a50207
+Done in 19.87s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_launchpad.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_launchpad.js --network mainnet
+Error HH601: Script ./scripts/deploy_launchpad.js doesn't exist.
+
+For more info go to https://hardhat.org/HH601 or run Hardhat with --show-stack-traces
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_launch.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_launch.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 61399290000000000
+ReferenceError: _address_ is not defined
+    at main (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\scripts\deploy_launch.js:30:101)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+yarn run v1.22.19WAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_launch.js --network mainnet
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_launch.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 61399290000000000
+Error: invalid address or ENS name (argument="name", value=4.37116016110614e+47, code=INVALID_ARGUMENT, version=providers/5.7.1)
+    at Logger.makeError (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\logger\src.ts\index.ts:269:28)
+    at Logger.throwError (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\logger\src.ts\index.ts:281:20)
+    at Logger.throwArgumentError (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\logger\src.ts\index.ts:285:21)
+    at EthersProviderWrapper.<anonymous> (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\providers\src.ts\base-provider.ts:1752:20)
+    at step (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\providers\lib\base-provider.js:48:23)
+    at Object.next (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\providers\lib\base-provider.js:29:53)
+    at fulfilled (C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\@ethersproject\providers\lib\base-provider.js:20:58)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5) {
+  reason: 'invalid address or ENS name',
+  code: 'INVALID_ARGUMENT',
+  argument: 'name',
+  value: 4.37116016110614e+47
+}
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_launch.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_launch.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 61399290000000000
+TRansfer Ownership to 0xd1a5444F99BE6C3EefBc6998c5e7F0F069025d98
+Done in 16.41s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_airdrop.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_airdrop.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 61247420000000000
+Deploying AirDrop
+AirDrop Contarct Address=> 0x8426E76219bA09Da03A1fb0480e4F2cF1e12a5c8
+Done in 23.34s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>yarn hardhat run ./scripts/deploy_token_factory.js --network mainnet
+yarn run v1.22.19
+warning package.json: No license field
+$ "C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract\node_modules\.bin\hardhat" run ./scripts/deploy_token_factory.js --network mainnet
+Deployment MODE =>  PRODUCTION
+Deploying contracts with the account: 0x1EA2f1dF90517460F5A355268Ec075AFDeBdD217
+Account balance: 54527500000000000
+Deploying StandardTokenCreator Contract...
+StandardTokenCreator Contract Address: 0x0231E4630893a56A6Ac772B78398bE162Ac7Dc23
+Deploying ReflectionTokenCreator Contract...
+ReflectionTokenCreator Contract Address: 0x4De2Aa97C4DEdFD505BaFd8cB496cA032213c3Fa
+Deploying LiquidTokenCreator Contract...
+LiquidTokenCreator Contract Address: 0x8e1b4Cad19dB1aEdD283Da2Df28dE3c594f7ea5E
+Deploying Token Factory...
+Token Factory Contarct Address=> 0x8579DD6be71b26A88F326Ee6Ae1759a362e24CD7
+Done in 57.88s.
+
+C:\Users\JOSHUA UWAK\shield-Pact-site\backend\smart_contract>
