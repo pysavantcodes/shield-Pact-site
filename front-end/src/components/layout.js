@@ -105,6 +105,11 @@ const ConnectSection = () => {
       window.location.reload();
     });
 
+    provider?.on("accountChanged",(id)=>{
+      console.log("Account Changed: ",id);
+      window.location.reload();
+    });
+
     provider?.on("error",(id)=>{
       console.log("error");
       console.log(id);
@@ -289,22 +294,22 @@ const Menu = ({children})=>{
           </label>
           <div id="title">
               <img src={logo} alt="nft-logo" />
-              <span id="logo_title">Shield {loc.pathname.split('/')[1]}</span>
+              <span id="logo_title">Shield {loc.pathname.split('/')[2]}</span>
           </div>
           <input id="__signal" type="checkbox" defaultChecked/>
           <div id="menu">
-              <NavLink to="/nft">Explore NFT</NavLink>
-              <NavLink to="/launchpad">LaunchPad</NavLink>
-              <NavLink to="/staking">Staking</NavLink>
-              <NavLink to="/swap">Swap</NavLink>
-              <NavLink to="/airdrop">AirDrop</NavLink>
+              <NavLink to="/dApp/nft">Explore NFT</NavLink>
+              <NavLink to="/dApp/launchpad">LaunchPad</NavLink>
+              <NavLink to="/dApp/staking">Staking</NavLink>
+              <NavLink to="/dApp/swap">Swap</NavLink>
+              <NavLink to="/dApp/airdrop">AirDrop</NavLink>
 
               <div className="extra">
                 <div to="#">Create</div>
                 <div className="submenu">
-                  <NavLink to="/createtoken">Create Token</NavLink>
-                  <NavLink to="/createlaunchpad">Create Launch</NavLink>
-                  <NavLink to="/createAirdrop">Create AirDrop</NavLink>
+                  <NavLink to="/dApp/createtoken">Create Token</NavLink>
+                  <NavLink to="/dApp/createlaunchpad">Create Launch</NavLink>
+                  <NavLink to="/dApp/createAirdrop">Create AirDrop</NavLink>
                 </div>
               </div>
 

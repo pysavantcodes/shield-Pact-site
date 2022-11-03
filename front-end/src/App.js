@@ -21,7 +21,7 @@ import AirDropHome from './pages/alldrops';
 
 const router = createBrowserRouter([
 			{	
-				path:'/',
+				path:'/dApp/',
 				element:<DefaultLayout/>,
 				children:[
 					{
@@ -62,33 +62,13 @@ const router = createBrowserRouter([
 					}
 				]
 			},
+			
 			{
-				path:'/chat',
-				element:<ChatSection/>
-			},
-			{
-				path:'/dashboard',
-				element:<DashBoardLayout/>,
-				children:[
-					{	path:'',//default to client
-						element:<Navigate to="client"/>
-					},
-					{
-						path:'client',
-						element:<ClientSection/>
-					}, 
-					{
-						path:'customer',
-						element:<CustomerSection/>
-					}
-				]
-			},
-			{
-				path:'/nft',
+				path:'/dApp/nft',
 				element:<DefaultLayout/>,
 				children:[
 					{	path:'',//default to client
-						element:<Navigate to="/nft/home"/>
+						element:<Navigate to="/dApp/nft/home"/>
 					},
 					{
 						path:'home',
@@ -100,7 +80,7 @@ const router = createBrowserRouter([
 					},
 					{
 						path:'explore',
-						element:<Navigate to="/nft/home"/>//<NFTExplore/>
+						element:<Navigate to="/dApp/nft/home"/>//<NFTExplore/>
 					}
 				]
 			}
