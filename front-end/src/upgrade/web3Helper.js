@@ -40,10 +40,12 @@ export const useQSigner = ()=>{
   const result = useSigner();
   
   useEffect(()=>{
-    __qevent.map(x=>result.data?.on(x,__qhandler));
+    const {data} = result;
+   
+    __qevent.map(x=>data?.provider?.on(x,__qhandler));
     
-    return ()=>__qevent.map(x=>result.data?.off(x));
-  },[result.data]);
+    return ()=>__qevent.map(x=>data?.provider?.off(x));
+  },[result?.data]);
   
   return result;
 }
