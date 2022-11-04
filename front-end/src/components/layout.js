@@ -295,7 +295,7 @@ const Menu = ({children})=>{
           </label>
           <div id="title">
               <img src={logo} alt="nft-logo" />
-              <span id="logo_title">Shield {loc.pathname.split('/')[1]}</span>
+              <span id="logo_title">Shield {loc.pathname.split('/')[2]}</span>
           </div>
           <input id="__signal" type="checkbox" defaultChecked/>
           <div id="menu">

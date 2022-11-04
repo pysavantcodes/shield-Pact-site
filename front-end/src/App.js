@@ -68,7 +68,7 @@ const router = createBrowserRouter([
 				element:<DefaultLayout/>,
 				children:[
 					{	path:'',//default to client
-						element:<Navigate to="/nft/home"/>
+						element:<Navigate to="/dApp/nft/home"/>
 					},
 					{
 						path:'home',
@@ -80,7 +80,7 @@ const router = createBrowserRouter([
 					},
 					{
 						path:'explore',
-						element:<Navigate to="/nft/home"/>//<NFTExplore/>
+						element:<Navigate to="/dApp/nft/home"/>//<NFTExplore/>
 					}
 				]
 			}
