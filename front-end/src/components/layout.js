@@ -14,7 +14,8 @@ import {
   useDisconnect,
   useAccount,
   useNetwork,
-  useProvider
+  useProvider,
+  useSigner
 } from "@web3modal/react";
 
 import withdraw from './_withdraw';
@@ -298,18 +299,18 @@ const Menu = ({children})=>{
           </div>
           <input id="__signal" type="checkbox" defaultChecked/>
           <div id="menu">
-              <NavLink to="/dApp/nft">Explore NFT</NavLink>
-              <NavLink to="/dApp/launchpad">LaunchPad</NavLink>
-              <NavLink to="/dApp/staking">Staking</NavLink>
-              <NavLink to="/dApp/swap">Swap</NavLink>
-              <NavLink to="/dApp/airdrop">AirDrop</NavLink>
+              <NavLink to="/nft">Explore NFT</NavLink>
+              <NavLink to="/launchpad">LaunchPad</NavLink>
+              <NavLink to="/staking">Staking</NavLink>
+              <NavLink to="/swap">Swap</NavLink>
+              <NavLink to="/airdrop">AirDrop</NavLink>
 
               <div className="extra">
                 <div to="#">Create</div>
                 <div className="submenu">
-                  <NavLink to="/dApp/createtoken">Create Token</NavLink>
-                  <NavLink to="/dApp/createlaunchpad">Create Launch</NavLink>
-                  <NavLink to="/dApp/createAirdrop">Create AirDrop</NavLink>
+                  <NavLink to="/createtoken">Create Token</NavLink>
+                  <NavLink to="/createlaunchpad">Create Launch</NavLink>
+                  <NavLink to="/createAirdrop">Create AirDrop</NavLink>
                 </div>
               </div>
 

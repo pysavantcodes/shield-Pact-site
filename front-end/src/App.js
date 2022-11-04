@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBrowserRouter, RouterProvider, Navigate, Redirect} from "react-router-dom";
+import {createBrowserRouter, RouterProvider,createHashRouter, Navigate, Redirect} from "react-router-dom";
 import Web3Container from './upgrade/web3Wrapper';
 import DefaultLayout from "./components/layout";
 import StackingSection from "./pages/staking";
@@ -21,7 +21,7 @@ import AirDropHome from './pages/alldrops';
 
 const router = createBrowserRouter([
 			{	
-				path:'/dApp/',
+				path:'/',
 				element:<DefaultLayout/>,
 				children:[
 					{
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
 			},
 			
 			{
-				path:'/dApp/nft',
+				path:'/nft',
 				element:<DefaultLayout/>,
 				children:[
 					{	path:'',//default to client
