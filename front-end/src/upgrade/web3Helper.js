@@ -2,8 +2,9 @@ import {ethers} from "ethers";
 import { chains } from '@web3modal/ethereum';
 import { NFTStorage} from 'nft.storage';
 import axios from "axios";
-
+import {useSigner, useProvider} from '@web3modal/react'
 import config from './config';
+import {useEffect} from "react"
 
 import * as contract from './contract';
 
@@ -25,6 +26,40 @@ const netProvider = getRPCProvider(BNB_NET);
 export const defaultProvider = netProvider;
 
 const _nftstorage = new NFTStorage({ token: config.NFT_STORAGE_KEY});
+
+
+const __qevent = ["chainChanged", "accountChanged", "disconnect", "connect"]
+//this will reload page when any of this event takes place
+
+const __qhandler = (d)=>{
+  console.log(d);//For debugging when not in use comment out
+  window.location.reload();
+}
+
+export const useQSigner = ()=>{
+  const result = useSigner();
+  
+  useEffect(()=>{
+    __qevent.map(x=>result.data?.on(x,__qhandler));
+    
+    return ()=>__qevent.map(x=>result.data?.off(x));
+  },[result.data]);
+  
+  return result;
+}
+
+
+export const useQProvider = ()=>{
+  const result = useProvider();
+  
+  useEffect(()=>{
+    __qevent.map(x=>result?.on(x,__qhandler));
+    return ()=>__qevent.map(x=>result?.off(x));
+  },[result]);
+  
+  return result;
+}
+
 
 export const IpfsStore = ({name, description, image, properties}) =>
   _nftstorage.store({

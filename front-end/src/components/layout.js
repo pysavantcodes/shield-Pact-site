@@ -8,6 +8,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "./buttons";
 import logo from "./nft/logo.png";
 import loadingGif from "./loading.gif";
+import {useQSigner, useQProvider} from "../upgrade/web3Helper"
 
 import {
   useConnectModal,
@@ -92,7 +93,8 @@ const ConnectSection = () => {
   const { open: connect } = useConnectModal();
   const { status, isConnected } = useAccount();
   const disconnect = useDisconnect();
-  const provider = useProvider();
+  const provider = useQProvider();
+
 
   useEffect(() => {
     provider?.on("network",(_new, _old)=>{
