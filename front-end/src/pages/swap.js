@@ -1,5 +1,6 @@
 import React,{useState, useEffect, useReducer, useCallback, useMemo} from 'react';
 import {ethers} from 'ethers';
+import {useQSigner} from '../upgrade/web3Helper';
 import {useSigner} from '@web3modal/react';
 import Swap from '../components/swap-modal/swap';
 import {exTrade, getToken, getPairs, makeTrade, swapExchangeNetwork, getTokenList, addToken} from '../upgrade/swap/main';
@@ -23,7 +24,7 @@ const useGetTokenList = ()=>{
 
 const SwapContainer  = ()=>{
   const rawToken = useGetTokenList();
-	const {data:signer} = useSigner();
+	const {data:signer} = useQSigner();
 
 	//output display
 	const [oV, setOv] = useState();

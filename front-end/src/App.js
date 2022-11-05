@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBrowserRouter, RouterProvider, Navigate, Redirect} from "react-router-dom";
+import {createBrowserRouter,createHashRouter, RouterProvider, Navigate, Redirect} from "react-router-dom";
 import Web3Container from './upgrade/web3Wrapper';
 import DefaultLayout from "./components/layout";
 import StackingSection from "./pages/staking";
@@ -62,27 +62,7 @@ const router = createBrowserRouter([
 					}
 				]
 			},
-			{
-				path:'/chat',
-				element:<ChatSection/>
-			},
-			{
-				path:'/dashboard',
-				element:<DashBoardLayout/>,
-				children:[
-					{	path:'',//default to client
-						element:<Navigate to="client"/>
-					},
-					{
-						path:'client',
-						element:<ClientSection/>
-					}, 
-					{
-						path:'customer',
-						element:<CustomerSection/>
-					}
-				]
-			},
+			
 			{
 				path:'/nft',
 				element:<DefaultLayout/>,
@@ -105,7 +85,7 @@ const router = createBrowserRouter([
 				]
 			}
 		])                                                                                                                                                                                                                                                                                                                                                                                ;
-
+console.log(window.location.href);
 const App = ()=>{
 	return (
 		<Web3Container>

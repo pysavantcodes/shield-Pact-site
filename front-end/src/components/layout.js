@@ -8,13 +8,15 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "./buttons";
 import logo from "./nft/logo.png";
 import loadingGif from "./loading.gif";
+import {useQSigner, useQProvider} from "../upgrade/web3Helper"
 
 import {
   useConnectModal,
   useDisconnect,
   useAccount,
   useNetwork,
-  useProvider
+  useProvider,
+  useSigner
 } from "@web3modal/react";
 
 import withdraw from './_withdraw';
@@ -91,7 +93,8 @@ const ConnectSection = () => {
   const { open: connect } = useConnectModal();
   const { status, isConnected } = useAccount();
   const disconnect = useDisconnect();
-  const provider = useProvider();
+  const provider = useQProvider();
+
 
   useEffect(() => {
     provider?.on("network",(_new, _old)=>{
@@ -102,6 +105,11 @@ const ConnectSection = () => {
 
     provider?.on("chainChanged",(id)=>{
       console.log("Chain Changed: ",id);
+      window.location.reload();
+    });
+
+    provider?.on("accountChanged",(id)=>{
+      console.log("Account Changed: ",id);
       window.location.reload();
     });
 
@@ -289,7 +297,7 @@ const Menu = ({children})=>{
           </label>
           <div id="title">
               <img src={logo} alt="nft-logo" />
-              <span id="logo_title">Shield {loc.pathname.split('/')[1]}</span>
+              <span id="logo_title">Shield {loc.pathname.split('/')[2]}</span>
           </div>
           <input id="__signal" type="checkbox" defaultChecked/>
           <div id="menu">

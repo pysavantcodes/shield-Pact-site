@@ -57,12 +57,6 @@ contract TokenFactory is Ownable{
     }
     
 
-    function addCreator(address StandardCreator_, address ReflectCreator_, address LiquidCreator_) public onlyOwner{
-        StandardCreator = StandardCreator_;
-        ReflectCreator = ReflectCreator_;
-        LiquidCreator = LiquidCreator_;
-    }
-
     function setRouter(address _router) public onlyOwner{
         require(_router != address(0),"Router Address null");
         router = _router;
@@ -122,4 +116,3 @@ contract TokenFactory is Ownable{
         return allTokens.length;
     }
 }
-
