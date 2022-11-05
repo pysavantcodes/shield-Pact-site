@@ -5,13 +5,13 @@ import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
 import airDropLib from '../upgrade/air';
-import {IpfsStoreBlob, IpfsGetBlob} from '../upgrade/web3Helper';
+import {IpfsStoreBlob, IpfsGetBlob, useQSigner} from '../upgrade/web3Helper';
 
 const {collectDrop, listDrop, createdDrop, collect, empty} = airDropLib;
 
 //List Token
 const Container = () => {
-  const {data:signer} = useSigner();
+  const {data:signer} = useQSigner();
 
   const {View, update} = useModal({Controller:defaultController});
 

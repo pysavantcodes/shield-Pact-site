@@ -3,7 +3,7 @@ import * as contract from './contract';
 import config from './config'
 
 const stakeAddr = config.stakeAddr;//"0x6f2326E0cB5def734Cee56fbFb9401D1F982447C";
-const bonusTokenAddr = config.bonusTokenAddr;//"0xF570EFf7f847B09D1119B9a80590F10e6f458b96";
+const bonusTokenAddr = config.bonusTokenAddress;//"0xF570EFf7f847B09D1119B9a80590F10e6f458b96";
 
 const getStake = (provider)=>helper.getContract(stakeAddr, contract.stakeABI, provider||helper.defaultProvider);
 
@@ -11,8 +11,8 @@ const plug = {};
 
 plug.listStakeCenters = async ()=>{
 	let stake = getStake();
-	const _wbnbAddr = stake.WBNB();
-	const result =  await Promise.all([stake.stakeInterest(await stake.WBNB(), bonusTokenAddr), stake.stakeInterest(config.busdAddress, bonusTokenAddr)]);
+	const _wbnbAddr = await stake.WBNB();
+	const result =  await Promise.all([stake.stakeInterest(_wbnbAddr, bonusTokenAddr), stake.stakeInterest(config.busdAddress, bonusTokenAddr)]);
 	const data = []
 	if(result[0]){
 		let dt = ({...result[0]})

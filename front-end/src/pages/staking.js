@@ -20,7 +20,7 @@ const Container = () => {
                                    failed:value=>statusCreate.failed(update, value),
                                    info:(value, Proceed)=>statusCreate.info(update, value, {Proceed})}), [update]);
 
-  const {data:signer} = useSigner();
+  const {data:signer} = helper.useQSigner();
 
   return (
     <section className="stakingContainer">

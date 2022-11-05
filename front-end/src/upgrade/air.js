@@ -104,7 +104,7 @@ plug.listDrop = async(signer)=>{
 }
 
 plug.createdDrop = async(signer)=>{
-  console.log(signer);
+
   const air = getAirDrop(signer);
   const list = await air.getCreatedDrop();
 

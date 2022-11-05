@@ -3,6 +3,7 @@ import {useSigner, useAccount} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
 import tokenLIB from '../upgrade/create_token';
+import {useQSigner} from '../upgrade/web3Helper';
 
 const {createToken, createdTokens, tokenInfo, withdrawTokenFee, factoryOwner} = tokenLIB;
 
@@ -18,7 +19,7 @@ const CreateTokenModal = () => {
                                    info:(value, Proceed)=>statusCreate.info(update, value, {Proceed})}), [update]);
 	
 
-	const {data:signer} = useSigner();
+	const {data:signer} = useQSigner();
 	const {address} = useAccount();
 	const [isOwner, setOwner] = useState();
 

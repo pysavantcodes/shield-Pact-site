@@ -125,7 +125,7 @@ const Generate = ({signer, address, funcFactory, onClick})=>{
       setStatus("LOADING");
       genFunc(funcFactory)(signer, setData)
                           .then(()=>setStatus("COMPLETED"))
-                              .catch((e)=>{setError(e.reason.find("exception")===-1?e.reason:"Error Occured");setStatus("ERROR")});
+                              .catch((e)=>{setError(e.reason.indexOf("exception")===-1?e.reason:"Error Occured");setStatus("ERROR")});
     }
 
     const k_time = setTimeout(run, DELAY_SEC);//delay 15sec

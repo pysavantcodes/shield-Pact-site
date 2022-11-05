@@ -10,8 +10,7 @@ const config = {
   ...extraOption
 }
 
- console.log("Config=>",config);
-
+ 
 /*const extraOption = {
   PROJECTID:'5f0a0c1eda156a9eade6dfcf6dbc0cea',
   NFT_STORAGE_KEY:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDEyQjhiNzkxQzkxMDNlMUNEMDU0RWU0Nzc5MkQ2NDY3OTQ0YjFkYTUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NTA0MTIzNTQwMywibmFtZSI6IlNISUVMRENPSU4ifQ.bBacconKCT3IaZkLAUPpss7BIdZBjcU0QTIvqRHS9XQ',

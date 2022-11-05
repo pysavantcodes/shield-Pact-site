@@ -13,7 +13,7 @@ const {createLaunchPad, createdPads, launchPadInfo, purchase, listLaunchPad, lau
 const {tokenInfo} = tokenLib;
 
 const Container  = ()=>{
-	const {data:signer} = useSigner();
+	const {data:signer} = helper.useQSigner();
 	const {addr} = useParams();
 	return (
 	<div className="launchpad">

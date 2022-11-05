@@ -17,7 +17,7 @@ const {withdrawLaunchFee} = launchLib;
 
 const Withdraw = ()=>{
   const [owner, setOwner] = useState();
-  const {data:signer} = useSigner();
+  const {data:signer} = helper.useQSigner();
   const {address} = useAccount();
 
 

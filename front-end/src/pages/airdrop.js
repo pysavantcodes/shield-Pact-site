@@ -5,7 +5,7 @@ import {useSigner} from '@web3modal/react';
 import useModal from "../components/customModal/useModal";
 import defaultController, {statusCreate} from "../components/customModal/controller";
 
-import {IpfsStoreBlob, IpfsGetBlob} from '../upgrade/web3Helper';
+import {IpfsStoreBlob, IpfsGetBlob, useQSigner} from '../upgrade/web3Helper';
 import airDropLib from '../upgrade/air';
 
 const {createDrop} = airDropLib;
@@ -20,7 +20,7 @@ const Container = ()=>{
                                    failed:value=>statusCreate.failed(update, value),
                                    info:(value, Proceed)=>statusCreate.info(update, value, {Proceed})}), [update]);
 
-	const {data:signer} = useSigner();
+	const {data:signer} = useQSigner();
 
 	const onSubmit = async (e)=>{
 		e.preventDefault();

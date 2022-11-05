@@ -32,20 +32,23 @@ const __qevent = ["chainChanged", "accountChanged", "disconnect", "connect"]
 //this will reload page when any of this event takes place
 
 const __qhandler = (d)=>{
-  console.log(d);//For debugging when not in use comment out
+ //For debugging when not in use comment out
   window.location.reload();
 }
 
 export const useQSigner = ()=>{
   const result = useSigner();
-  
+  const {data} = result;
+
   useEffect(()=>{
-    const {data} = result;
-   
+    data?.provider?.on("error",(e)=>{e?.event?.indexOf("changed") !==-1 && window.location.reload()});//for change error
     __qevent.map(x=>data?.provider?.on(x,__qhandler));
     
-    return ()=>__qevent.map(x=>data?.provider?.off(x));
-  },[result?.data]);
+    return ()=>{
+      data?.provider?.off("error");
+      __qevent.map(x=>data?.provider?.off(x));
+    };
+  },[data]);
   
   return result;
 }
@@ -55,8 +58,12 @@ export const useQProvider = ()=>{
   const result = useProvider();
   
   useEffect(()=>{
+      result?.on("error",(e)=>{e?.event?.indexOf("changed") !==-1 && window.location.reload()});
     __qevent.map(x=>result?.on(x,__qhandler));
-    return ()=>__qevent.map(x=>result?.off(x));
+    return ()=>{
+      result?.off("error");
+      __qevent.map(x=>result?.off(x));
+    }
   },[result]);
   
   return result;

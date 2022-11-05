@@ -15,8 +15,6 @@ import {
   useDisconnect,
   useAccount,
   useNetwork,
-  useProvider,
-  useSigner
 } from "@web3modal/react";
 
 import withdraw from './_withdraw';
@@ -95,35 +93,6 @@ const ConnectSection = () => {
   const disconnect = useDisconnect();
   const provider = useQProvider();
 
-
-  useEffect(() => {
-    provider?.on("network",(_new, _old)=>{
-      if(_old){
-        window.location.reload();
-      }
-    });
-
-    provider?.on("chainChanged",(id)=>{
-      console.log("Chain Changed: ",id);
-      window.location.reload();
-    });
-
-    provider?.on("accountChanged",(id)=>{
-      console.log("Account Changed: ",id);
-      window.location.reload();
-    });
-
-    provider?.on("error",(id)=>{
-      console.log("error");
-      console.log(id);
-    });
-
-    return () => {
-      provider?.off("network");
-      provider?.off("chainChanged");
-      provider?.off("error");
-    };
-  }, [provider])
 
   return (
     <ConnectWrapper className="dropBtn">
