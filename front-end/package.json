@@ -2,6 +2,7 @@
     "name": "SHIELDFRONTEND",
     "version": "0.1.0",
     "private": true,
+    "homepage":"https://shielddap.netlify.app/",
     "dependencies": {
         "@pancakeswap-libs/sdk-v2": "^2.2.0",
         "@react-spring/web": "^9.5.4",
@@ -31,7 +32,7 @@
         "react-redux": "^8.0.4",
         "react-router": "^6.4.0",
         "react-router-dom": "^6.4.0",
-        "react-scripts": "^5.0.1",
+        "react-scripts": "5.0.1",
         "sass": "^1.50.1",
         "styled-components": "^5.3.5",
         "uuid": "^9.0.0",

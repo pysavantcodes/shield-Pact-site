@@ -30,7 +30,7 @@ const Card = ({itemId, name, description, image, forSale, price, owner, isBNB, u
           </div>
         </div>
       </div>
-      <a href="javascript:viod(0)">
+      <a href="javascript:void(0)">
         <span className="product-name">{name}</span>
       </a>
       <span className="latest-bid">{forSale?"For Sale":'Not For Sale'}</span>
