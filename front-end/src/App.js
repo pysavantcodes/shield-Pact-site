@@ -85,12 +85,13 @@ const router = createBrowserRouter([
 				]
 			}
 		])                                                                                                                                                                                                                                                                                                                                                                                ;
-console.log(window.location.href);
+
 const App = ()=>{
 	return (
-		<Web3Container>
+		<>
 			<RouterProvider router={router}/>
-		</Web3Container>
+			<Web3Container/>
+		</>
 	);
 }
 

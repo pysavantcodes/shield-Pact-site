@@ -104,10 +104,10 @@ const SwapContainer  = ()=>{
                                    failed:value=>statusCreate.failed(update, value),
                                    info:(value, Proceed)=>statusCreate.info(update, value, {Proceed})}), [update]);
 
-  const _cancel = ()=>{
+  const _cancel = useCallback(()=>{
     setActive(false);
     statusCreate.reset(update);
-  }
+  },[update]);
 
   const _addToken = useCallback((addr, logo)=>{
     addToken(addr,logo, actionUpdateList);
