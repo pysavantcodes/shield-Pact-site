@@ -3,7 +3,6 @@ import { Web3Modal} from '@web3modal/react';
 import { chains, providers } from '@web3modal/ethereum';
 import config from './config';
 
-
 const _chain = config.production?chains.binanceSmartChain:chains.binanceSmartChainTestnet;
 
 const _config = {
@@ -13,6 +12,7 @@ const _config = {
   ethereum: {
     appName: 'Shield Pact',
     chains:[_chain],
+    autoConnect: true,
     providers:[providers.walletConnectProvider({ProjectId:config.PROJECTID})]
   }
 }

@@ -254,8 +254,8 @@ const HeaderWrapper = styled.header`
 `;
 
 
-const Menu = ({children})=>{
-  const loc = useLocation();
+const Menu = ()=>{
+  const {pathname:loc} = {pathname:"frank"};//useLocation();
   const {Button:WithdrawBTN, View:WithdrawView} = withdraw();
 
   return(
@@ -266,11 +266,11 @@ const Menu = ({children})=>{
           </label>
           <div id="title">
               <img src={logo} alt="nft-logo" />
-              <span id="logo_title">Shield {loc.pathname.split('/')[2]}</span>
+              <span id="logo_title">Shield {loc.split('/')[2]}</span>
           </div>
           <input id="__signal" type="checkbox" defaultChecked/>
           <div id="menu">
-              <NavLink to="/nft">Explore NFT</NavLink>
+              <a href="/nft">Explore NFT</a>
               <NavLink to="/launchpad">LaunchPad</NavLink>
               <NavLink to="/staking">Staking</NavLink>
               <NavLink to="/swap">Swap</NavLink>
@@ -319,8 +319,8 @@ const LoadingWrapper = styled.div`
 `;
 
 const LoadingPage  = ()=>{
-  const {status} = useAccount();
- 
+  const {status, ...rest} = useAccount();
+  console.log(status,"==",rest);
   return (
   status?.indexOf("connecting") === -1 && window.navigator.onLine?
   "":

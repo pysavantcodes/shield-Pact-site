@@ -1,5 +1,6 @@
 import React,{useState, useEffect, useMemo, useCallback} from "react";
-import {useAccount, useSigner} from '@web3modal/react';
+import {useAccount} from '@web3modal/react';
+import {useQSigner} from '../../upgrade/web3Helper';
 import "./style.css";
 import img from "./Restorer-amico (1).png";
 import Card from "../../components/card";
@@ -15,7 +16,7 @@ const DELAY_SEC = 15000;
 
 const Container = () => {
   const { address, isConnected } = useAccount();
-  const {data:signer} = useSigner();
+  const {data:signer} = useQSigner();
   const {View:OptionView, update:optionUpdate} = useOptionModal({Controller:OptionController});
 
   const close = useMemo(()=>optionAt.reset(optionUpdate),[optionUpdate])

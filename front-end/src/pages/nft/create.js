@@ -1,13 +1,13 @@
 import React,{useState, useCallback, useMemo} from 'react';
 import {Navigate} from "react-router-dom";
 import styled from 'styled-components';
-import {useSigner, useAccount, useProvider} from '@web3modal/react';
+import {useAccount} from '@web3modal/react';
 
 import Title from "../../components/nft/title";
 import Form from "../../components/nft/form";
 
 import nftLib  from '../../upgrade/nft';
-
+import {useQSigner} from '../../upgrade/web3Helper';
 import useInfoModal from "../../components/customModal/useModal";
 import InfoModalController, {statusCreate} from "../../components/customModal/controller";
 
@@ -41,7 +41,7 @@ const Main = ()=>{
 		}
 	},[setDB]);
 
-	const {data:_signer} = useSigner();
+	const {data:_signer} = useQSigner();
 
 	const {View:InfoApp, update:infoUpdate, status:infoStatus} = useInfoModal({Controller:InfoModalController});
 
