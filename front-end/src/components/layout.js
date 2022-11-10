@@ -271,17 +271,17 @@ const Menu = ()=>{
           <input id="__signal" type="checkbox" defaultChecked/>
           <div id="menu">
               <a href="/nft">Explore NFT</a>
-              <NavLink to="/launchpad">LaunchPad</NavLink>
-              <NavLink to="/staking">Staking</NavLink>
-              <NavLink to="/swap">Swap</NavLink>
-              <NavLink to="/airdrop">AirDrop</NavLink>
+              <NavLink reloadDocument to="/launchpad">LaunchPad</NavLink>
+              <NavLink reloadDocument to="/staking">Staking</NavLink>
+              <NavLink reloadDocument to="/swap">Swap</NavLink>
+              <NavLink reloadDocument to="/airdrop">AirDrop</NavLink>
 
               <div className="extra">
                 <div to="#">Create</div>
                 <div className="submenu">
-                  <NavLink to="/createtoken">Create Token</NavLink>
-                  <NavLink to="/createlaunchpad">Create Launch</NavLink>
-                  <NavLink to="/createAirdrop">Create AirDrop</NavLink>
+                  <NavLink reloadDocument to="/createtoken">Create Token</NavLink>
+                  <NavLink reloadDocument to="/createlaunchpad">Create Launch</NavLink>
+                  <NavLink reloadDocument to="/createAirdrop">Create AirDrop</NavLink>
                 </div>
               </div>
 

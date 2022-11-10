@@ -89,8 +89,9 @@ const router = createBrowserRouter([
 const App = ()=>{
 	return (
 		<>
-			<RouterProvider router={router}/>
-			<Web3Container/>
+			<Web3Container>
+				<RouterProvider router={router}/>
+			</>
 		</>
 	);
 }

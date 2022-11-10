@@ -37,8 +37,8 @@ const Container = () => {
   
     <div className="launchpad">
       <section className="--full-page">
-        <button className="btn" style={{margin:"0",fontSize:"12px", marginRight:"8px"}}><Link style={{color:"white"}} to="/createtoken">Create a Token</Link></button>
-        <button className="btn" style={{margin:"0",fontSize:"12px"}}><Link style={{color:"white"}} to="/createlaunchpad">Create Launchpad</Link></button>
+        <button className="btn" style={{margin:"0",fontSize:"12px", marginRight:"8px"}}><Link reloadDocument style={{color:"white"}} to="/createtoken">Create a Token</Link></button>
+        <button className="btn" style={{margin:"0",fontSize:"12px"}}><Link reloadDocument style={{color:"white"}} to="/createlaunchpad">Create Launchpad</Link></button>
    
         <h1>Launched Token View</h1>
       {created?.length>0 ?
@@ -82,7 +82,7 @@ const TokenView = ({provider, address})=>{
   !state.tokenAddress?
   <div>Loading Launchpad</div>:
   <div className="launchpadInfoContainer">
-    <Link to={`/launchdetails/${address}`}>
+    <Link reloadDocument to={`/launchdetails/${address}`}>
     <div className="tokenhead">
       <img src={d.logo} />
 

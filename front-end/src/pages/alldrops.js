@@ -25,8 +25,8 @@ const Container = () => {
     <div className="launchpad">
       <View/>
       <section className="--full-page">
-        <button className="btn" style={{margin:"0",fontSize:"12px", marginRight:"8px"}}><Link style={{color:"white"}} to="/createtoken">Create a Token</Link></button>
-        <button className="btn" style={{margin:"0",fontSize:"12px"}}><Link style={{color:"white"}} to="/createAirdrop">Create AirDrop</Link></button>
+        <button className="btn" style={{margin:"0",fontSize:"12px", marginRight:"8px"}}><Link reloadDocument style={{color:"white"}} to="/createtoken">Create a Token</Link></button>
+        <button className="btn" style={{margin:"0",fontSize:"12px"}}><Link reloadDocument style={{color:"white"}} to="/createAirdrop">Create AirDrop</Link></button>
   
         <CreatedDrop signer={signer} handler={actionUpdateList}/>
 

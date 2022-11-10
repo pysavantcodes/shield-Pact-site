@@ -60,7 +60,7 @@ const actionUpdateList = useMemo(() => ({process:value=>optionAt.process(optionU
               brand and products.
             </p>
             <div className="button-group">
-              <button className="btn"><NavLink style={{color:"white"}} to={`/nft/${isConnected?"create":"explore"}`}>{(isConnected?"Create":"Explore")} NFT</NavLink></button>
+              <button className="btn"><NavLink reloadDocument style={{color:"white"}} to={`/nft/${isConnected?"create":"explore"}`}>{(isConnected?"Create":"Explore")} NFT</NavLink></button>
 
 
             </div>
