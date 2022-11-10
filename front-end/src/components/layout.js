@@ -255,7 +255,8 @@ const HeaderWrapper = styled.header`
 
 
 const Menu = ()=>{
-  const {pathname:loc} = {pathname:"frank"};//useLocation();
+  const {pathname:loc} = useLocation();
+  console.log(loc)
   const {Button:WithdrawBTN, View:WithdrawView} = withdraw();
 
   return(
@@ -266,7 +267,7 @@ const Menu = ()=>{
           </label>
           <div id="title">
               <img src={logo} alt="nft-logo" />
-              <span id="logo_title">Shield {loc.split('/')[2]}</span>
+              <span id="logo_title">Shield<span style={{textTransform:"uppercase"}}>{loc.split('/')[1]}</span></span>
           </div>
           <input id="__signal" type="checkbox" defaultChecked/>
           <div id="menu">
